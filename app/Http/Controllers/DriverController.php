@@ -44,7 +44,7 @@ class DriverController extends Controller
      public function showPendingRegistrations()
     {
        // $data = Driver::whereNull("dateOfSafetyOrientation")->get();
-        $data = Supplier::all();
+        $data = App\Driver::all();
         echo json_encode($data);     
     }
 
