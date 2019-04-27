@@ -45,6 +45,7 @@ class DriverController extends Controller
     {
        $drivers = Driver::where("isApproved",0)->get();
         $data = array();
+       $drivers_suppliers='';
        foreach ($drivers as $driver)
             {
                 $supplier_ids = explode('|',$driver->supplier_ids);
