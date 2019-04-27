@@ -45,7 +45,7 @@ class DriverController extends Controller
     {
        // $data = Driver::whereNull("dateOfSafetyOrientation")->get();
         $data = App\Driver::all();
-        echo json_encode($data);     
+        echo json_encode("test");     
     }
 
     public function allDrivers(Request $request){
