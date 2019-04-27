@@ -31,10 +31,10 @@ class UserRoleController extends Controller
 
 
             return Datatables::of($data)->make(); 
-            return view('masterfile/users',compact('users'));
+            return view('masterfile/users');
         }
 
-        return view('masterfile/users',compact('users'));
+        return view('masterfile/users');
        
     }
 
