@@ -47,7 +47,8 @@ Route::get('/recordmaintenance/driver', ['middleware' => 'auth', 'uses' => 'Driv
 
 Route::resource('ajaxdrivers','DriverController');
 Route::post('alldrivers', 'DriverController@alldrivers' )->name('alldrivers');
-Route::get('/showPendingRegistrations', ['middleware' => 'auth', 'uses' => 'DriverController@showPendingRegistrations']);
+Route::post('showPendingRegistrations', 'DriverController@showPendingRegistrations' )->name('showPendingRegistrations');
+// Route::get('/showPendingRegistrations', ['middleware' => 'auth', 'uses' => 'DriverController@showPendingRegistrations']);
 Route::post('alldrivers_suppliers', 'DriverController@allsuppliers' )->name('alldrivers_suppliers');
 Route::post('deactivateOrActivateDriver', 'DriverController@deactivateOrActivateDriver')->name('deactivateOrActivateDriver');
 Route::post('completeDriverRegistration', 'DriverController@completeDriverRegistration')->name('completeDriverRegistration');

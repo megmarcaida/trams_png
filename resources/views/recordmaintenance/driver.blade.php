@@ -251,9 +251,10 @@
   var loadViewPending = function(){
     var container = $("#pendingRegistrationList");
     $.ajax({
-      type: 'GET', //THIS NEEDS TO BE GET
-      url: '../showPendingRegistrations',
+      type: 'POST', 
+      url: "{{ url('showPendingRegistrations') }}",
       dataType: 'json',
+      data:{ _token: "{{csrf_token()}}"}
       success: function (data) {
           console.log(data.length);
 
