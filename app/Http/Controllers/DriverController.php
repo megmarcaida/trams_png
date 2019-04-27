@@ -43,8 +43,8 @@ class DriverController extends Controller
 
      public function showPendingRegistrations()
     {
-       $data = Driver::where("isApproved",0)->get();
-    
+       $drivers = Driver::where("isApproved",0)->get();
+        $data = array();
        foreach ($drivers as $driver)
             {
                 $supplier_ids = explode('|',$driver->supplier_ids);
