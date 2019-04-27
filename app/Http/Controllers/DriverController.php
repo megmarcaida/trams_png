@@ -45,6 +45,38 @@ class DriverController extends Controller
     {
        $data = Driver::where("isApproved",0)->get();
     
+       foreach ($drivers as $driver)
+            {
+                $supplier_ids = explode('|',$driver->supplier_ids);
+                
+                foreach($supplier_ids as $supplier_id){
+                    if($supplier_id == null){
+                        continue;
+                    }
+                    $suppliers = Supplier::where('id',$supplier_id)->where('status', 1)->first();
+                    if($suppliers == null){
+                        continue;
+                    }
+                    $drivers_suppliers .= $suppliers->supplier_name . " | ";
+                }
+              
+                $nestedData['id'] = $driver->id;
+                $nestedData['supplier_ids'] =  $drivers_suppliers;
+                $nestedData['logistics_company'] = $driver->logistics_company;
+                $nestedData['first_name'] = $driver->first_name;
+                $nestedData['mobile_number'] = $driver->mobile_number;
+                $nestedData['last_name'] = $driver->last_name;
+                $nestedData['company_id_number'] = $driver->company_id_number;
+                $nestedData['license_number'] = $driver->license_number;
+
+                $nestedData['isApproved'] = $driver->isApproved == 0 ? "<b class='text-danger'>NO</b>" : "<b class='text-success'>YES</b>";
+                $nestedData['dateOfSafetyOrientation'] = $driver->dateOfSafetyOrientation;
+
+                $nestedData['status'] = $driver->status == 1 ? "<b class='text-success'>Active</b>" : "<b class='text-danger'>Inactive</b>";
+                $data[] = $nestedData;
+                $drivers_suppliers = '';
+            }
+
         echo json_encode($data);     
     }
 
