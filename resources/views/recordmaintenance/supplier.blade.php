@@ -273,7 +273,7 @@
 
           console.log(spoc_length)
           $.each( ordering_days_arr, function( key, value ) {
-            $("input[value='" + $.trim(value) + "]'").prop('checked', true);
+            $("input[value='" + $.trim(value) + "']").prop('checked', true);
           });
 
           $.each( modules_arr, function( key, value ) {
