@@ -393,7 +393,9 @@
                  $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                   $('#driverForm').trigger("reset");
                   $('#ajaxModel').modal('hide');
-                  $('#response').hide("slow");
+                  setTimeout(function(){
+                    $('#response').hide("slow");
+                  },2000)
                   table.draw();
                    $('#saveBtn').html('Save Changes');
               },
