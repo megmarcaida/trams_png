@@ -34,7 +34,9 @@ class DriverController extends Controller
         if ($request->ajax()) {
             $data = Driver::all();
             return Datatables::of($data)->make(); 
-            return view('recordmaintenance/driver',compact('drivers'));
+            
+
+            return view('recordmaintenance/driver');
         }
         return view('recordmaintenance/driver')->with("supplierData",$supplierData);
     }

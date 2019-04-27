@@ -44,7 +44,7 @@ class SupplierController extends Controller
                     // ->make(true);
         }
       
-        return view('recordmaintenance/supplier',compact('suppliers'));
+        return view('recordmaintenance/supplier');
     }
 
     public function allSuppliers(Request $request){

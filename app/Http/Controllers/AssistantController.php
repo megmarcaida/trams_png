@@ -34,7 +34,7 @@ class AssistantController extends Controller
         if ($request->ajax()) {
             $data = Assistant::all();
             return Datatables::of($data)->make(); 
-            return view('recordmaintenance/assistant',compact('assistants'));
+            return view('recordmaintenance/assistant');
         }
         return view('recordmaintenance/assistant')->with("supplierData",$supplierData);
     }

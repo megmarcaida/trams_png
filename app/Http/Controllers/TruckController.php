@@ -34,7 +34,7 @@ class TruckController extends Controller
             $data = Truck::all();
             return Datatables::of($data)->make();
             // return view('recordmaintenance/truck')->with("supplierData",$supplierData)->with("trucks",$data);   
-            return view('recordmaintenance/truck',compact('trucks'));
+            return view('recordmaintenance/truck');
         }
         return view('recordmaintenance/truck')->with("supplierData",$supplierData);
     }

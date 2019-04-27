@@ -28,10 +28,10 @@ class RoleController extends Controller
         if ($request->ajax()) {
             $data = Role::all();
             return Datatables::of($data)->make(); 
-            return view('masterfile/role',compact('roles'));
+            return view('masterfile/role');
         }
 
-        return view('masterfile/role',compact('roles'));
+        return view('masterfile/role');
        
     }
 
