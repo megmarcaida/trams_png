@@ -43,7 +43,7 @@ class DriverController extends Controller
 
      public function showPendingRegistrations()
     {
-       $data = Driver::where("isApproved",0)->get();
+       $data = Driver::where("isApproved",'=',0)->get();
     
         echo json_encode($data);     
     }
