@@ -86,6 +86,7 @@
                         <br>
                         <div class="col-sm-12">
                           <a href="#" class="btn btn-primary add_supplier">Add Supplier</a>
+                          <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
                         </div>
                     </div>
 
@@ -482,6 +483,7 @@
       if(!supplier_ids.includes(_supplier_id) || !d_suppliers.includes(_supplier_id)){
           supplier_ids += _supplier_id + '|';
           driver_suppliers += _supplier_name + ' | ';
+          $('.modalresponse').empty();
       }else{
         $('.modalresponse').html("<div class='alert alert-danger'>Supplier already added.</div>")
       }
@@ -491,6 +493,15 @@
 
       $('#driver_suppliers').text(driver_suppliers);
       $('#supplier_ids').val(supplier_ids);
+    });
+
+    $('body').on('click', '.clear_supplier', function(){
+      
+      $('#supplier_ids').val("");
+      $('#driver_suppliers').text("")
+
+      driver_suppliers = "";
+      supplier_ids = "";
     });
 
   

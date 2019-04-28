@@ -60,7 +60,7 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*Trucking ID</label>
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="truck_id" name="id" value="" maxlength="100" required="">
+                            <input type="text" readonly class="form-control" id="truck_id" name="id" value="" maxlength="100" required="">
                         </div>
                     </div>
 
@@ -77,6 +77,7 @@
                         <br>
                         <div class="col-sm-12">
                           <a href="#" class="btn btn-primary add_supplier">Add Supplier</a>
+                          <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
                         </div>
                     </div>
 
@@ -115,7 +116,7 @@
 
                   
                     <div class="form-group">
-                      <label class="col-sm-12 control-label">*Type</label>
+                      <label class="col-sm-12 control-label types">*Type</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" type="radio" name="types" id="type_c" value="Containerized">
@@ -250,11 +251,44 @@
         
      
         if($("#trucking_company").val() == "" || $("#plate_number").val() == ""){
+          
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){
             $('#modalresponse').fadeOut(1000);
           },2000)
+        
+          if($("#trucking_company").val() == "")
+             $("#trucking_company").css('outline','1px solid red')
+           else
+             $("#trucking_company").css('outline','1px solid black')
+
+           if($("#plate_number").val() == "")
+             $("#plate_number").css('outline','1px solid red')
+           else
+             $("#plate_number").css('outline','1px solid black')
+
+           if($("#model").val() == "")
+             $("#model").css('outline','1px solid red')
+           else
+             $("#model").css('outline','1px solid black')
+
+            if($("#brand").val() == "")
+             $("#brand").css('outline','1px solid red')
+            else
+             $("#brand").css('outline','1px solid black')
+
+            if($("#truck_suppliers").val() == "")
+             $("#truck_suppliers").css('outline','1px solid red')
+            else
+             $("#truck_suppliers").css('outline','1px solid black')
+
+           var types = $(':radio[name^=types]:checked').length;
+           if(types == 0)
+             $(".types").css('color','red')
+            else
+             $(".types").css('color','black')
+
         }else{
 
             e.preventDefault();
@@ -319,6 +353,7 @@
       if(!supplier_ids.includes(_supplier_id) || !t_suppliers.includes(_supplier_id)){
           supplier_ids += _supplier_id + '|';
           truck_suppliers += _supplier_name + ' | ';
+          $('#modalresponse').empty();
       }else{
         $('#modalresponse').html("<div class='alert alert-danger'>Supplier already added.</div>")
       }
@@ -328,6 +363,16 @@
 
       $('#truck_suppliers').text(truck_suppliers);
       $('#supplier_ids').val(supplier_ids);
+
+    });
+
+    $('body').on('click', '.clear_supplier', function(){
+      
+      $('#supplier_ids').val("");
+      $('#truck_suppliers').text("")
+
+      truck_suppliers = "";
+      supplier_ids = "";
     });
 
   
