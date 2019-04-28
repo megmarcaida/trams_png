@@ -419,7 +419,7 @@
             else
              $("#driver_suppliers").css('outline','1px solid black')
 
-
+            return false;
         }else{
 
             e.preventDefault();
