@@ -12,7 +12,7 @@
     </form>
 
     <!-- Navbar -->
-    <ul class="navbar-nav ml-auto ml-md-0 mr-md-3 my-2 my-md-0">
+    <ul  style="color:black !important;" class="navbar-nav ml-auto ml-md-0 mr-md-3 my-2 my-md-0">
       <li class="nav-item dropdown no-arrow mx-1">
         <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Notifications
@@ -45,7 +45,7 @@
               </a>
 
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" style="color:black !important;" href="{{ route('logout') }}"
+                  <a class="dropdown-item" href="{{ route('logout') }}"
                      onclick="event.preventDefault();
                                    document.getElementById('logout-form').submit();">
                       {{ __('Logout') }}
