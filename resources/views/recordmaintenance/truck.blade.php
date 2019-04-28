@@ -83,7 +83,8 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*Truck Suppliers</label>
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="truck_suppliers" disabled="" required="">
+                            <textarea class="form-control" id="truck_suppliers" disabled="" required=""></textarea>
+                            <!-- <input type="text" class="form-control" id="truck_suppliers" disabled="" required=""> -->
                             <input type="hidden" id="supplier_ids" name="supplier_ids">
                         </div>
                     </div>
@@ -315,7 +316,7 @@
       var _supplier_id = $('#supplier_id').children("option:selected").val();
       var _supplier_name = $('#supplier_id').children("option:selected").text();
       var t_suppliers = $('#supplier_ids').val();
-      if(!supplier_ids.includes(_supplier_name) || !t_suppliers.includes(_supplier_id)){
+      if(!supplier_ids.includes(_supplier_id) || !t_suppliers.includes(_supplier_id)){
           supplier_ids += _supplier_id + '|';
           truck_suppliers += _supplier_name + ' | ';
       }else{
@@ -325,7 +326,7 @@
       console.log(supplier_ids);
       console.log(truck_suppliers);
 
-      $('#truck_suppliers').val(truck_suppliers);
+      $('#truck_suppliers').text(truck_suppliers);
       $('#supplier_ids').val(supplier_ids);
     });
 

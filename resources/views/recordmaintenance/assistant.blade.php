@@ -93,7 +93,8 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*Assistant Suppliers</label>
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="assistant_suppliers" disabled="" required="">
+                            <textarea class="form-control" id="assistant_suppliers" disabled="" required=""></textarea>
+                            <!-- <input type="text" class="form-control" id="assistant_suppliers" disabled="" required=""> -->
                             <input type="hidden" id="supplier_ids" name="supplier_ids">
                         </div>
                     </div>
@@ -301,8 +302,8 @@
       console.log(dateOfSafetyOrientation)
 
       if(dateOfSafetyOrientation.val() == ""){
-          $(".modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
-          dateOfSafetyOrientation.css("border","red 2px solid")
+          $(".modalresponse").html("<div class='alert alert-danger'>Please fill in the Date of Safety Orientation fields.</div>")
+          dateOfSafetyOrientation.css("outline","red 2px solid")
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){
             $('#modalresponse').fadeOut(1000);
@@ -468,7 +469,7 @@
       console.log(supplier_ids);
       console.log(assistant_suppliers);
 
-      $('#assistant_suppliers').val(assistant_suppliers);
+      $('#assistant_suppliers').text(assistant_suppliers);
       $('#supplier_ids').val(supplier_ids);
     });
 
