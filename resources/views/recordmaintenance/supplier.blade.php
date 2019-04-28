@@ -160,7 +160,7 @@
 
 
                     <div class="col-sm-offset-2 col-sm-10">
-                       <button type="submit" class="btn btn-primary" id="addSpocBtn" value="create">Add SPOC
+                       <button type="submit" class="btn btn-warning" id="addSpocBtn" value="create">Add SPOC
                        </button>
                     </div>
 
