@@ -248,7 +248,7 @@
     });
 
 
-  //var loadViewPending = function(){
+  var loadViewPending = function(){
     var container = $("#pendingRegistrationList");
     $.ajax({
       type: 'POST', 
@@ -273,7 +273,7 @@
            console.log(data);
       }
     });
-  //}
+  }
 
   $('body').on('click', '.completeDriverRegistration', function (e) {
 
@@ -301,7 +301,7 @@
                     $('#response').hide("slow");
                   },3000)
                   table.draw();
-                  //loadViewPending();
+                  loadViewPending();
               },
               error: function (data) {
                   console.log('Error:', data);
@@ -315,7 +315,7 @@
   
   $( function() {
 
-      //loadViewPending();
+      loadViewPending();
     $(".datepicker").datepicker();
   } ); 
 
