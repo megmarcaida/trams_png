@@ -116,12 +116,26 @@ class DriverController extends Controller
             $search = $request->input('search.value'); 
 
             $drivers =  Driver::where('id','LIKE',"%{$search}%")
+                            ->where('logistics_company','LIKE',"%{$search}%")
+                            ->where('first_name','LIKE',"%{$search}%")
+                            ->where('last_name','LIKE',"%{$search}%")
+                            ->where('mobile_number','LIKE',"%{$search}%")
+                            ->where('company_id_number','LIKE',"%{$search}%")
+                            ->where('license_number','LIKE',"%{$search}%")
+                            ->where('dateOfSafetyOrientation','LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
             $totalFiltered = Driver::where('id','LIKE',"%{$search}%")
+                            ->where('logistics_company','LIKE',"%{$search}%")
+                            ->where('first_name','LIKE',"%{$search}%")
+                            ->where('last_name','LIKE',"%{$search}%")
+                            ->where('mobile_number','LIKE',"%{$search}%")
+                            ->where('company_id_number','LIKE',"%{$search}%")
+                            ->where('license_number','LIKE',"%{$search}%")
+                            ->where('dateOfSafetyOrientation','LIKE',"%{$search}%")
                              ->count();
         }
 
