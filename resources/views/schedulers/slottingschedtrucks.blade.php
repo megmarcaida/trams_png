@@ -206,7 +206,7 @@
          var types = $(':radio[name^=types]:checked').length;
          if($("#trucking_company").val() == "" || $("#plate_number").val() == "" || $("#model").val() == "" || $("#brand").val() == "" || $("#truck_suppliers").val() == "" || types==0){
 
-          $("#modalresponse").show();
+          $("#modalresponseTruck").show();
           $("#modalresponseTruck").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
           $('#modalresponseTruck').fadeIn(1000);
           setTimeout(function(){
@@ -258,15 +258,22 @@
               type: "POST",
               dataType: 'json',
               success: function (data) {
+                
                 $('#response').show();
-                 $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
-                  $('#truckForm').trigger("reset");
-                  $('#ajaxModelTruck').modal('hide');
-                  setTimeout(function(){
-                    $('#response').hide("slow");
-                  },3000)
-                  table.draw();
-                  $('#saveBtnTruck').html('Save Changes');
+                if(data.success != null){
+                    $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                    $('#truckForm').trigger("reset");
+                    $('#ajaxModelTruck').modal('hide');
+                    setTimeout(function(){
+                      $('#response').hide("slow");
+                    },3000)
+                    table.draw();
+                }else if(data.error != null){
+                    $('#modalresponseTruck').html("<div class='alert alert-danger'>"+data.error+"</div>")
+                }
+
+
+                $('#saveBtnTruck').html('Save Changes');
              
               },
               error: function (data) {

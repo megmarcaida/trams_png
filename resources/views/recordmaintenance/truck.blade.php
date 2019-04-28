@@ -303,13 +303,20 @@
               type: "POST",
               dataType: 'json',
               success: function (data) {
-                 $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
-                  $('#truckForm').trigger("reset");
-                  $('#ajaxModel').modal('hide');
-                  setTimeout(function(){
-                    $('#response').hide("slow");
-                  },3000)
-                  table.draw();
+                  if(data.success != null){
+                    $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                      $('#truckForm').trigger("reset");
+                      $('#ajaxModel').modal('hide');
+                      setTimeout(function(){
+                        $('#response').hide("slow");
+                      },3000)
+
+                      table.draw();
+                  }else if(data.error != null){
+                    $('#modalresponse').html("<div class='alert alert-danger'>"+data.error+"</div>")
+                  }
+
+                  
                   $('#saveBtn').html('Save Changes');
              
               },

@@ -162,10 +162,17 @@ class TruckController extends Controller
     public function store(Request $request)
     {
 
-        Truck::updateOrCreate(['id' => $request->id],
-                ['supplier_ids' => $request->supplier_ids, 'trucking_company' => $request->trucking_company, 'plate_number' => $request->plate_number, 'brand' => $request->brand, 'model' => $request->model, 'type' => $request->types]);        
+        $isExist = Truck::where("plate_number",$request->plate_number)->first();
+
+        if($isExist){
+            $ret = ['error'=>'Plate Number already exists.'];
+        }else{
+            $ret = ['success'=>'Truck saved successfully.'];
+            Truck::updateOrCreate(['id' => $request->id],
+                ['supplier_ids' => $request->supplier_ids, 'trucking_company' => $request->trucking_company, 'plate_number' => $request->plate_number, 'brand' => $request->brand, 'model' => $request->model, 'type' => $request->types]);  
+        }        
    
-        return response()->json(['success'=>'Truck saved successfully.']);
+        return response()->json($ret);
     }
 
     /**
