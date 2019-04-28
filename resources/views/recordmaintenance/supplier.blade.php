@@ -356,33 +356,33 @@
             $('#modalresponse').fadeOut(1000);
           },2000)
         }
-        // else{
+        else{
 
-        //     e.preventDefault();
-        //     $(this).html('Sending..');
+            e.preventDefault();
+            $(this).html('Sending..');
         
-        //     console.log($('#supplierForm').serialize())
-        //     $.ajax({
-        //       data: $('#supplierForm').serialize(),
-        //       url: "{{ route('ajaxsuppliers.store') }}",
-        //       type: "POST",
-        //       dataType: 'json',
-        //       success: function (data) {
-        //          $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
-        //           $('#supplierForm').trigger("reset");
-        //           $('#ajaxModel').modal('hide');
-        //           setTimeout(function(){
-        //             $('#response').hide("slow");
-        //           },3000)
-        //           table.draw();
-        //           $('#saveBtn').html('Save Changes');
-        //       },
-        //       error: function (data) {
-        //           console.log('Error:', data);
-        //           $('#saveBtn').html('Save Changes');
-        //       }
-        //   });
-        // }
+            console.log($('#supplierForm').serialize())
+            $.ajax({
+              data: $('#supplierForm').serialize(),
+              url: "{{ route('ajaxsuppliers.store') }}",
+              type: "POST",
+              dataType: 'json',
+              success: function (data) {
+                 $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                  $('#supplierForm').trigger("reset");
+                  $('#ajaxModel').modal('hide');
+                  setTimeout(function(){
+                    $('#response').hide("slow");
+                  },3000)
+                  table.draw();
+                  $('#saveBtn').html('Save Changes');
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+                  $('#saveBtn').html('Save Changes');
+              }
+          });
+        }
     });
     
     $('body').on('click', '.deactivateOrActivateSupplier', function () {
