@@ -330,9 +330,9 @@
           $("#isApproved").val('0')
         }
 
-         if($("#logistics_companyAssistant").val() == "" || $("#first_nameAssistant").val() == "" || $("#last_nameAssistant").val() == "" || $("#mobile_numberAssistant").val() == "" || $("#company_id_numberAssistant").val() == "" || $("#valid_id_present").val() == "" || $("#valid_id_number").val() == "" || $("#assistant_suppliers").val() == ""){ 
+         if($("#logistics_companyAssistant").val() == "" || $("#first_nameAssistant").val() == "" || $("#last_nameAssistant").val() == "" || $("#mobile_numberAssistant").val() == "" || $("#company_id_numberAssistant").val() == "" || $("#valid_id_present").val() == "" || $("#valid_id_number").val() == "" || $("#assistant_suppliers").val() == "" || $("#dateOfSafetyOrientation").val() == ""){ 
 
-          
+
           $(".modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
           $('.modalresponse').fadeIn(1000);
           setTimeout(function(){
@@ -379,6 +379,11 @@
              $("#assistant_suppliers").css('outline','1px solid red')
             else
              $("#assistant_suppliers").css('outline','1px solid black')
+
+            if($("#dateOfSafetyOrientation").val() == "")
+             $("#dateOfSafetyOrientation").css('outline','1px solid red')
+            else
+             $("#dateOfSafetyOrientation").css('outline','1px solid black')
 
           return false;
         }else{
