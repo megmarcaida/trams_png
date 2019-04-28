@@ -393,12 +393,55 @@
           $("#isApproved").val('0')
         }
 
-        if($("#logistics_company").val() == "" || $("#first_name").val() == ""){
+        if($("#logistics_company").val() == "" || $("#first_name").val() == "" || $("#last_name").val() == "" || $("#mobile_number").val() == "" || $("#company_id_number").val() == "" || $("#valid_id_present").val() == "" || $("#valid_id_number").val() == "" || $("#assistant_suppliers").val() == ""){ 
+
+
           $(".modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
           $('.modalresponse').fadeIn(1000);
           setTimeout(function(){
             $('.modalresponse').fadeOut(1000);
           },2000)
+
+          if($("#logistics_company").val() == "")
+             $("#logistics_company").css('outline','1px solid red')
+           else
+             $("#logistics_company").css('outline','1px solid black')
+
+           if($("#first_name").val() == "")
+             $("#first_name").css('outline','1px solid red')
+           else
+             $("#first_name").css('outline','1px solid black')
+
+           if($("#last_name").val() == "")
+             $("#last_name").css('outline','1px solid red')
+           else
+             $("#last_name").css('outline','1px solid black')
+
+            if($("#mobile_number").val() == "")
+             $("#mobile_number").css('outline','1px solid red')
+            else
+             $("#mobile_number").css('outline','1px solid black')
+
+            if($("#company_id_number").val() == "")
+             $("#company_id_number").css('outline','1px solid red')
+            else
+             $("#company_id_number").css('outline','1px solid black')
+
+           if($("#valid_id_present").val() == "")
+             $("#valid_id_present").css('outline','1px solid red')
+            else
+             $("#valid_id_present").css('outline','1px solid black')
+
+           if($("#valid_id_number").val() == "")
+             $("#valid_id_number").css('outline','1px solid red')
+            else
+             $("#valid_id_number").css('outline','1px solid black')
+
+           if($("#assistant_suppliers").val() == "")
+             $("#assistant_suppliers").css('outline','1px solid red')
+            else
+             $("#assistant_suppliers").css('outline','1px solid black')
+
         }else{
 
             e.preventDefault();
@@ -414,7 +457,9 @@
                  $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                   $('#assistantForm').trigger("reset");
                   $('#ajaxModel').modal('hide');
-                  $('#response').hide("slow");
+                  setTimeout(function(){
+                    $('#response').hide("slow");
+                  },3000)
                   table.draw();
                   loadViewPending();
                    $('#saveBtn').html('Save Changes');
