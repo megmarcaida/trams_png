@@ -84,13 +84,17 @@ class SupplierController extends Controller
             $search = $request->input('search.value'); 
 
             $suppliers =  Supplier::where('id','LIKE',"%{$search}%")
+                            ->orWhere('vendor_code','LIKE',"%{$search}%")
+                            ->orWhere('supplier_name','LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
             $totalFiltered = Supplier::where('id','LIKE',"%{$search}%")
-                             ->count();
+                             ->orWhere('vendor_code','LIKE',"%{$search}%")
+                            ->orWhere('supplier_name','LIKE',"%{$search}%")
+                            ->count();
         }
 
         $data = array();

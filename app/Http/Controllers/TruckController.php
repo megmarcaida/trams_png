@@ -85,13 +85,17 @@ class TruckController extends Controller
             $search = $request->input('search.value'); 
 
             $trucks =  Truck::where('id','LIKE',"%{$search}%")
+                            ->orWhere('trucking_company','LIKE',"%{$search}%")
+                            ->orWhere('plate_number','LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
             $totalFiltered = Truck::where('id','LIKE',"%{$search}%")
-                             ->count();
+                             ->orWhere('trucking_company','LIKE',"%{$search}%")
+                            ->orWhere('plate_number','LIKE',"%{$search}%")
+                            ->count();
         }
 
         $data = array();

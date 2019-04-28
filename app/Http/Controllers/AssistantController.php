@@ -82,12 +82,16 @@ class AssistantController extends Controller
             $search = $request->input('search.value'); 
 
             $assistants =  Assistant::where('id','LIKE',"%{$search}%")
+                            ->orWhere('logistics_company','LIKE',"%{$search}%")
+                            ->orWhere('first_name','LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
             $totalFiltered = Assistant::where('id','LIKE',"%{$search}%")
+                             ->orWhere('logistics_company','LIKE',"%{$search}%")
+                            ->orWhere('first_name','LIKE',"%{$search}%")
                              ->count();
         }
 
