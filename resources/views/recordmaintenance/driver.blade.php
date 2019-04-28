@@ -252,7 +252,7 @@
     var container = $("#pendingRegistrationList");
     $.ajax({
       type: 'POST', 
-      url: "{{ url('showPendingRegistrations') }}",
+      url: "{{ url('showPendingRegistrationsDriver') }}",
       dataType: 'json',
       data:{ _token: "{{csrf_token()}}"},
       success: function (data) {
