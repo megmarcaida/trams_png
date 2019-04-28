@@ -14,33 +14,33 @@
     <!-- Navbar -->
     <ul class="navbar-nav ml-auto ml-md-0 mr-md-3 my-2 my-md-0">
       <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle navbar-font-black" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Notifications
           <i class="fas fa-bell fa-fw"></i>
           <!-- <span class="badge badge-danger">9+</span> -->
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
-          <a class="dropdown-item  navbar-font-black" href="#">Action</a>
-          <a class="dropdown-item  navbar-font-black" href="#">Another action</a>
+          <a class="dropdown-item text-dark" href="#">Action</a>
+          <a class="dropdown-item text-dark" href="#">Another action</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item  navbar-font-black" href="#">Something else here</a>
+          <a class="dropdown-item text-dark" href="#">Something else here</a>
         </div>
       </li>
       <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle  navbar-font-black" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Settings
           <i class="fas fa-cog fa-fw"></i>
           <!-- <span class="badge badge-danger">7</span> -->
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messagesDropdown">
-          <a class="dropdown-item  navbar-font-black" href="#">Action</a>
-          <a class="dropdown-item  navbar-font-black" href="#">Another action</a>
+          <a class="dropdown-item text-dark" href="#">Action</a>
+          <a class="dropdown-item text-dark" href="#">Another action</a>
           <div class="dropdown-divider navbar-font-black"></div>
-          <a class="dropdown-item  navbar-font-black" href="#">Something else here</a>
+          <a class="dropdown-item text-dark" href="#">Something else here</a>
         </div>
       </li>
       <li class="nav-item dropdown no-arrow">
-          <a id="navbarDropdown" class="nav-link dropdown-toggle  navbar-font-black" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+          <a id="navbarDropdown" class="nav-link dropdown-toggle text-dark" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                   {{ Auth::user()->name }} <span class="caret"></span>
               </a>
 
