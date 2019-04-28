@@ -319,9 +319,13 @@
 
             if($("#vendor_code").val() == "")
               $("#vendor_code").css('outline','1px red solid')
+            else
+              $("#supplier_name").css('outline','1px black solid')
           
             if($("#supplier_name").val() == "")
               $("#supplier_name").css('outline','1px red solid')
+            else
+              $("#supplier_name").css('outline','1px black solid')
 
             // if($(".delivery_type").prop('checked') == false)
 
