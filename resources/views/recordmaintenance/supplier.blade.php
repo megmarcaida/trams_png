@@ -76,21 +76,21 @@
                     </div>
                     
                     <div class="form-group">
-                      <label class="col-sm-12 control-label">*Delivery Type</label>
+                      <label class="col-sm-12 control-label delivery_type">*Delivery Type</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="delivery_types" id="delivery_type" value="Local">
+                          <input class="form-check-input" type="radio" name="delivery_types" class="delivery_type" value="Local">
                           <label class="form-check-label" for="inlineRadio1">Local</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="delivery_types" id="delivery_type" value="Imported">
+                          <input class="form-check-input" type="radio" name="delivery_types" class="delivery_type" value="Imported">
                           <label class="form-check-label" for="inlineRadio1">Imported</label>
                         </div>
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label class="col-sm-12 control-label">*Ordering Days</label>
+                      <label class="col-sm-12 control-label ordering_days">*Ordering Days</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" type="checkbox" name="ordering_days[]" class="ordering_days" id="ordering_days_m" value="Mon">
@@ -124,7 +124,7 @@
                     </div>
 
                     <div class="form-group">
-                      <label class="col-sm-12 control-label">*Module</label>
+                      <label class="col-sm-12 control-label module">*Module</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_baby_care" value="Baby Care">
@@ -311,42 +311,78 @@
     
     $('#saveBtn').click(function (e) {
         
-      console.log($("#delivery_type").prop('checked'));
+      //console.log($("#delivery_type").prop('checked'));
 
 
-        if($("#vendor_code").val() == "" || $("#supplier_name").val() == "" || $("#delivery_type").prop('checked') == false){
+        if($("#vendor_code").val() == "" || $("#supplier_name").val() == "" || $(".delivery_type").prop('checked') == false || $("#ordering_days").prop('checked') == false){
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+
+            if($("#vendor_code").val() == "")
+              $("#vendor_code").css('outline','1px red solid')
+          
+            if($("#supplier_name").val() == "")
+              $("#supplier_name").css('outline','1px red solid')
+
+            // if($(".delivery_type").prop('checked') == false)
+
+            if($("input[name='delivery_types[]']:checked"))
+              $(".delivery_type").css('color','red')
+            else
+              $(".delivery_type").css('color','black')
+
+            var delivery_types = $(':radio[name^=delivery_types]:checked').length;
+          
+            var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
+
+            var modules = $(':checkbox[name^=module]:checked').length;
+
+            if(delivery_types == 0)
+              $(".delivery_type").css('color','red')
+            else
+              $(".delivery_type").css('color','black')
+
+            if(ordering_days == 0)
+              $(".ordering_days").css('color','red')
+            else
+              $(".ordering_days").css('color','black')
+
+            if(modules == 0)
+              $(".module").css('color','red')
+            else
+              $(".module").css('color','black')
+
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){
             $('#modalresponse').fadeOut(1000);
           },2000)
-        }else{
+        }
+        // else{
 
-            e.preventDefault();
-            $(this).html('Sending..');
+        //     e.preventDefault();
+        //     $(this).html('Sending..');
         
-            console.log($('#supplierForm').serialize())
-            $.ajax({
-              data: $('#supplierForm').serialize(),
-              url: "{{ route('ajaxsuppliers.store') }}",
-              type: "POST",
-              dataType: 'json',
-              success: function (data) {
-                 $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
-                  $('#supplierForm').trigger("reset");
-                  $('#ajaxModel').modal('hide');
-                  setTimeout(function(){
-                    $('#response').hide("slow");
-                  },3000)
-                  table.draw();
-                  $('#saveBtn').html('Save Changes');
-              },
-              error: function (data) {
-                  console.log('Error:', data);
-                  $('#saveBtn').html('Save Changes');
-              }
-          });
-      }
+        //     console.log($('#supplierForm').serialize())
+        //     $.ajax({
+        //       data: $('#supplierForm').serialize(),
+        //       url: "{{ route('ajaxsuppliers.store') }}",
+        //       type: "POST",
+        //       dataType: 'json',
+        //       success: function (data) {
+        //          $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+        //           $('#supplierForm').trigger("reset");
+        //           $('#ajaxModel').modal('hide');
+        //           setTimeout(function(){
+        //             $('#response').hide("slow");
+        //           },3000)
+        //           table.draw();
+        //           $('#saveBtn').html('Save Changes');
+        //       },
+        //       error: function (data) {
+        //           console.log('Error:', data);
+        //           $('#saveBtn').html('Save Changes');
+        //       }
+        //   });
+        // }
     });
     
     $('body').on('click', '.deactivateOrActivateSupplier', function () {
