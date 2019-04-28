@@ -117,6 +117,7 @@ class DriverController extends Controller
 
             $drivers =  Driver::where('id','LIKE',"%{$search}%")
                             ->orWhere('logistics_company','LIKE',"%{$search}%")
+                            ->orWhere('first_name','LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
@@ -124,7 +125,8 @@ class DriverController extends Controller
 
             $totalFiltered = Driver::where('id','LIKE',"%{$search}%")
                             ->orWhere('logistics_company','LIKE',"%{$search}%")
-                             ->count();
+                            ->orWhere('first_name','LIKE',"%{$search}%")
+                            ->count();
         }
 
         $data = array();
