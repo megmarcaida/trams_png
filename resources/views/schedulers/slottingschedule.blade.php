@@ -3,7 +3,7 @@
 @section('content')
 
 
-@if({{ Auth::user()->role_id }} != 3)
+@if(Auth::user()->role_id != 3)
   <script>window.location = "/";</script>
 @endif
 <div class="container-fluid">
