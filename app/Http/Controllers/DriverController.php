@@ -117,12 +117,6 @@ class DriverController extends Controller
 
             $drivers =  Driver::where('id','LIKE',"%{$search}%")
                             ->orWhere('logistics_company','LIKE',"%{$search}%")
-                            ->orWhere('first_name','LIKE',"%{$search}%")
-                            ->orWhere('last_name','LIKE',"%{$search}%")
-                            ->orWhere('mobile_number','LIKE',"%{$search}%")
-                            ->orWhere('company_id_number','LIKE',"%{$search}%")
-                            ->orWhere('license_number','LIKE',"%{$search}%")
-                            ->orWhere('dateOfSafetyOrientation','LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
@@ -130,12 +124,6 @@ class DriverController extends Controller
 
             $totalFiltered = Driver::where('id','LIKE',"%{$search}%")
                             ->orWhere('logistics_company','LIKE',"%{$search}%")
-                            ->orWhere('first_name','LIKE',"%{$search}%")
-                            ->orWhere('last_name','LIKE',"%{$search}%")
-                            ->orWhere('mobile_number','LIKE',"%{$search}%")
-                            ->orWhere('company_id_number','LIKE',"%{$search}%")
-                            ->orWhere('license_number','LIKE',"%{$search}%")
-                            ->orWhere('dateOfSafetyOrientation','LIKE',"%{$search}%")
                              ->count();
         }
 
