@@ -115,34 +115,27 @@ class DriverController extends Controller
         else {
             $search = $request->input('search.value'); 
 
-            $drivers =  Driver::where([
-                                'id','LIKE',"%{$search}%",
-                                'logistics_company','LIKE',"%{$search}%",
-                                'first_name','LIKE',"%{$search}%"
-                            ])
-                            //->where('logistics_company','LIKE',"%{$search}%")
-                            // ->where('first_name','LIKE',"%{$search}%")
-                            // ->where('last_name','LIKE',"%{$search}%")
-                            // ->where('mobile_number','LIKE',"%{$search}%")
-                            // ->where('company_id_number','LIKE',"%{$search}%")
-                            // ->where('license_number','LIKE',"%{$search}%")
-                            // ->where('dateOfSafetyOrientation','LIKE',"%{$search}%")
+            $drivers =  Driver::where('id','LIKE',"%{$search}%")
+                            ->orWhere('logistics_company','LIKE',"%{$search}%")
+                            ->orWhere('first_name','LIKE',"%{$search}%")
+                            ->orWhere('last_name','LIKE',"%{$search}%")
+                            ->orWhere('mobile_number','LIKE',"%{$search}%")
+                            ->orWhere('company_id_number','LIKE',"%{$search}%")
+                            ->orWhere('license_number','LIKE',"%{$search}%")
+                            ->orWhere('dateOfSafetyOrientation','LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
-            $totalFiltered = Driver::where([
-                                'id','LIKE',"%{$search}%",
-                                'logistics_company','LIKE',"%{$search}%",
-                                'first_name','LIKE',"%{$search}%"
-                            ])
-                            // ->where('first_name','LIKE',"%{$search}%")
-                            // ->where('last_name','LIKE',"%{$search}%")
-                            // ->where('mobile_number','LIKE',"%{$search}%")
-                            // ->where('company_id_number','LIKE',"%{$search}%")
-                            // ->where('license_number','LIKE',"%{$search}%")
-                            // ->where('dateOfSafetyOrientation','LIKE',"%{$search}%")
+            $totalFiltered = Driver::where('id','LIKE',"%{$search}%")
+                            ->orWhere('logistics_company','LIKE',"%{$search}%")
+                            ->orWhere('first_name','LIKE',"%{$search}%")
+                            ->orWhere('last_name','LIKE',"%{$search}%")
+                            ->orWhere('mobile_number','LIKE',"%{$search}%")
+                            ->orWhere('company_id_number','LIKE',"%{$search}%")
+                            ->orWhere('license_number','LIKE',"%{$search}%")
+                            ->orWhere('dateOfSafetyOrientation','LIKE',"%{$search}%")
                              ->count();
         }
 
