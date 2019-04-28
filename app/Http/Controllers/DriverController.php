@@ -115,8 +115,12 @@ class DriverController extends Controller
         else {
             $search = $request->input('search.value'); 
 
-            $drivers =  Driver::where('id','LIKE',"%{$search}%")
-                            ->where('logistics_company','LIKE',"%{$search}%")
+            $drivers =  Driver::where([
+                                'id','LIKE',"%{$search}%",
+                                'logistics_company','LIKE',"%{$search}%",
+                                'first_name','LIKE',"%{$search}%"
+                            ])
+                            //->where('logistics_company','LIKE',"%{$search}%")
                             // ->where('first_name','LIKE',"%{$search}%")
                             // ->where('last_name','LIKE',"%{$search}%")
                             // ->where('mobile_number','LIKE',"%{$search}%")
@@ -128,8 +132,11 @@ class DriverController extends Controller
                             ->orderBy($order,$dir)
                             ->get();
 
-            $totalFiltered = Driver::where('id','LIKE',"%{$search}%")
-                            ->where('logistics_company','LIKE',"%{$search}%")
+            $totalFiltered = Driver::where([
+                                'id','LIKE',"%{$search}%",
+                                'logistics_company','LIKE',"%{$search}%",
+                                'first_name','LIKE',"%{$search}%"
+                            ])
                             // ->where('first_name','LIKE',"%{$search}%")
                             // ->where('last_name','LIKE',"%{$search}%")
                             // ->where('mobile_number','LIKE',"%{$search}%")
