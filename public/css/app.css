@@ -10680,3 +10680,6 @@ a.text-dark:focus {
   padding-right: 8px;
 }
 
+.navbar-font-black{
+  color:#000 !important;
+}
