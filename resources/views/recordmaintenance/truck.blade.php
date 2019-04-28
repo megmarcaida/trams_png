@@ -250,8 +250,9 @@
     $('#saveBtn').click(function (e) {
         
      
-        if($("#trucking_company").val() == "" || $("#plate_number").val() == ""){
-          
+        var types = $(':radio[name^=types]:checked').length;
+        if($("#trucking_company").val() == "" || $("#plate_number").val() == "" || $("#model").val() == "" || $("#brand").val() == "" || types==0 || $("#truck_suppliers").val() == ""){
+          $("#modalresponse").show();
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){
@@ -283,11 +284,12 @@
             else
              $("#truck_suppliers").css('outline','1px solid black')
 
-           var types = $(':radio[name^=types]:checked').length;
            if(types == 0)
              $(".types").css('color','red')
             else
              $(".types").css('color','black')
+
+           return false;
 
         }else{
 

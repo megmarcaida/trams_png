@@ -32,13 +32,15 @@
                         <br>
                         <div class="col-sm-12">
                           <a href="#" class="btn btn-primary add_supplierTruck">Add Supplier</a>
+                          <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*Truck Suppliers</label>
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="truck_suppliers" disabled="" required="">
+                            <textarea class="form-control" id="truck_suppliers" disabled="" required=""></textarea>
+                            <!-- <input type="text" class="form-control" id="truck_suppliers" disabled="" required=""> -->
                             <input type="hidden" id="supplier_idsTruck" name="supplier_ids">
                         </div>
                     </div>
@@ -201,13 +203,49 @@
     
     $('#saveBtnTruck').click(function (e) {
         
-     
-        if($("#trucking_company").val() == "" || $("#plate_number").val() == ""){
+         var types = $(':radio[name^=types]:checked').length;
+         if($("#trucking_company").val() == "" || $("#plate_number").val() == "" || $("#model").val() == "" || $("#brand").val() == "" || $("#truck_suppliers").val() == "" || types==0){
+
+          $("#modalresponse").show();
           $("#modalresponseTruck").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
           $('#modalresponseTruck').fadeIn(1000);
           setTimeout(function(){
             $('#modalresponseTruck').fadeOut(1000);
           },2000)
+
+          if($("#trucking_company").val() == "")
+             $("#trucking_company").css('outline','1px solid red')
+           else
+             $("#trucking_company").css('outline','1px solid black')
+
+           if($("#plate_number").val() == "")
+             $("#plate_number").css('outline','1px solid red')
+           else
+             $("#plate_number").css('outline','1px solid black')
+
+           if($("#model").val() == "")
+             $("#model").css('outline','1px solid red')
+           else
+             $("#model").css('outline','1px solid black')
+
+            if($("#brand").val() == "")
+             $("#brand").css('outline','1px solid red')
+            else
+             $("#brand").css('outline','1px solid black')
+
+            if($("#truck_suppliers").val() == "")
+             $("#truck_suppliers").css('outline','1px solid red')
+            else
+             $("#truck_suppliers").css('outline','1px solid black')
+
+           
+            if(types == 0)
+             $(".types").css('color','red')
+            else
+             $(".types").css('color','black')
+          
+            return false;
+
         }else{
 
             e.preventDefault();
@@ -270,10 +308,12 @@
       var _supplier_id = $('#supplier_idTruck').children("option:selected").val();
       var _supplier_name = $('#supplier_idTruck').children("option:selected").text();
       var t_suppliers = $('#truck_suppliers').val();
-      if(!supplier_ids.includes(_supplier_id) || !t_suppliers.includes(_supplier_name)){
+      if(!supplier_ids.includes(_supplier_id) || !t_suppliers.includes(_supplier_id)){
           supplier_ids += _supplier_id + '|';
           truck_suppliers += _supplier_name + ' | ';
+          $('#modalresponseTruck').empty();
       }else{
+        $('#modalresponseTruck').fadeIn('slow')
         $('#modalresponseTruck').html("<div class='alert alert-danger'>Supplier already added.</div>")
       }
 
@@ -282,6 +322,15 @@
 
       $('#truck_suppliers').val(truck_suppliers);
       $('#supplier_idsTruck').val(supplier_ids);
+    });
+
+    $('body').on('click', '.clear_supplier', function(){
+      console.log("clear")
+      $('#supplier_idsTruck').val("");
+      $('#truck_suppliers').val("")
+
+      truck_suppliers = "";
+      supplier_ids = "";
     });
 
   
