@@ -27,26 +27,28 @@
        
         <br> <br>
         <div id="response"></div>
-        <table class="table table-bordered data-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Suppliers</th>
-                    <th>Logistics Company</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Mobile Number</th>
-                    <th>Company ID Number</th>
-                    <th>License Number</th>
-                    <th>Date of Safety Orientation</th>
-                    <th>Status</th>
-                    <th>Is Approved?</th>
-                    <th>Options</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="table table-responsive">
+          <table class="table table-bordered data-table">
+              <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Suppliers</th>
+                      <th>Logistics Company</th>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Mobile Number</th>
+                      <th>Company ID Number</th>
+                      <th>License Number</th>
+                      <th>Date of Safety Orientation</th>
+                      <th>Status</th>
+                      <th>Is Approved?</th>
+                      <th>Options</th>
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>
+        </div>
     </div>
   </div>
 </div>

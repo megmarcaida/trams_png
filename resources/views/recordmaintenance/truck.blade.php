@@ -20,23 +20,25 @@
         <a class="btn btn-warning" href="{{ route('exportTruck') }}">Export Trucks Data</a>
         <br> <br>
         <div id="response"></div>
-        <table class="table table-bordered data-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Suppliers</th>
-                    <th>Trucking Company</th>
-                    <th>Plate Number</th>
-                    <th>Brand</th>
-                    <th>Model
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Options</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="table table-responsive">
+          <table class="table table-bordered data-table">
+              <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Suppliers</th>
+                      <th>Trucking Company</th>
+                      <th>Plate Number</th>
+                      <th>Brand</th>
+                      <th>Model</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Options</th>
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>
+        </div>
     </div>
   </div>
 </div>

@@ -162,9 +162,11 @@ class TruckController extends Controller
     public function store(Request $request)
     {
 
-        $isExist = Truck::where("plate_number",$request->plate_number)->first();
+        $isExistPlateNumber = Truck::where("plate_number",$request->plate_number)->first();
 
-        if($isExist){
+        $isExist = Truck::find($request->id);
+
+        if($isExistPlateNumber && !$isExist){
             $ret = ['error'=>'Plate Number already exists.'];
         }else{
             $ret = ['success'=>'Truck saved successfully.'];

@@ -21,26 +21,28 @@
             
         <br> <br>
         <div id="response"></div>
-        <table class="table table-bordered data-table">
-            <thead>
-                <tr>
-                    <th>Vendor Code</th>
-                    <th>Supplier Name</th>
-                    <th>Delivery Type</th>
-                    <th>Ordering Days</th>
-                    <th>Module</th>
-                    <th>SPOC First Name</th>
-                    <th>SPOC Last Name</th>
-                    <th>SPOC Contact Number</th>
-                    <th>SPOC Email Address</th>
-                    <th>Created At</th>
-                    <th>Status</th>
-                    <th>Options</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="table table-responsive">
+          <table class="table table-bordered data-table">
+              <thead>
+                  <tr>
+                      <th>Vendor Code</th>
+                      <th>Supplier Name</th>
+                      <th>Delivery Type</th>
+                      <th>Ordering Days</th>
+                      <th>Module</th>
+                      <th>SPOC First Name</th>
+                      <th>SPOC Last Name</th>
+                      <th>SPOC Contact Number</th>
+                      <th>SPOC Email Address</th>
+                      <th>Created At</th>
+                      <th>Status</th>
+                      <th>Options</th>
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>
+        </div>
     </div>
   </div>
 </div>
