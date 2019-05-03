@@ -7,6 +7,17 @@ use Maatwebsite\Excel\Concerns\ToModel;
 
 class SupplierImport implements ToModel
 {
+    public $model = Supplier::class; // Only needed for globalization purpose
+    
+    // Excel file header    
+    public $header = [
+        'Vendor Code',  'Supplier Name', 'Delivery Type','Ordering Days', 'Module', 'SPOC First Name', 'SPOC Last Name', 'SPOC Contact Number','SPOC Email Address','Status'
+    ];
+
+    public $verifyHeader = true; // Header verification toggle
+
+    public $truncate = true; // We want to truncate table before the import
+
     /**
     * @param array $row
     *
@@ -14,16 +25,6 @@ class SupplierImport implements ToModel
     */
     public function model(array $row)
     {
-        return new Supplier([
-            'vendor_code'     => $row['vendor_code'],
-            'supplier_name'    => $row['supplier_name'], 
-            'delivery_type'    => $row['delivery_type'], 
-            'ordering_days'    => $row['ordering_days'], 
-            'module'    => $row['module'], 
-            'spoc_firstname'    => $row['spoc_firstname'], 
-            'spoc_lastname'    => $row['spoc_lastname'], 
-            'spoc_contact_number'    => $row['spoc_contact_number'], 
-            'spoc_email_address'    => $row['spoc_email_address'], 
-        ]);
+        return new $this->model($row);
     }
 }

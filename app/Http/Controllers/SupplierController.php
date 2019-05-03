@@ -270,7 +270,11 @@ class SupplierController extends Controller
 
      public function import() 
     {
-        Excel::import(new SupplierImport,request()->file('file'));
+         $this->validate($request, [
+            'file' => 'required|file|max:1024|mimes:xls,xlsx'
+        ]);
+        
+        \Excel::import(new SupplierImport(), $request->file('file'));
            
         return back();
     }
