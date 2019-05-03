@@ -276,7 +276,7 @@ class SupplierController extends Controller
         
         \Excel::import(new SupplierImport(), $request->file('file'));
            
-        return back();
+        return response()->json(['message' => trans('app.import_successful')]);
     }
    
 }
