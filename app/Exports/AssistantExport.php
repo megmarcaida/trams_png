@@ -21,21 +21,21 @@ class AssistantExport implements FromCollection, WithHeadings, ShouldAutoSize
     {
         return [
         	'#',
-            'Supplier IDs',
-            'Supplier Name',
-            'Logistic Company',
-            'First Name',
-            'Last Name',
-            'Mobile Number',
-            'Company ID Number',
-            'Valid ID Present',
-            'Valid ID Number',
-            'Date of Safety Orientation',
-            'Is Approved',
+            'SupplierIDs',
+            'SupplierName',
+            'LogisticCompany',
+            'FirstName',
+            'LastName',
+            'MobileNumber',
+            'CompanyIDNumber',
+            'ValidIDPresent',
+            'ValidIDNumber',
+            'DateofSafetyOrientation',
+            'IsApproved',
             'Status',
             '-',
-            'Date Created',
-            'Date Updated'
+            'DateCreated',
+            'DateUpdated'
 
         ];
     }

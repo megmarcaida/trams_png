@@ -72,7 +72,7 @@ Route::post('deactivateOrActivateAssistant', 'AssistantController@deactivateOrAc
 Route::post('completeAssistantRegistration', 'AssistantController@completeAssistantRegistration')->name('completeAssistantRegistration');
 
 Route::get('exportAssistant', 'AssistantController@export')->name('exportAssistant');
-Route::post('importAssistant', 'AssistantController@import')->name('importDriver');
+Route::post('importAssistant', 'AssistantController@import')->name('importAssistant');
 #End importAssistant Route
 
 

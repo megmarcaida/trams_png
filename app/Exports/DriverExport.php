@@ -21,20 +21,20 @@ class DriverExport implements FromCollection, WithHeadings, ShouldAutoSize
     {
         return [
         	'#',
-            'Supplier IDs',
-            'Supplier Name',
-            'Logistic Company',
-            'First Name',
-            'Last Name',
-            'Mobile Number',
-            'Company ID Number',
-            'License Number',
-            'Date of Safety Orientation',
-            'Is Approved',
+            'SupplierIDs',
+            'SupplierName',
+            'LogisticCompany',
+            'FirstName',
+            'LastName',
+            'MobileNumber',
+            'CompanyIDNumber',
+            'LicenseNumber',
+            'DateofSafetyOrientation',
+            'IsApproved',
             'Status',
             '-',
-            'Date Created',
-            'Date Updated'
+            'DateCreated',
+            'DateUpdated'
 
         ];
     }

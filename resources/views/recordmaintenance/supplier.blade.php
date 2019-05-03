@@ -17,20 +17,26 @@
     <div class="col-xl-12 col-sm-12 mb-3">
       <h1>Suppliers</h1>
       <div class="row">
-      <div class="col-xl-6">
-        <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Supplier</a>
-        <a class="btn btn-warning" href="{{ route('exportSupplier') }}">Export Suppliers Data</a>
+        <div class="col-xl-6">
+          <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Supplier</a>
+          <a class="btn btn-warning" href="{{ route('exportSupplier') }}">Export Suppliers Data</a>
+        </div>
+        <div class="col-xl-3">  
+          <form action="{{ route('importSupplier') }}" method="POST" enctype="multipart/form-data">
+              @csrf
+              <input type="file" name="file" class="form-control">
+              <br>
+              <button class="btn btn-success text-right">Import Supplier Data</button>
+          </form>    
+        </div>
       </div>
-      <div class="col-xl-3">  
-        <form action="{{ route('importSupplier') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <input type="file" name="file" class="form-control">
-            <br>
-            <button class="btn btn-success text-right">Import Supplier Data</button>
-        </form>    
-      </div>
-      </div>
-        <div id="response"></div>
+         <div id="response">
+          @if(session()->has('import_message'))
+            <div class="alert alert-success">
+                {{ session()->get('import_message') }}
+            </div>
+        @endif
+        </div>
         <div class="table table-responsive">
           <table class="table table-bordered data-table">
               <thead>

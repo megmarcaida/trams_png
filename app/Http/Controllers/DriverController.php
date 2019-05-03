@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use DataTables;
 use Auth;
 use App\Exports\DriverExport;
+use App\Imports\DriverImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DriverController extends Controller
@@ -285,5 +286,12 @@ class DriverController extends Controller
     public function export() 
     {
         return Excel::download(new DriverExport, 'drivers.xlsx');
+    }
+
+    public function import() 
+    {
+        Excel::import(new DriverImport,request()->file('file'));
+           
+        return redirect()->back()->with("import_message","Importing of Drivers process successfully."); 
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use DataTables;
 use Auth;
 use App\Exports\AssistantExport;
+use App\Imports\AssistantImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AssistantController extends Controller
@@ -252,5 +253,12 @@ class AssistantController extends Controller
     public function export() 
     {
         return Excel::download(new AssistantExport, 'assistants.xlsx');
+    }
+
+    public function import() 
+    {
+        Excel::import(new AssistantImport,request()->file('file'));
+           
+        return redirect()->back()->with("import_message","Importing of Assistants process successfully."); 
     }
 }

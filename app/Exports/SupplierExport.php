@@ -21,19 +21,19 @@ class SupplierExport implements FromCollection, WithHeadings, ShouldAutoSize
     {
         return [
         	'#',
-            'Vendor Code',
-            'Supplier Name',
-            'Delivery Type',
-            'Ordering Days',
+            'VendorCode',
+            'SupplierName',
+            'DeliveryType',
+            'OrderingDays',
             'Module',
-            'SPOC First Name',
+            'SPOCFirstName',
             '-',
-            'SPOC Last Name',
-            'SPOC Contact Number',
-            'SPOC Email Address',
+            'SPOCLastName',
+            'SPOCContactNumber',
+            'SPOCEmailAddress',
             'Status',
-            'Date Created',
-            'Date Updated'
+            'DateCreated',
+            'DateUpdated'
 
         ];
     }

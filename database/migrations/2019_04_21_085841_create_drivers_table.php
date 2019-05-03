@@ -15,8 +15,8 @@ class CreateDriversTable extends Migration
     {
         Schema::create('drivers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('supplier_ids');
-            $table->string('supplier_names',255);
+            $table->string('supplier_ids',255)->default('')->nullable();
+            $table->string('supplier_names',255)->default('')->nullable();
             $table->string('logistics_company',255);
             $table->string('first_name',255);
             $table->string('last_name',255);
@@ -24,7 +24,7 @@ class CreateDriversTable extends Migration
             $table->string('company_id_number',255);
             $table->string('license_number',255);
             $table->datetime('dateOfSafetyOrientation')->nullable();
-            $table->integer('isApproved')->default(0);
+            $table->integer('isApproved')->default(0)->nullable();
             $table->integer('status')->default(1);
             $table->softDeletes();
             $table->timestamps();

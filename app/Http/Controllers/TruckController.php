@@ -7,6 +7,7 @@ use App\Supplier;
 use Illuminate\Http\Request;
 use DataTables;
 use App\Exports\TruckExport;
+use App\Imports\TruckImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TruckController extends Controller
@@ -268,5 +269,15 @@ class TruckController extends Controller
     public function export() 
     {
         return Excel::download(new TruckExport, 'trucks.xlsx');
+
+    }
+
+     public function import() 
+    {
+        Excel::import(new TruckImport,request()->file('file'));
+           
+        // return response()->json(['success'=>'Importing of Trucks successfully.']);
+        // return view('recordmaintenance/truck')->with("import_message","Importing of Trucks successfully.");  
+        return redirect()->back()->with("import_message","Importing of Trucks process successfully."); 
     }
 }

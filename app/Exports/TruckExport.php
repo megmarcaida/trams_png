@@ -22,17 +22,17 @@ class TruckExport implements FromCollection, WithHeadings, ShouldAutoSize
     {
         return [
         	'#',
-            'Supplier IDs',
-            'Supplier Name',
-            'Trucking Company',
-            'Plate Number',
+            'SupplierIDs',
+            'SupplierName',
+            'TruckingCompany',
+            'PlateNumber',
             'Brand',
             'Model',
             'Type',
             'Status',
             '-',
-            'Date Created',
-            'Date Updated'
+            'DateCreated',
+            'DateUpdated'
 
         ];
     }

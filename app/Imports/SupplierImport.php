@@ -4,20 +4,10 @@ namespace App\Imports;
 
 use App\Supplier;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class SupplierImport implements ToModel
+class SupplierImport implements ToModel, WithHeadingRow
 {
-    public $model = Supplier::class; // Only needed for globalization purpose
-    
-    // Excel file header    
-    public $header = [
-        'vendor_code',  'supplier_name', 'delivery_type','ordering_days', 'module', 'SPOC_Firstname', 'SPOC_Lastname', 'SPOC_Contact_Number','SPOC_Email_Address','Status'
-    ];
-
-    public $verifyHeader = true; // Header verification toggle
-
-    public $truncate = true; // We want to truncate table before the import
-
     /**
     * @param array $row
     *
@@ -25,6 +15,17 @@ class SupplierImport implements ToModel
     */
     public function model(array $row)
     {
-        return new $this->model($row);
+        return new Supplier([
+            'vendor_code'     => $row['vendorcode'],
+            'supplier_name'    => $row['suppliername'], 
+            'delivery_type'    => $row['deliverytype'], 
+            'ordering_days'    => $row['orderingdays'], 
+            'module'    => $row['module'], 
+            'spoc_firstname'    => $row['spocfirstname'], 
+            'spoc_lastname'    => $row['spoclastname'], 
+            'spoc_contact_number'    => $row['spoccontactnumber'], 
+            'spoc_email_address'    => $row['spocemailaddress'], 
+            'status' => $row['status'],
+        ]);
     }
 }
