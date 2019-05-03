@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Events\BeforeImport;
 use Maatwebsite\Excel\Imports\HeadingRowExtractor;
 use Maatwebsite\Excel\Reader;
