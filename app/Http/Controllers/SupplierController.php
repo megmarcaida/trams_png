@@ -202,7 +202,7 @@ class SupplierController extends Controller
 
         $isExistVendorCode = Supplier::where("vendor_code",$request->vendor_code)->first();
 
-        $isExist = Supplier::find($request->id);
+        $isExist = Supplier::find($request->supplier_id);
 
         if($isExistVendorCode && !$isExist){
             $ret = ['error'=>'Vendor Code already exists.'];
