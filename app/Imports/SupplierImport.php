@@ -11,7 +11,7 @@ class SupplierImport implements ToModel
     
     // Excel file header    
     public $header = [
-        'vendor_Code',  'supplier_name', 'delivery_type','ordering_days', 'module', 'SPOC_Firstname', 'SPOC_Lastname', 'SPOC_Contact_Number','SPOC_Email_Address','Status'
+        'vendor_code',  'supplier_name', 'delivery_type','ordering_days', 'module', 'SPOC_Firstname', 'SPOC_Lastname', 'SPOC_Contact_Number','SPOC_Email_Address','Status'
     ];
 
     public $verifyHeader = true; // Header verification toggle
