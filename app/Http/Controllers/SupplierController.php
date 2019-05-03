@@ -6,6 +6,7 @@ use App\Supplier;
 use Illuminate\Http\Request;
 use DataTables;
 use App\Exports\SupplierExport;
+use App\Imports\SupplierImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SupplierController extends Controller
