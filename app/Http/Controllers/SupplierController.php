@@ -268,7 +268,7 @@ class SupplierController extends Controller
         return Excel::download(new SupplierExport, 'suppliers.xlsx');
     }
 
-     public function import() 
+     public function import(Request $request) 
     {
          $this->validate($request, [
             'file' => 'required|file|max:1024|mimes:xls,xlsx'
