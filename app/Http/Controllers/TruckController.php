@@ -61,6 +61,8 @@ class TruckController extends Controller
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         $trucks_suppliers = '';
+        $trucks_s = '';
+
         if(empty($request->input('search.value')))
         {            
             $trucks = Truck::offset($start)
@@ -84,18 +86,57 @@ class TruckController extends Controller
         else {
             $search = $request->input('search.value'); 
 
-            $trucks =  Truck::where('id','LIKE',"%{$search}%")
-                            ->orWhere('trucking_company','LIKE',"%{$search}%")
-                            ->orWhere('plate_number','LIKE',"%{$search}%")
-                            ->offset($start)
-                            ->limit($limit)
-                            ->orderBy($order,$dir)
-                            ->get();
+            $suppliers = Supplier::where('supplier_name','LIKE',"%{$search}%")->get();
+            foreach ($suppliers as $key => $value) {
+                $trucks_s .= $value->id ."|";
+            }
 
-            $totalFiltered = Truck::where('id','LIKE',"%{$search}%")
-                             ->orWhere('trucking_company','LIKE',"%{$search}%")
-                            ->orWhere('plate_number','LIKE',"%{$search}%")
-                            ->count();
+
+            if($search == "Containerized" || $search == "C" || $search == "Co" || $search == "Con" || $search == "Cont" || $search == "Conta" || $search == "Contai" || $search == "Contain" || $search == "Containe" || $search == "Container" || $search == "Containeri" || $search == "Containeriz" || $search == "Containerize"){
+                $trucks =  Truck::where('type','=',"Containerized")
+                                ->offset($start)
+                                ->limit($limit)
+                                ->orderBy($order,$dir)
+                                ->get();
+
+                $totalFiltered = Truck::where('type','=',$search)
+                                ->count();
+            }elseif($search == "Non-containerized" || $search == "No" || $search == "Non" || $search == "Non-" || $search == "Non-c" || $search == "Non-co" || $search == "Non-con" || $search == "Non-cont" || $search == "Non-conta" || $search == "Non-contai" || $search == "Non-contain" || $search == "Non-containe" || $search == "Non-container" || $search == "Non-containeri" || $search == "Non-Containeriz" || $search == "Non-containerize"){
+                $trucks =  Truck::where('type','=',"Non-containerized")
+                                ->offset($start)
+                                ->limit($limit)
+                                ->orderBy($order,$dir)
+                                ->get();
+
+                $totalFiltered = Truck::where('type','=',$search)
+                                ->count();
+            }elseif($trucks_s != ""){
+
+                $trucks =  Truck::where('supplier_ids','LIKE',"%{$trucks_s}%")
+                                ->offset($start)
+                                ->limit($limit)
+                                ->orderBy($order,$dir)
+                                ->get();
+
+                $totalFiltered = Truck::where('supplier_ids','LIKE',"%{$trucks_s}%")
+                                ->count();
+
+            }else{
+
+                $trucks =  Truck::where('id','LIKE',"%{$search}%")
+                                ->orWhere('trucking_company','LIKE',"%{$search}%")
+                                ->orWhere('plate_number','LIKE',"%{$search}%")
+                                ->offset($start)
+                                ->limit($limit)
+                                ->orderBy($order,$dir)
+                                ->get();
+
+                $totalFiltered = Truck::where('id','LIKE',"%{$search}%")
+                                 ->orWhere('trucking_company','LIKE',"%{$search}%")
+                                ->orWhere('plate_number','LIKE',"%{$search}%")
+                                ->count();
+
+            }
         }
 
         $data = array();
@@ -171,7 +212,7 @@ class TruckController extends Controller
         }else{
             $ret = ['success'=>'Truck saved successfully.'];
             Truck::updateOrCreate(['id' => $request->id],
-                ['supplier_ids' => $request->supplier_ids, 'trucking_company' => $request->trucking_company, 'plate_number' => $request->plate_number, 'brand' => $request->brand, 'model' => $request->model, 'type' => $request->types]);  
+                ['supplier_ids' => $request->supplier_ids,'supplier_names' => $request->supplier_names, 'trucking_company' => $request->trucking_company, 'plate_number' => $request->plate_number, 'brand' => $request->brand, 'model' => $request->model, 'type' => $request->types]);  
         }        
    
         return response()->json($ret);

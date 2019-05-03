@@ -16,10 +16,20 @@
   <div class="row">
     <div class="col-xl-12 col-sm-12 mb-3">
       <h1>Suppliers</h1>
+      <div class="row">
+      <div class="col-xl-6">
         <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Supplier</a>
         <a class="btn btn-warning" href="{{ route('exportSupplier') }}">Export Suppliers Data</a>
-            
-        <br> <br>
+      </div>
+      <div class="col-xl-3">  
+        <form action="{{ route('importSupplier') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="file" class="form-control">
+            <br>
+            <button class="btn btn-success text-right">Import Supplier Data</button>
+        </form>    
+      </div>
+      </div>
         <div id="response"></div>
         <div class="table table-responsive">
           <table class="table table-bordered data-table">
@@ -315,14 +325,18 @@
         
       //console.log($("#delivery_type").prop('checked'));
 
+        var delivery_types = $(':radio[name^=delivery_types]:checked').length;
+          
+        var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
 
-        if($("#vendor_code").val() == "" || $("#supplier_name").val() == "" || $(".delivery_type").prop('checked') == false || $("#ordering_days").prop('checked') == false){
+        var modules = $(':checkbox[name^=module]:checked').length;
+        if($("#vendor_code").val() == "" || $("#supplier_name").val() == "" || delivery_types==0 || ordering_days == 0 || modules == 0){
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
             if($("#vendor_code").val() == "")
               $("#vendor_code").css('outline','1px red solid')
             else
-              $("#supplier_name").css('outline','1px black solid')
+              $("#vendor_code").css('outline','1px black solid')
           
             if($("#supplier_name").val() == "")
               $("#supplier_name").css('outline','1px red solid')
@@ -331,17 +345,12 @@
 
             // if($(".delivery_type").prop('checked') == false)
 
-            if($("input[name='delivery_types[]']:checked"))
-              $(".delivery_type").css('color','red')
-            else
-              $(".delivery_type").css('color','black')
+            // if($("input[name='delivery_types[]']:checked"))
+            //   $(".delivery_type").css('color','red')
+            // else
+            //   $(".delivery_type").css('color','black')
 
-            var delivery_types = $(':radio[name^=delivery_types]:checked').length;
-          
-            var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
-
-            var modules = $(':checkbox[name^=module]:checked').length;
-
+            
             if(delivery_types == 0)
               $(".delivery_type").css('color','red')
             else
@@ -374,6 +383,7 @@
               type: "POST",
               dataType: 'json',
               success: function (data) {
+                if(data.success != null){
                  $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                   $('#supplierForm').trigger("reset");
                   $('#ajaxModel').modal('hide');
@@ -381,6 +391,9 @@
                     $('#response').hide("slow");
                   },3000)
                   table.draw();
+                }else if(data.error != null){ 
+                    $('#modalresponse').html("<div class='alert alert-danger'>"+data.error+"</div>")
+                }
                   $('#saveBtn').html('Save Changes');
               },
               error: function (data) {

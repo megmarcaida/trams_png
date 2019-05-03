@@ -95,7 +95,7 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*Driver Suppliers</label>
                         <div class="col-sm-12">
-                            <textarea class="form-control" id="driver_suppliers" disabled="" required=""></textarea>
+                            <textarea class="form-control" id="driver_suppliers" name="supplier_names" readonly="" ="" required=""></textarea>
                            <!--  <input type="text" class="form-control" id="driver_suppliers" disabled="" required=""> -->
                             <input type="hidden" id="supplier_ids" name="supplier_ids">
                         </div>
@@ -229,6 +229,8 @@
     $('#createNewProduct').click(function () {
         $('#saveBtn').val("create-product");
         $('#id').val('');
+        $("#driver_suppliers").val("");
+        $("#supplier_ids").val("");
         $('#driverForm').trigger("reset");
         $('#modelHeading').html("Register Driver");
         $('#ajaxModel').modal({
@@ -362,10 +364,15 @@
 
           $('#driver_suppliers').val(supplier_drivers);
           $('#supplier_ids').val(data.supplier_ids);
-          data.dateOfSafetyOrientation = data.dateOfSafetyOrientation.replace(" ","T")
+          if(data.dateOfSafetyOrientation != undefined){
+
+            data.dateOfSafetyOrientation = data.dateOfSafetyOrientation.replace(" ","T")
+            document.getElementById("dateOfSafetyOrientation").value = data.dateOfSafetyOrientation;
+
+          }
 
           //console.log(data.dateOfSafetyOrientation)
-          document.getElementById("dateOfSafetyOrientation").value = data.dateOfSafetyOrientation;
+          
           // $('#delivery_type').val(data.delivery_type);
       })
    });
@@ -481,26 +488,35 @@
       
       var _supplier_id = $('#supplier_id').children("option:selected").val();
       var _supplier_name = $('#supplier_id').children("option:selected").text();
+
+      console.log(_supplier_name)
       var d_suppliers = $('#supplier_ids').val();
-      if(!supplier_ids.includes(_supplier_id) || !d_suppliers.includes(_supplier_id)){
-          supplier_ids += _supplier_id + '|';
-          driver_suppliers += _supplier_name + ' | ';
+      var d_driver_suppliers = $('#driver_suppliers').val();
+
+
+      if(!d_suppliers.includes(_supplier_id) || !d_suppliers.includes(_supplier_id)){
+          // supplier_ids += _supplier_id + '|';
+          // driver_suppliers += _supplier_name + ' | ';
+          d_suppliers += _supplier_id + '|';
+          console.log(d_suppliers)
+          d_driver_suppliers += _supplier_name + ' | ';
           $('.modalresponse').empty();
       }else{
         $('.modalresponse').html("<div class='alert alert-danger'>Supplier already added.</div>")
       }
 
-      console.log(supplier_ids);
-      console.log(driver_suppliers);
+      // console.log(supplier_ids);
+      // console.log(driver_suppliers);
 
-      $('#driver_suppliers').text(driver_suppliers);
-      $('#supplier_ids').val(supplier_ids);
+      $('#driver_suppliers').val(d_driver_suppliers);
+      $('#supplier_ids').val(d_suppliers);
+
     });
 
     $('body').on('click', '.clear_supplier', function(){
       
       $('#supplier_ids').val("");
-      $('#driver_suppliers').text("")
+      $('#driver_suppliers').val("")
 
       driver_suppliers = "";
       supplier_ids = "";

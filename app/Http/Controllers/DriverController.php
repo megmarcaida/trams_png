@@ -104,6 +104,7 @@ class DriverController extends Controller
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         $drivers_suppliers = '';
+        $drivers_s = '';
         if(empty($request->input('search.value')))
         {            
             $drivers = Driver::offset($start)
@@ -115,18 +116,39 @@ class DriverController extends Controller
         else {
             $search = $request->input('search.value'); 
 
-            $drivers =  Driver::where('id','LIKE',"%{$search}%")
-                            ->orWhere('logistics_company','LIKE',"%{$search}%")
-                            ->orWhere('first_name','LIKE',"%{$search}%")
+            $suppliers = Supplier::where('supplier_name','LIKE',"%{$search}%")->get();
+            foreach ($suppliers as $key => $value) {
+                $drivers_s .= $value->id ."|";
+            }
+
+            if($drivers_s == "" ){
+
+                $drivers =  Driver::where('id','LIKE',"%{$search}%")
+                                ->orWhere('logistics_company','LIKE',"%{$search}%")
+                                ->orWhere('first_name','LIKE',"%{$search}%")
+                                ->orWhere('last_name','LIKE',"%{$search}%")
+                                ->orWhere('mobile_number','LIKE',"%{$search}%")
+                                ->offset($start)
+                                ->limit($limit)
+                                ->orderBy($order,$dir)
+                                ->get();
+
+                $totalFiltered = Driver::where('id','LIKE',"%{$search}%")
+                                ->orWhere('logistics_company','LIKE',"%{$search}%")
+                                ->orWhere('first_name','LIKE',"%{$search}%")
+                                ->orWhere('last_name','LIKE',"%{$search}%")
+                                ->count();
+            }else{
+                
+                $drivers =  Driver::where('supplier_ids','LIKE',"%{$drivers_s}%")
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
-            $totalFiltered = Driver::where('id','LIKE',"%{$search}%")
-                            ->orWhere('logistics_company','LIKE',"%{$search}%")
-                            ->orWhere('first_name','LIKE',"%{$search}%")
+                $totalFiltered = Driver::where('supplier_ids','LIKE',"%{$drivers_s}%")
                             ->count();
+            }
         }
 
         $data = array();
@@ -199,7 +221,7 @@ class DriverController extends Controller
     {
 
         Driver::updateOrCreate(['id' => $request->id],
-                ['supplier_ids' => $request->supplier_ids, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'company_id_number' => $request->company_id_number, 'license_number' => $request->license_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
+                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'company_id_number' => $request->company_id_number, 'license_number' => $request->license_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
    
         return response()->json(['success'=>'Driver saved successfully.']);
     }

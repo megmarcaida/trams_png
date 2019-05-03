@@ -82,18 +82,34 @@ class SupplierController extends Controller
         }
         else {
             $search = $request->input('search.value'); 
-
+            
             $suppliers =  Supplier::where('id','LIKE',"%{$search}%")
                             ->orWhere('vendor_code','LIKE',"%{$search}%")
                             ->orWhere('supplier_name','LIKE',"%{$search}%")
+                            ->orWhere('spoc_firstname','LIKE',"%{$search}%")
+                            ->orWhere('spoc_lastname','LIKE',"%{$search}%")
+                            ->orWhere('spoc_email_address','LIKE',"%{$search}%")
+                            ->orWhere('spoc_contact_number','LIKE',"%{$search}%")
+                            ->orWhere('ordering_days','LIKE',"%{$search}%")
+                            ->orWhere('delivery_type','LIKE',"%{$search}%")
+                            ->orWhere('module','LIKE',"%{$search}%")
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
+
+
             $totalFiltered = Supplier::where('id','LIKE',"%{$search}%")
-                             ->orWhere('vendor_code','LIKE',"%{$search}%")
+                            ->orWhere('vendor_code','LIKE',"%{$search}%")
                             ->orWhere('supplier_name','LIKE',"%{$search}%")
+                            ->orWhere('spoc_firstname','LIKE',"%{$search}%")
+                            ->orWhere('spoc_lastname','LIKE',"%{$search}%")
+                            ->orWhere('spoc_email_address','LIKE',"%{$search}%")
+                            ->orWhere('spoc_contact_number','LIKE',"%{$search}%")
+                            ->orWhere('ordering_days','LIKE',"%{$search}%")
+                            ->orWhere('delivery_type','LIKE',"%{$search}%")
+                            ->orWhere('module','LIKE',"%{$search}%")
                             ->count();
         }
 
@@ -183,11 +199,19 @@ class SupplierController extends Controller
             $spoc_email_address .=  $email.' |<br> ';
         }
 
+        $isExistVendorCode = Supplier::where("vendor_code",$request->vendor_code)->first();
 
-        Supplier::updateOrCreate(['id' => $request->supplier_id],
+        $isExist = Supplier::find($request->id);
+
+        if($isExistVendorCode && !$isExist){
+            $ret = ['error'=>'Vendor Code already exists.'];
+        }else{
+            $ret = ['success'=>'Supplier saved successfully.'];
+            Supplier::updateOrCreate(['id' => $request->supplier_id],
                 ['vendor_code' => $request->vendor_code, 'supplier_name' => $request->supplier_name, 'delivery_type' => $request->delivery_types, 'ordering_days' => $ordering_days, 'module' => $modules, 'spoc_firstname' => $spoc_first_name, 'spoc_lastname' => $spoc_last_name, 'spoc_contact_number' => $spoc_contact_number, 'spoc_email_address' => $spoc_email_address]);        
-   
-        return response()->json(['success'=>'Supplier saved successfully.']);
+        }
+
+        return response()->json($ret);
     }
 
     /**
@@ -241,6 +265,13 @@ class SupplierController extends Controller
     public function export() 
     {
         return Excel::download(new SupplierExport, 'suppliers.xlsx');
+    }
+
+     public function import() 
+    {
+        Excel::import(new SupplierImport,request()->file('file'));
+           
+        return back();
     }
    
 }

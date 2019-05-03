@@ -86,7 +86,7 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*Truck Suppliers</label>
                         <div class="col-sm-12">
-                            <textarea class="form-control" id="truck_suppliers" disabled="" required=""></textarea>
+                            <textarea class="form-control" name="supplier_names" id="truck_suppliers" readonly="" required=""></textarea>
                             <!-- <input type="text" class="form-control" id="truck_suppliers" disabled="" required=""> -->
                             <input type="hidden" id="supplier_ids" name="supplier_ids">
                         </div>
@@ -200,6 +200,9 @@
     $('#createNewProduct').click(function () {
         $('#saveBtn').val("create-product");
         $('#id').val('');
+        $("#truck_suppliers").val("");
+        $("#supplier_ids").val("");
+        console.log($("#supplier_ids").val());
         $('#truckForm').trigger("reset");
         $('#modelHeading').html("Register Truck");
         $('#ajaxModel').modal({
@@ -250,8 +253,8 @@
    });
     
     $('#saveBtn').click(function (e) {
+
         
-     
         var types = $(':radio[name^=types]:checked').length;
         if($("#trucking_company").val() == "" || $("#plate_number").val() == "" || $("#model").val() == "" || $("#brand").val() == "" || types==0 || $("#truck_suppliers").val() == ""){
           $("#modalresponse").show();
@@ -309,6 +312,7 @@
                     $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                       $('#truckForm').trigger("reset");
                       $('#ajaxModel').modal('hide');
+                       $('#response').show();
                       setTimeout(function(){
                         $('#response').hide("slow");
                       },3000)
@@ -361,26 +365,31 @@
       var _supplier_id = $('#supplier_id').children("option:selected").val();
       var _supplier_name = $('#supplier_id').children("option:selected").text();
       var t_suppliers = $('#supplier_ids').val();
-      if(!supplier_ids.includes(_supplier_id) || !t_suppliers.includes(_supplier_id)){
-          supplier_ids += _supplier_id + '|';
-          truck_suppliers += _supplier_name + ' | ';
+      var t_truck_suppliers = $('#truck_suppliers').val();
+     
+      //console.log(t_suppliers)
+      if(!t_suppliers.includes(_supplier_id) || !t_suppliers.includes(_supplier_id)){
+          //supplier_ids += _supplier_id + '|';
+          //truck_suppliers += _supplier_name + ' | ';
+          t_suppliers += _supplier_id + '|';
+          t_truck_suppliers += _supplier_name + ' | ';
           $('#modalresponse').empty();
       }else{
         $('#modalresponse').html("<div class='alert alert-danger'>Supplier already added.</div>")
       }
 
-      console.log(supplier_ids);
-      console.log(truck_suppliers);
-
-      $('#truck_suppliers').text(truck_suppliers);
-      $('#supplier_ids').val(supplier_ids);
+      //console.log(supplier_ids);
+      //console.log(truck_suppliers);
+      console.log(t_suppliers)
+      $('#truck_suppliers').val(t_truck_suppliers);
+      $('#supplier_ids').val(t_suppliers);
 
     });
 
     $('body').on('click', '.clear_supplier', function(){
       
       $('#supplier_ids').val("");
-      $('#truck_suppliers').text("")
+      $('#truck_suppliers').val("")
 
       truck_suppliers = "";
       supplier_ids = "";

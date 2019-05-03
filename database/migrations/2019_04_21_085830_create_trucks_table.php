@@ -16,6 +16,7 @@ class CreateTrucksTable extends Migration
         Schema::create('trucks', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('supplier_ids',255);
+            $table->string('supplier_names',255);
             $table->string('trucking_company',255);
             $table->string('plate_number',100)->unique();
             $table->string('brand',255);

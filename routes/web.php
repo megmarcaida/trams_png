@@ -28,6 +28,7 @@ Route::post('allsuppliers', 'SupplierController@allSuppliers' )->name('allsuppli
 Route::post('deactivateOrActivateSupplier', 'SupplierController@deactivateOrActivateSupplier')->name('deactivateOrActivateSupplier');
 
 Route::get('exportSupplier', 'SupplierController@export')->name('exportSupplier');
+Route::post('importSupplier', 'SupplierController@import')->name('importSupplier');
 #End Supplier Route
 
 
@@ -40,6 +41,7 @@ Route::post('alltrucks_suppliers', 'TruckController@allsuppliers' )->name('alltr
 Route::post('deactivateOrActivateTruck', 'TruckController@deactivateOrActivateTruck')->name('deactivateOrActivateTruck');
 
 Route::get('exportTruck', 'TruckController@export')->name('exportTruck');
+Route::post('importTruck', 'TruckController@import')->name('importTruck');
 #End Truck Route
 
 #Driver  Routes
@@ -54,6 +56,7 @@ Route::post('deactivateOrActivateDriver', 'DriverController@deactivateOrActivate
 Route::post('completeDriverRegistration', 'DriverController@completeDriverRegistration')->name('completeDriverRegistration');
 
 Route::get('exportDriver', 'DriverController@export')->name('exportDriver');
+Route::post('importDriver', 'DriverController@import')->name('importDriver');
 #End Driver Route
 
 
@@ -69,7 +72,8 @@ Route::post('deactivateOrActivateAssistant', 'AssistantController@deactivateOrAc
 Route::post('completeAssistantRegistration', 'AssistantController@completeAssistantRegistration')->name('completeAssistantRegistration');
 
 Route::get('exportAssistant', 'AssistantController@export')->name('exportAssistant');
-#End Assistant Route
+Route::post('importAssistant', 'AssistantController@import')->name('importDriver');
+#End importAssistant Route
 
 
 #SCHEDULER

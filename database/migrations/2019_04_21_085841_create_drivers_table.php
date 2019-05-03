@@ -16,6 +16,7 @@ class CreateDriversTable extends Migration
         Schema::create('drivers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('supplier_ids');
+            $table->string('supplier_names',255);
             $table->string('logistics_company',255);
             $table->string('first_name',255);
             $table->string('last_name',255);

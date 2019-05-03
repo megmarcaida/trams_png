@@ -70,6 +70,7 @@ class AssistantController extends Controller
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         $assistants_suppliers = '';
+        $assistants_s = "";
         if(empty($request->input('search.value')))
         {            
             $assistants = Assistant::offset($start)
@@ -81,18 +82,40 @@ class AssistantController extends Controller
         else {
             $search = $request->input('search.value'); 
 
-            $assistants =  Assistant::where('id','LIKE',"%{$search}%")
-                            ->orWhere('logistics_company','LIKE',"%{$search}%")
-                            ->orWhere('first_name','LIKE',"%{$search}%")
-                            ->offset($start)
-                            ->limit($limit)
-                            ->orderBy($order,$dir)
-                            ->get();
+            $suppliers = Supplier::where('supplier_name','LIKE',"%{$search}%")->get();
+            foreach ($suppliers as $key => $value) {
+                $assistants_s .= $value->id ."|";
+            }
 
-            $totalFiltered = Assistant::where('id','LIKE',"%{$search}%")
+            if($assistants_s != ""){
+
+                $assistants =  Assistant::where('supplier_ids','LIKE',"%{$assistants_s}%")
+                                ->offset($start)
+                                ->limit($limit)
+                                ->orderBy($order,$dir)
+                                ->get();
+
+                $totalFiltered = Assistant::where('supplier_ids','LIKE',"%{$assistants_s}%")
+                             ->count();
+
+            }else{
+
+                $assistants =  Assistant::where('id','LIKE',"%{$search}%")
+                                ->orWhere('logistics_company','LIKE',"%{$search}%")
+                                ->orWhere('first_name','LIKE',"%{$search}%")
+                                ->orWhere('mobile_number','LIKE',"%{$search}%")
+                                ->offset($start)
+                                ->limit($limit)
+                                ->orderBy($order,$dir)
+                                ->get();
+
+                $totalFiltered = Assistant::where('id','LIKE',"%{$search}%")
                              ->orWhere('logistics_company','LIKE',"%{$search}%")
                             ->orWhere('first_name','LIKE',"%{$search}%")
+                            ->orWhere('mobile_number','LIKE',"%{$search}%")
                              ->count();
+
+            }
         }
 
         $data = array();
@@ -165,7 +188,7 @@ class AssistantController extends Controller
     {
 
         Assistant::updateOrCreate(['id' => $request->id],
-                ['supplier_ids' => $request->supplier_ids, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'company_id_number' => $request->company_id_number, 'valid_id_present' => $request->valid_id_present,'valid_id_number' => $request->valid_id_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
+                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'company_id_number' => $request->company_id_number, 'valid_id_present' => $request->valid_id_present,'valid_id_number' => $request->valid_id_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
    
         return response()->json(['success'=>'Assistant saved successfully.']);
     }

@@ -96,7 +96,7 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*Assistant Suppliers</label>
                         <div class="col-sm-12">
-                            <textarea class="form-control" id="assistant_suppliers" disabled="" required=""></textarea>
+                            <textarea class="form-control" id="assistant_suppliers" name="supplier_names" readonly="" required=""></textarea>
                             <!-- <input type="text" class="form-control" id="assistant_suppliers" disabled="" required=""> -->
                             <input type="hidden" id="supplier_ids" name="supplier_ids">
                         </div>
@@ -250,6 +250,8 @@
     $('#createNewProduct').click(function () {
         $('#saveBtn').val("create-product");
         $('#id').val('');
+        $("#assistant_suppliers").val("");
+        $("#supplier_ids").val("");
         $('#assistantForm').trigger("reset");
         $('#modelHeading').html("Register Assistant");
         $('#ajaxModel').modal({
@@ -508,25 +510,26 @@
       var _supplier_id = $('#supplier_id').children("option:selected").val();
       var _supplier_name = $('#supplier_id').children("option:selected").text();
       var a_suppliers = $('#supplier_ids').val();
-      if(!supplier_ids.includes(_supplier_id) || !a_suppliers.includes(_supplier_id)){
-          supplier_ids += _supplier_id + '|';
-          assistant_suppliers += _supplier_name + ' | ';
+      var a_assistant_suppliers = $('#assistant_suppliers').val();
+      if(!a_suppliers.includes(_supplier_id) || !a_suppliers.includes(_supplier_id)){
+          a_suppliers += _supplier_id + '|';
+          a_assistant_suppliers += _supplier_name + ' | ';
           $('.modalresponse').empty();
       }else{
         $('.modalresponse').html("<div class='alert alert-danger'>Supplier already added.</div>")
       }
 
-      console.log(supplier_ids);
-      console.log(assistant_suppliers);
+      // console.log(supplier_ids);
+      // console.log(assistant_suppliers);
 
-      $('#assistant_suppliers').text(assistant_suppliers);
-      $('#supplier_ids').val(supplier_ids);
+      $('#assistant_suppliers').val(a_assistant_suppliers);
+      $('#supplier_ids').val(a_suppliers);
     });
 
     $('body').on('click', '.clear_supplier', function(){
       
       $('#supplier_ids').val("");
-      $('#assistant_suppliers').text("")
+      $('#assistant_suppliers').val("")
 
       assistant_suppliers = "";
       supplier_ids = "";
