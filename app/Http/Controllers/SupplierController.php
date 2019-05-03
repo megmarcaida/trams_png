@@ -204,7 +204,7 @@ class SupplierController extends Controller
 
         $isExist = Supplier::find($request->id);
 
-        if(!$isExistVendorCode && !$isExist){
+        if($isExistVendorCode && !$isExist){
             $ret = ['error'=>'Vendor Code already exists.'];
         }else{
             $ret = ['success'=>'Supplier saved successfully.'];
