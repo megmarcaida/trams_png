@@ -41,10 +41,17 @@
         </div>
       </li>
       @if(Auth::user()->role_id == 3)  
-      <li class="nav-item">
-        <a class="nav-link" href="/scheduler/slottingschedule">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Scheduler</span></a>
+     <li class="nav-item dropdown">
+        <a class="nav-link dropdown-btn" href="#">
+          <i class="fas fa-fw fa-folder"></i>
+          <span>Scheduling</span>
+        </a>
+        <div class="dropdown-container">
+          
+          <a class="dropdown-item" href="/scheduler/index">Scheduling</a>
+          <a class="dropdown-item" href="/scheduler/slottingschedule">Slotting Scheduling</a>
+          <a class="dropdown-item" href="/scheduler/dock">Dock</a>
+        </div>
       </li>
       @endif
       <!-- <li class="nav-item">

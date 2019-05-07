@@ -10683,3 +10683,41 @@ a.text-dark:focus {
 .navbar-font-black{
   color:#000 !important;
 }
+
+/*module button scheduler*/
+.btn-modules{
+  width: 150px !important;
+}
+
+.r_ordering_days{
+  display: none;
+}
+
+.parent_slotting{
+  overflow: scroll;
+}
+
+.slotting_time{
+  width: 5900px;
+}
+
+.slotting_time > .slot_box{
+  display: inline-block;
+  background: #38c172;
+  padding: 20px;
+  margin: -2px;
+  cursor: pointer;
+}
+
+.active_slot_box{
+  background:#ff7f7f !important;
+  color:#fff !important;
+}
+
+.occupied_slot_box{
+  display: inline-block;
+  padding: 20px;
+  margin: -2px;
+  background: red !important;
+  cursor: not-allowed !important;
+}

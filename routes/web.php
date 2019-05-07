@@ -78,7 +78,23 @@ Route::post('importAssistant', 'AssistantController@import')->name('importAssist
 
 #SCHEDULER
 Route::get('/scheduler/slottingschedule', ['middleware' => 'auth', 'uses' => 'SchedulerController@index']);
+Route::get('/scheduler/index', ['middleware' => 'auth', 'uses' => 'SchedulerController@scheduling']);
+Route::post('allschedules', 'SchedulerController@allSchedules' )->name('allschedules');
+Route::post('getSlottingTime', 'SchedulerController@getSlottingTime' )->name('getSlottingTime');
+Route::post('getSupplierData', 'SchedulerController@getSupplierData' )->name('getSupplierData');
+Route::resource('ajaxschedules','SchedulerController');
 #END SCHEDULER
+
+#Docker
+Route::get('/scheduler/dock', ['middleware' => 'auth', 'uses' => 'DockController@index']);
+
+Route::resource('ajaxdockers','DockController');
+Route::post('alldockers', 'DockController@allDockers' )->name('alldockers');
+Route::post('deactivateOrActivateDocker', 'DockController@deactivateOrActivateDocker')->name('deactivateOrActivateDocker');
+
+Route::get('exportDocker', 'DockController@export')->name('exportDocker');
+Route::post('importDocker', 'DockController@import')->name('importDocker');
+#END Docker
 
 
 

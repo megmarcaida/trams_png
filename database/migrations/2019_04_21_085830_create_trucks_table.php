@@ -22,7 +22,7 @@ class CreateTrucksTable extends Migration
             $table->string('brand',255);
             $table->string('model',255);
             $table->string('type',255);
-            $table->integer('status')->default(1);
+            $table->integer('status')->default(1)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
