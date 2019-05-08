@@ -27,6 +27,7 @@ class CreateSchedulesTable extends Migration
             $table->string('supplier_id',255)->nullable();
             $table->string('driver_id',255)->nullable();
             $table->string('assistant_id',255)->nullable();
+            $table->text('reason')->nullable();
             $table->string('material_list',255)->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();

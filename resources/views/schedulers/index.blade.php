@@ -11,12 +11,148 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
+    $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+    });
+  
+    $(':radio').change(function (event) {
+        var id = $(this).data('id');
+        if(id == "recurrent"){
+          $(".r_ordering_days").css('display','block');
+        }else{
+          $(".r_ordering_days").css('display','none');
+        }
+    });
+
+    $('body').on('click', '.slot_box', function () {
+         
+          var slotting_time = $('#slotting_time'); 
+           var _this = $(this);
+           value = $(this).html();
+           if(_this.hasClass('active_slot_box')){
+              $(this).removeClass('active_slot_box');
+              var x = slotting_time.val().replace(value + "|","");
+
+              slotting_time.val(x)
+           }else{
+              $(this).addClass('active_slot_box');
+              slotting_time.val(slotting_time.val() + value + "|")
+           }
+         
+          
+    });
+
+    $('body').on('click', '.editable_slot_box', function () {
+         
+          var slotting_time = $('#slotting_time'); 
+           var _this = $(this);
+           value = $(this).html();
+           if(_this.hasClass('editable_slot_box')){
+              $(this).removeClass('editable_slot_box').addClass('slot_box');
+               $(this).removeClass('occupied_slot_box');
+              var x = slotting_time.val().replace(value + "|","");
+
+              slotting_time.val(x)
+           }else{
+              $(this).addClass('active_slot_box');
+              slotting_time.val(slotting_time.val() + value + "|")
+           }
+         
+          
+    });
+
+    // $('div.slot_box:contains("00:00 - 00:30")').css('background-color', 'red');
+    // $('div.slot_box:contains("01:00 - 01:30")').css('background-color', 'red');
+    // $(".occupied_slot_box").on('click',function(){
+    //   return false;
+    // })
+
+     $('body').on('change', '#dateOfDelivery', function () {
+        $('div.occupied_slot_box').addClass("slot_box");
+        $('div.slot_box').removeClass("occupied_slot_box");
+        $('div.slot_box').removeClass("active_slot_box");
+
+        $('#slotting_time').val('');
+        var date_of_delivery = $('#dateOfDelivery').val();
+        $.ajax({
+            url: "{{ url('getSlottingTime') }}",
+            type: "POST",
+            data: {date_of_delivery:date_of_delivery},
+            success: function (data) {
+                $.each(JSON.parse(data), function(index, item) {
+                  $.each(item.slotting_time, function(i, slot) {
+                  console.log(slot)
+                    if(slot != ""){
+                      $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                      $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                    }
+                  });
+                });
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+      });
+
+
+
+     $('body').on('change', '#supplier_id', function () {
+         
+         var selected = $("#supplier_id option:selected").val();
+         //console.log(selected)
+         $('#truck_id').html('');
+         $('#driver_id').html('');
+         $('#assistant_id').html('');
+
+       if(selected != "0"){
+        $.ajax({
+              url: "{{ url('getSupplierData') }}",
+              type: "POST",
+              data: {id:selected},
+              success: function (data) {
+                //console.log(JSON.parse(data))  
+                $.each(JSON.parse(data), function(index, item) {
+                  // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
+                  if(index == 'truckdata'){
+                    $.each(item, function(index, truck) {
+
+                      $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
+                    });
+                  }
+
+                  if(index == 'driverdata'){
+                    $.each(item, function(index, driver) {
+                      $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
+                    });
+                  }
+
+                  if(index == 'assistantdata'){
+                    $.each(item, function(index, assistant) {
+                      $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
+                    });
+                  }
+                });
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+              }
+          });
+      }
+          
+    });
+
+
     var count = 0;
     var testCalendar = function(module_name){
 
 
     var calendarEl = document.getElementById('calendar');
 
+    calendarEl.innerHTML = "";
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
       schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
@@ -27,7 +163,7 @@
       selectable: true,
       eventLimit: true, // allow "more" link when too many events
       header: {
-        left: 'CreateSchedule EditSchedule',
+        left: 'CreateSchedule EditSchedule DeleteSchedule ScheduleDockUnavailability',
         center: 'title',
         right: 'today prev,next'
       },
@@ -35,12 +171,22 @@
         CreateSchedule: {
           text: 'Create Schedule',
           click: function() {
+            $('#saveBtn').html('Save Changes');
             $('#saveBtn').val("create-product");
             $('#schedule_id').val('');
             $('#scheduleForm').trigger("reset");
             $('#truck_id').html('');
             $('#driver_id').html('');
             $('#assistant_id').html('');
+            $('#supplier_id').removeAttr("disabled");
+            $('#po_number').removeAttr("readonly");
+
+            $('#supplier_id').not(this).find('option').removeAttr('disabled')
+            $('#alt_supplier_id').val('');
+            $('#supplier_id').removeClass('disableSelect');
+
+            $(".r_ordering_days").css('display','none')
+
             $('.slot_box').removeClass('active_slot_box');
             $('#modelHeading').html("Register Schedule");
 
@@ -57,6 +203,11 @@
           text: 'Edit Schedule',
           click: function() {
 
+          //$('div.slot_box').removeClass("slot_box");
+          $('div.editable_slot_box').addClass('slot_box').removeClass("editable_slot_box");
+          $('div.occupied_slot_box').addClass('slot_box').removeClass("occupied_slot_box");
+
+          $('#saveBtn').html('Save Changes');
           $('#response').html(''); 
           var id = $('#selected_schedule').val();
           var selected = $('#selected_supplierid').val();
@@ -67,6 +218,13 @@
           $('#truck_id').html('');
           $('#driver_id').html('');
           $('#assistant_id').html('');
+          $('#alt_supplier_id').val('');
+          //$('#supplier_id').attr("disabled","disabled");
+          $('#po_number').attr("readonly","true");
+
+          $('#supplier_id').not(this).find('option').prop('disabled', 'true');
+
+          $('#supplier_id').addClass('disableSelect');
 
           $.ajax({
               url: "{{ url('getSupplierData') }}",
@@ -112,31 +270,130 @@
                 backdrop:'static',
                 keyboard: false
               })
-              //console.log(data.id)
+              console.log(data.date_of_delivery)
               $('#schedule_id').val(data.id);
               $('#po_number').val(data.po_number);
               $('#supplier_id').val(data.supplier_id);
-             
+              $('#alt_supplier_id').val(data.supplier_id);
               $('#dock_id').val(data.dock_id);
 
-              $('#date_of_delivery').val(data.date_of_delivery);
+              $('#dateOfDelivery').val(data.date_of_delivery);
 
               $('#truck_id').val(data.truck_id);
 
               $('#driver_id').val(data.driver_id);
 
-               $('#assistant_id').val(data.assistant_id);
+              $('#assistant_id').val(data.assistant_id);
 
               $('#container_number').val(data.container_number);
 
-              $("input[name=recurrence][value=" + data.recurrence + "]").prop('checked', 'checked');
-              // $('#delivery_type').val(data.delivery_type);
+              $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+              if(data.recurrence == "Recurrent"){
+                $(".r_ordering_days").css('display','block')
+              }
+              var ordering_days_arr = data.ordering_days.split("|")
+              $.each( ordering_days_arr, function( key, value ) {
+                $("input[value='" + $.trim(value) + "']").prop('checked', true);
+              });
+
+
+              $("#slotting_time").val(data.slotting_time_text);
+
+               $('div.occupied_slot_box').addClass("slot_box");
+
+
+              //refresh slot box
+              $('div.slot_box').removeClass("occupied_slot_box");
+              $('div.slot_box').removeClass("active_slot_box");
+              var date_of_delivery = $('#dateOfDelivery').val();
+              $.ajax({
+                  url: "{{ url('getSlottingTime') }}",
+                  type: "POST",
+                  data: {date_of_delivery:date_of_delivery},
+                  success: function (data) {
+                      $.each(JSON.parse(data), function(index, item) {
+                        $.each(item.slotting_time, function(i, slot) {
+                          if(slot != ""){
+                            $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                            $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                          }
+                        });
+                      });
+                  },
+                  error: function (data) {
+                      console.log('Error:', data);
+                  }
+              });
+              //refresh slot box
+
+
+              $.each(data.slotting_time, function(index, slot) {
+                  console.log(slot)
+                    if(slot != ""){
+                      $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
+                      $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
+                      $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                    }
+                });
           })
 
           // change the border color just for fun
           //info.el.style.borderColor = 'red';
           }
-        }
+        },
+        DeleteSchedule: {
+          text: 'Delete Schedule',
+          click: function(event) {
+            console.log(event)
+            $('#response').html(''); 
+
+            var id = $('#selected_schedule').val();
+            var selected = $('#selected_supplierid').val();
+            $('#response').show()
+            $('#single_event_modal').hide();
+            $('#recurrence_modal').hide();
+            $('#reason_modal').hide();
+            var current_recurrence = $('#recurrence_hidden').val()
+            console.log(current_recurrence == "Single Event")
+            if(current_recurrence == "Single Event"){
+               $('#reason_modal').show();
+               $('#single_event_modal').hide();
+              $('#recurrence_modal').hide();
+            }else if(current_recurrence == "Recurrent"){
+                $('#single_event_modal').hide();
+                $('#recurrence_modal').show();
+                $('#reason_modal').hide();
+              
+            }
+            
+
+            $('#modelHeadingDelete').html(current_recurrence);
+            if(id == "" && selected == ""){
+              $('#response').append('<div class="alert alert-warning">Please select schedule to delete.</div>  ')
+            }else{
+              $('#ajaxModelDelete').modal({
+                backdrop:'static',
+                keyboard: false
+              })
+            }
+          }
+        },
+        ScheduleDockUnavailability: {
+          text: 'Schedule Dock Unavailability',
+          click: function() {
+            $('#response').html(''); 
+            var id = $('#selected_schedule').val();
+            var selected = $('#selected_supplierid').val();
+            $('#response').show()
+            if(id == "" && selected == ""){
+              $('#response').append('<div class="alert alert-warning">Please select schedule to delete.</div>  ')
+            }
+            $('#ajaxModelDelete').modal({
+              backdrop:'static',
+              keyboard: false
+            })
+          }
+        },
       },
       views: {
         resourceTimeGridTwoDay: {
@@ -165,9 +422,9 @@
       //   { id: '5', resourceId: 'd', start: '2019-04-07T10:00:00', end: '2019-04-07T15:00:00', title: 'event 5' }
       // ],
 
-       eventRender: function(event, element, view) {
-          console.log(event)
-       },
+      eventAfterRender: function(info) {
+        console.log("test")
+      },
 
       events: {
         url: "{{ url('allschedules') }}",
@@ -183,7 +440,7 @@
         textColor: 'black' // a non-ajax option
       },
       select: function(arg) {
-        alert("selected")
+        
         console.log(
           'select',
           arg.startStr,
@@ -192,7 +449,7 @@
         );
       },
       dateClick: function(arg) {
-        alert("date click")
+        
         console.log(
           'dateClick',
           arg.date,
@@ -200,12 +457,21 @@
         );
       },
        eventClick: function(info) {
+        $('#recurrence_hidden').val('');
         $('#selected_schedule').val(info.event.id);
         $('#selected_supplierid').val(info.event.extendedProps.supplier_id);
-        console.log(info.event.extendedProps.recurrence)
+        console.log(info)
         $('#response').html('');
-        $('#response').append('<div class="alert alert-warning">Click Edit Schedule to update the selected schedule.<b>Your about to update '+ info.event.title+' </b></div>  ')
-       }
+        $('#response').show();
+        $('#response').append('<div class="alert alert-warning"><b>Click Edit Schedule or Delete Schedule</b></div>')
+
+        $('#recurrence_hidden').val(info.event.extendedProps.recurrence)
+        
+          //set all days to initial 
+          $('.fc-time-grid-event').css('border-color','transparent');
+          info.el.style.borderColor = 'blue';
+          info.el.style.borderWidth = '2px';
+      }
     });
 
 
@@ -214,6 +480,7 @@
       $('body').on('click', '.btn-modules', function () {
          count = count + 1;
          value = $(this).data("value");
+         $("#current_module").val(value)
          calendarEl.innerHTML = "";
          calendar.destroy();
          testCalendar(value)
@@ -228,6 +495,176 @@
     }
 
     testCalendar("Null");
+
+    $('body').on('click', '#saveBtn', function (e) {
+
+
+        var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
+        var recurrence = $(':radio[name^=recurrence]:checked');
+
+        var trucktype = $("#truck_id > option:selected").data('type');
+        
+
+
+        if(recurrence.val() == "Recurrent"){
+          if(ordering_days == 0){
+
+          $(".ordering_days").css('color','red')
+            return false;
+          }
+          else{
+            $(".ordering_days").css('color','black')
+          }
+        }
+
+        var today = new Date();
+        var time = today.getHours();
+       
+        if(time > 16)
+        {
+          $('#schedule_id').val('');
+          console.log( $('#schedule_id').val())
+        }
+
+        if($("#po_number").val() == "" || $("#supplier_id").val() == "0" || $("#dock_id").val() ==  "" || $("#truck_id").val() == "" || $("#driver_id").val() == "" || $("#assistant_id").val() == "" || recurrence.length == 0 || $("#dateOfDelivery").val() == "" || $("#slotting_time").val() == "" ){
+
+          $(".modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+
+          $('.modalresponse').fadeIn(1000);
+          setTimeout(function(){
+            $('.modalresponse').fadeOut(1000);
+          },2000)
+
+           if($("#po_number").val() == "")
+             $("#po_number").css('outline','1px solid red')
+           else
+             $("#po_number").css('outline','1px solid transparent')
+
+           if($("#supplier_id").val() == "0")
+             $("#supplier_id").css('outline','1px solid red')
+           else
+             $("#supplier_id").css('outline','1px solid transparent')
+
+           if($("#dock_id").val() == "0")
+             $("#dock_id").css('outline','1px solid red')
+           else
+             $("#dock_id").css('outline','1px solid transparent')
+
+           if($("#truck_id").val() == "0" || $("#truck_id").val() == "")
+             $("#truck_id").css('outline','1px solid red')
+           else
+             $("#truck_id").css('outline','1px solid transparent')
+
+            if($("#driver_id").val() == "0" || $("#driver_id").val() == "")
+             $("#driver_id").css('outline','1px solid red')
+            else
+             $("#driver_id").css('outline','1px solid transparent')
+
+            if($("#assistant_id").val() == "0" || $("#assistant_id").val() == "")
+             $("#assistant_id").css('outline','1px solid red')
+            else
+             $("#assistant_id").css('outline','1px solid transparent')
+
+           if($("#dateOfDelivery").val() == "")
+             $("#dateOfDelivery").css('outline','1px solid red')
+            else
+             $("#dateOfDelivery").css('outline','1px solid transparent')
+
+
+           if(trucktype == "Containerized"){
+
+             if($("#container_number").val() == ""){
+
+               $("#container_number").css('outline','1px solid red')
+             }
+              else{
+               $("#container_number").css('outline','1px solid transparent')
+              }
+           }
+
+
+           if($("#slotting_time").val() == "")
+            $(".slotting_time").css('color','red')
+           else
+            $(".slotting_time").css('color','black')
+
+
+            if(recurrence.length == 0)
+              $(".recurrence").css('color','red')
+             else
+              $(".recurrence").css('color','black')
+
+            return false;
+        }else{
+
+            e.preventDefault();
+            $(this).html('Sending..');
+        
+            console.log($('#scheduleForm').serialize())
+            $.ajax({
+              data: $('#scheduleForm').serialize(),
+              url: "{{ route('ajaxschedules.store') }}",
+              type: "POST",
+              dataType: 'json',
+              success: function (data) {
+                 $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                  $('#scheduleForm').trigger("reset");
+                  $('#ajaxModel').modal('hide');
+                  setTimeout(function(){
+                    $('#response').hide("slow");
+                  },2000)
+                  
+
+                  var current_module = $("#current_module").val()
+                   testCalendar(current_module)
+                   $('#saveBtn').html('Save Changes');
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+                  $('#saveBtn').html('Save Changes');
+              }
+            });
+          }
+    });
+
+    $('body').on('click', '#delete_single_event', function (e) {
+        $('#recurrence_modal').hide();
+        $('#reason_modal').show();
+        console.log($('#selected_schedule').val())  
+        console.log($('#recurrence_hidden').val())  
+    });
+
+    $('body').on('click', '#delete_recurrence', function (e) {
+        $('#recurrence_modal').hide();
+        $('#reason_modal').show();
+        console.log($('#selected_schedule').val()) 
+
+        console.log($('#recurrence_hidden').val())   
+    });
+
+    $('body').on('click', '#delete_schedule', function (e) {
+        var id = $('#selected_schedule').val(); 
+        var reason = $('#reason').val(); 
+        $('#response').show();
+        if (confirm("Are you want to proceed?")){
+            $.ajax({
+                url: "{{ url('deactivateOrActivateSchedule') }}",
+                type: "POST",
+                data: {id:id, reason:reason},
+                success: function (data) {
+                    $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                    var current_module = $("#current_module").val()
+                    testCalendar(current_module)
+                    $('#ajaxModelDelete').modal('hide');
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+
+        } 
+    });
+    
   });
 
 
@@ -251,6 +688,8 @@
           <div class="col-xl-6 group-module">
             <input type="hidden" name="selected_schedule" id="selected_schedule">
             <input type="hidden" name="selected_supplierid" id="selected_supplierid">
+            <input type="hidden" name="current_module" id="current_module">
+            <input type="hidden" name="recurrence_hidden" id="recurrence_hidden">
           </div>
            <div class="col-xl-6 group-module">
             <div class="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
@@ -290,6 +729,7 @@
                 <form id="scheduleForm" name="scheduleForm" class="form-horizontal">
                     
                     <input type="hidden" name="schedule_id" id="schedule_id">
+                     <input type="hidden" name="isEditedFinalized" id="isEditedFinalized">
 
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*PO Number</label>
@@ -307,6 +747,7 @@
                                <option value='{{ $supplier->id }}'>{{ $supplier->supplier_name }}</option>
                              @endforeach
                           </select>
+                          <input type="hidden" name="alt_supplier_id" id="alt_supplier_id">
                         </div>
                     </div>
 
@@ -507,233 +948,52 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="ajaxModelDelete" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeadingDelete"></h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div id="recurrence_modal" class="modal-body">
+                <p id="reccurent">You are deleting a recurrent schedule. Are you deleting this single event schedule of the entire schedule recurrence?</p>
+                <div class="row">
+                  <div class="col-xl-6">
+                    <button id="delete_single_event" style="width:220px;"class="btn btn-primary">Delete Single <br> Event Schedule</button>
+                  </div>
+                  <div class="col-xl-6">
+                    <button id="delete_recurrence" style="width:220px;"class="btn btn-primary">Delete Recurrence <br> Schedule</button>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-xl-12">
+                    <button class="btn btn-secondary btn-block">Close</button>
+                  </div>
+                </div>
+            </div>
+            <div id="reason_modal" class="modal-body">
+                <p id="enter_reason">Enter reason for deleting schedules</p>
+                <div class="row">
+                  <div class="col-xl-12">
+                    <textarea class="form-control" id="reason"></textarea>
+                    <br>
+                    <button id="delete_schedule" class="btn btn-primary btn-block">Delete Schedule</button>
+                    <button class="btn btn-secondary btn-block" data-dismiss="modal">Cancel</button>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
   
 <script type="text/javascript">
 
-    $.ajaxSetup({
-          headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
-    });
-  
-    $(':radio').change(function (event) {
-        var id = $(this).data('id');
-        if(id == "recurrent"){
-          $(".r_ordering_days").css('display','block');
-        }else{
-          $(".r_ordering_days").css('display','none');
-        }
-    });
-
-    $('body').on('click', '.slot_box', function () {
-         
-          var slotting_time = $('#slotting_time'); 
-           var _this = $(this);
-           value = $(this).html();
-           if(_this.hasClass('active_slot_box')){
-              $(this).removeClass('active_slot_box');
-              var x = slotting_time.val().replace(value + "|","");
-              slotting_time.val(x)
-           }else{
-              $(this).addClass('active_slot_box');
-              slotting_time.val(slotting_time.val() + value + "|")
-           }
-         
-          
-    });
-
-    // $('div.slot_box:contains("00:00 - 00:30")').css('background-color', 'red');
-    // $('div.slot_box:contains("01:00 - 01:30")').css('background-color', 'red');
-    // $(".occupied_slot_box").on('click',function(){
-    //   return false;
-    // })
-
-     $('body').on('change', '#dateOfDelivery', function () {
-        $('div.occupied_slot_box').addClass("slot_box");
-        $('div.slot_box').removeClass("occupied_slot_box");
-        $('div.slot_box').removeClass("active_slot_box");
-        var date_of_delivery = $('#dateOfDelivery').val();
-        $.ajax({
-            url: "{{ url('getSlottingTime') }}",
-            type: "POST",
-            data: {date_of_delivery:date_of_delivery},
-            success: function (data) {
-                $.each(JSON.parse(data), function(index, item) {
-                  $.each(item.slotting_time, function(i, slot) {
-                  console.log(slot)
-                    if(slot != ""){
-                      $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
-                      $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
-                    }
-                  });
-                });
-            },
-            error: function (data) {
-                console.log('Error:', data);
-            }
-        });
-      });
+    
 
 
-
-     $('body').on('change', '#supplier_id', function () {
-         
-         var selected = $("#supplier_id option:selected").val();
-         //console.log(selected)
-         $('#truck_id').html('');
-         $('#driver_id').html('');
-         $('#assistant_id').html('');
-
-       if(selected != "0"){
-        $.ajax({
-              url: "{{ url('getSupplierData') }}",
-              type: "POST",
-              data: {id:selected},
-              success: function (data) {
-                //console.log(JSON.parse(data))  
-                $.each(JSON.parse(data), function(index, item) {
-                  // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
-                  if(index == 'truckdata'){
-                    $.each(item, function(index, truck) {
-
-                      $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
-                    });
-                  }
-
-                  if(index == 'driverdata'){
-                    $.each(item, function(index, driver) {
-                      $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
-                    });
-                  }
-
-                  if(index == 'assistantdata'){
-                    $.each(item, function(index, assistant) {
-                      $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
-                    });
-                  }
-                });
-
-              },
-              error: function (data) {
-                  console.log('Error:', data);
-              }
-          });
-      }
-          
-    });
-
-    $('body').on('click', '#saveBtn', function (e) {
-
-
-        var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
-        var recurrence = $(':radio[name^=recurrence]:checked');
-
-        var trucktype = $("#truck_id > option:selected").data('type');
-     
-        if($("#po_number").val() == "" || $("#supplier_id").val() == "0" || $("#dock_id").val() ==  "" || $("#truck_id").val() == "" || $("#driver_id").val() == "" || $("#assistant_id").val() == "" || recurrence.length == 0 || $("#dateOfDelivery").val() == "" || $("#slotting_time").val() == ""){
-
-          $(".modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
-
-          $('.modalresponse').fadeIn(1000);
-          setTimeout(function(){
-            $('.modalresponse').fadeOut(1000);
-          },2000)
-
-           if($("#po_number").val() == "")
-             $("#po_number").css('outline','1px solid red')
-           else
-             $("#po_number").css('outline','1px solid transparent')
-
-           if($("#supplier_id").val() == "0")
-             $("#supplier_id").css('outline','1px solid red')
-           else
-             $("#supplier_id").css('outline','1px solid transparent')
-
-           if($("#dock_id").val() == "0")
-             $("#dock_id").css('outline','1px solid red')
-           else
-             $("#dock_id").css('outline','1px solid transparent')
-
-           if($("#truck_id").val() == "0" || $("#truck_id").val() == "")
-             $("#truck_id").css('outline','1px solid red')
-           else
-             $("#truck_id").css('outline','1px solid transparent')
-
-            if($("#driver_id").val() == "0" || $("#driver_id").val() == "")
-             $("#driver_id").css('outline','1px solid red')
-            else
-             $("#driver_id").css('outline','1px solid transparent')
-
-            if($("#assistant_id").val() == "0" || $("#assistant_id").val() == "")
-             $("#assistant_id").css('outline','1px solid red')
-            else
-             $("#assistant_id").css('outline','1px solid transparent')
-
-           if($("#dateOfDelivery").val() == "")
-             $("#dateOfDelivery").css('outline','1px solid red')
-            else
-             $("#dateOfDelivery").css('outline','1px solid transparent')
-
-
-           if(trucktype == "Containerized"){
-
-             if($("#container_number").val() == ""){
-
-               $("#container_number").css('outline','1px solid red')
-             }
-              else{
-               $("#container_number").css('outline','1px solid transparent')
-              }
-           }
-
-
-           if($("#slotting_time").val() == "")
-            $(".slotting_time").css('color','red')
-           else
-            $(".slotting_time").css('color','black')
-
-
-            if(recurrence.val() == "Recurrent"){
-             if(ordering_days == 0)
-              $(".ordering_days").css('color','red')
-             else
-              $(".ordering_days").css('color','black')
-            }
-
-            if(recurrence.length == 0)
-              $(".recurrence").css('color','red')
-             else
-              $(".recurrence").css('color','black')
-
-            return false;
-        }else{
-
-            e.preventDefault();
-            $(this).html('Sending..');
-        
-            console.log($('#scheduleForm').serialize())
-            $.ajax({
-              data: $('#scheduleForm').serialize(),
-              url: "{{ route('ajaxschedules.store') }}",
-              type: "POST",
-              dataType: 'json',
-              success: function (data) {
-                 $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
-                  $('#scheduleForm').trigger("reset");
-                  $('#ajaxModel').modal('hide');
-                  setTimeout(function(){
-                    $('#response').hide("slow");
-                  },2000)
-                  table.draw();
-                   $('#saveBtn').html('Save Changes');
-              },
-              error: function (data) {
-                  console.log('Error:', data);
-                  $('#saveBtn').html('Save Changes');
-              }
-            });
-          }
-    });
 </script>
 
 @endsection

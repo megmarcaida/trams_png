@@ -10718,6 +10718,19 @@ a.text-dark:focus {
   display: inline-block;
   padding: 20px;
   margin: -2px;
-  background: red !important;
+  background: red;
   cursor: not-allowed !important;
+}
+
+.editable_slot_box{
+  display: inline-block;
+  padding: 20px;
+  margin: -2px;
+  background: #4dc0b5;
+  cursor: pointer !important;
+}
+
+.disableSelect{
+  cursor: not-allowed;
+  background: #e9ecef !important;
 }

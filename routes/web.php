@@ -83,6 +83,7 @@ Route::post('allschedules', 'SchedulerController@allSchedules' )->name('allsched
 Route::post('getSlottingTime', 'SchedulerController@getSlottingTime' )->name('getSlottingTime');
 Route::post('getSupplierData', 'SchedulerController@getSupplierData' )->name('getSupplierData');
 Route::resource('ajaxschedules','SchedulerController');
+Route::post('deactivateOrActivateSchedule', 'SchedulerController@deactivateOrActivateSchedule')->name('deactivateOrActivateSchedule');
 #END SCHEDULER
 
 #Docker

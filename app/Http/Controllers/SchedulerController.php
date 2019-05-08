@@ -50,7 +50,7 @@ class SchedulerController extends Controller
 
      
     
-        $schedules =  Schedule::all();        
+        $schedules =  Schedule::where("status","1")->get();        
         $search = $request->input('module');
         $status = "";
         $slotting = array();
@@ -61,14 +61,27 @@ class SchedulerController extends Controller
             {
 
                 $docks =    Dock::where('module','LIKE',"%{$search}%")->count();
+
+                $supplier = Supplier::where('id',$schedule->supplier_id)->first();
+                $truck = Truck::where('id',$schedule->truck_id)->first();
+                $driver = Driver::where('id',$schedule->driver_id)->first();
+                $assistant = Assistant::where('id',$schedule->assistant_id)->first();
                 if($docks == 0){
                     continue;
                 }else{
 
+                    $supplier_name = $supplier->supplier_name;
+                    $po_number = $schedule->po_number;
+                    $driver_name = $driver->first_name . " " . $driver->last_name;
+                    $assistant_name = $assistant->first_name . " " . $assistant->last_name;
+                    $truck_details = "\n" . $schedule->container_number . "\n" . $truck->plate_number;
+
 
                     $nestedData['id'] = $schedule->id;
-                    $nestedData['title'] = $request->input('module');
-                    $nestedData['supplier_id'] = $schedule->supplier_id;
+                    $nestedData['title'] =  $supplier_name . "\n Trucks" . $truck_details . "\n" . $driver_name . "\n" . $assistant_name;
+
+
+                    $nestedData['supplier_id'] = $supplier->supplier_id;
                     $nestedData['dock_id'] = $schedule->dock_id;
 
 
@@ -249,18 +262,14 @@ class SchedulerController extends Controller
         $dock = Dock::where('id',$request->dock_id)->first();
         $dock_name = $dock->dock_name;
 
-        $isExistPoNumber = Schedule::where("po_number",$request->po_number)->first();
+        $supplier_id = $request->alt_supplier_id == '' ? $request->supplier_id : $request->alt_supplier_id;
+       
+        $status = $request->schedule_id != null ? 2 : 1;
 
-        $isExist = Schedule::find($request->schedule_id);
-
-        if($isExistPoNumber && !$isExist){
-            $ret = ['error'=>'PO Number already exists.'];
-        }else{
-            $ret = ['success'=>'Schedule saved successfully.'];
-            Schedule::updateOrCreate(['id' => $request->schedule_id],
-                ['po_number' => $request->po_number, 'supplier_id' => $request->supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id]);        
-        }
-
+        $ret = ['success'=>'Schedule saved successfully.'];
+        Schedule::updateOrCreate(['id' => $request->schedule_id],
+            ['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status]);        
+        
         return response()->json($ret);
     }
 
@@ -273,7 +282,33 @@ class SchedulerController extends Controller
     public function edit($id)
     {
         $schedule = Schedule::find($id);
-        return response()->json($schedule);
+
+        $scheduleData = array();
+        if(!empty($schedule))
+        {
+            $nestedData['id'] = $schedule->id;
+            $nestedData['po_number'] = $schedule->po_number;
+                $nestedData['supplier_id'] = $schedule->supplier_id;
+                $nestedData['dock_id'] = $schedule->dock_id;
+                $nestedData['dock_name'] = $schedule->dock_name;
+                $nestedData['date_of_delivery'] = date("Y-m-d", strtotime($schedule->date_of_delivery));
+                $nestedData['recurrence'] = $schedule->recurrence;
+                $nestedData['ordering_days'] = $schedule->ordering_days;
+                $nestedData['truck_id'] = $schedule->truck_id;
+                $nestedData['container_number'] = $schedule->container_number;
+                $nestedData['driver_id'] = $schedule->driver_id;
+                $nestedData['assistant_id'] = $schedule->assistant_id;
+                $nestedData['material_list'] = $schedule->material_list;
+               
+                $nestedData['status'] = $schedule->status == 1 ? "Active" : "Inactive";
+
+                $nestedData['slotting_time_text'] =$schedule->slotting_time;
+                $nestedData['slotting_time'] = explode("|",$schedule->slotting_time);    
+            $scheduleData = $nestedData;
+
+        }
+
+        return response()->json($scheduleData);
     }
   
     /**
@@ -284,8 +319,13 @@ class SchedulerController extends Controller
      */
     public function destroy($id,$status)
     {
-        //Supplier::find($id)->delete();
-        Supplier::find($id)->update(['status' => 0]);
+        Schedule::find($id)->update(['status' => 0]);
+        return response()->json(['success'=>'Supplier deactivated successfully.']);
+    }
+
+     public function deactivateOrActivateSchedule(Request $request)
+    {
+        Schedule::find($request->id)->update(['reason'=> $request->reason,'status' => 0]);
         return response()->json(['success'=>'Supplier deactivated successfully.']);
     }
 }
