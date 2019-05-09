@@ -59,11 +59,10 @@
           
     });
 
-    // $('div.slot_box:contains("00:00 - 00:30")').css('background-color', 'red');
-    // $('div.slot_box:contains("01:00 - 01:30")').css('background-color', 'red');
-    // $(".occupied_slot_box").on('click',function(){
-    //   return false;
-    // })
+    // setTimeout(function(){
+    // $('.fc-EditSchedule-button').after('<br><br>')
+    // $('.fc-ScheduleDockUnavaibility-button').css('margin-left','0')
+    // },1000)
 
      $('body').on('change', '#dateOfDelivery', function () {
         $('div.occupied_slot_box').addClass("slot_box");
@@ -159,8 +158,8 @@
       selectable: true,
       eventLimit: true, // allow "more" link when too many events
       header: {
-        left: 'CreateSchedule EditSchedule DeleteSchedule ScheduleDockUnavailability',
-        center: 'title',
+        left: 'title',
+        center: 'CreateSchedule EditSchedule DeleteSchedule ScheduleDockUnavailability',
         right: 'today prev,next'
       },
       customButtons: {

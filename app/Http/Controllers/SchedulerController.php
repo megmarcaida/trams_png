@@ -215,7 +215,7 @@ class SchedulerController extends Controller
 
     public function getSlottingTime(Request $request){
 
-        $slotting = Schedule::where("date_of_delivery",$request->date_of_delivery)->get();
+        $slotting = Schedule::where("date_of_delivery",$request->date_of_delivery)->where('status','1')->get();
         $scheduleData = array();
         $slotting_time = array();
         if(!empty($slotting))
