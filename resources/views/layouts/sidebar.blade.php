@@ -40,7 +40,7 @@
           <a class="dropdown-item" href="blank.html">Blank Page</a> -->
         </div>
       </li>
-      @if(Auth::user()->role_id == 3)  
+      
      <li class="nav-item dropdown">
         <a class="nav-link dropdown-btn" href="#">
           <i class="fas fa-fw fa-folder"></i>
@@ -53,7 +53,6 @@
           <a class="dropdown-item" href="/scheduler/dock">Dock</a>
         </div>
       </li>
-      @endif
       <!-- <li class="nav-item">
         <a class="nav-link" href="tables.html">
           <i class="fas fa-fw fa-table"></i>

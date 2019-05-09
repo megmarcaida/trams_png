@@ -3,10 +3,6 @@
 @section('content')
 
 
-@if(Auth::user()->role_id != 3)
-  <script>window.location = "/";</script>
-@endif
-
 <script>
 
     document.addEventListener('DOMContentLoaded', function() {
