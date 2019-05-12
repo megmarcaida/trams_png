@@ -194,7 +194,7 @@
       header: {
         left: 'title',
         center: 'CreateSchedule EditSchedule DeleteSchedule ScheduleDockUnavailability',
-        right: 'listMonth today prev,next'
+        right: 'timeGridWeek listMonth today prev,next'
       },
       customButtons: {
         CreateSchedule: {
@@ -426,7 +426,8 @@
           duration: { days: 2 },
           buttonText: '2 days',
         },
-        listMonth: { buttonText: 'List Month' }
+        listMonth: { buttonText: 'List Month' },
+        timeGridWeek: { buttonText: 'List Calendar'}
       },
 
 
@@ -469,7 +470,7 @@
           console.log(event)
         },
         failure: function() {
-          alert('there was an error while fetching events!');
+          //alert('there was an error while fetching events!');
         },
         color: '#1e9',   // a non-ajax option
         textColor: 'black' // a non-ajax option

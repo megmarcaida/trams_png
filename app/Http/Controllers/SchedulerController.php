@@ -64,13 +64,15 @@ class SchedulerController extends Controller
             foreach ($schedules as $schedule)
             {
 
-                $docks =    Dock::where('module','LIKE',"%{$search}%")->count();
+                $docks =    Dock::where('module','LIKE',"%{$search}%")->first();
+
+                $hasScheduleModule = Schedule::where('dock_id',$docks['id'])->count();
 
                 $supplier = Supplier::where('id',$schedule->supplier_id)->first();
                 $truck = Truck::where('id',$schedule->truck_id)->first();
                 $driver = Driver::where('id',$schedule->driver_id)->first();
                 $assistant = Assistant::where('id',$schedule->assistant_id)->first();
-                if($docks == 0){
+                if($hasScheduleModule == 0 || $docks['id'] != $schedule->dock_id){
                     continue;
                 }else{
                     $scheds = trim($schedule->ordering_days);
@@ -101,7 +103,7 @@ class SchedulerController extends Controller
                                 array_push($dow, 6);
                                 break;
                             case 'Sun':
-                                array_push($dow, 7);
+                                array_push($dow, 0);
                                 break;
                             
                             default:
@@ -199,9 +201,11 @@ class SchedulerController extends Controller
             foreach ($unavailabilities as $unavailability)
             {
 
-                $docks =    Dock::where('module','LIKE',"%{$search}%")->count();
+                $docks =    Dock::where('module','LIKE',"%{$search}%")->first();
 
-                if($docks == 0){
+                $hasScheduleModule = Schedule::where('dock_id',$docks['id'])->count();
+
+                if($hasScheduleModule == 0 || $docks['id'] != $unavailability->dock_id){
                     continue;
                 }else{
 
