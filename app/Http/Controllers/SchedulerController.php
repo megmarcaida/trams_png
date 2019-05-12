@@ -260,8 +260,9 @@ class SchedulerController extends Controller
                     }
                     $_Data['status'] = $status;
                     $_Data['backgroundColor'] = "#ff7f7f";
+
+                    array_push($data, $_Data);
                 }
-                array_push($data, $_Data);
 
             }
         }
@@ -401,10 +402,21 @@ class SchedulerController extends Controller
             $gcas = '';
             $description = '';
             $quantity = '';
+            $material_list = '';
 
             foreach($request->gcas as $_gcas){
                 $gcas .= $_gcas ."|";
             }
+
+            foreach($request->description as $_description){
+                $description .= $_description ."|";
+            }
+
+            foreach($request->quantity as $_quantity){
+                $quantity .= $_quantity ."|";
+            }
+
+            $material_list = $gcas . "-;-" . $description . "-;-" . $quantity; 
             
             $ordering_days='';
 
@@ -425,7 +437,7 @@ class SchedulerController extends Controller
 
             $ret = ['success'=>'Schedule saved successfully.'];
             Schedule::updateOrCreate(['id' => $request->schedule_id],
-                ['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $gcas]);       
+                ['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);       
         }elseif($request->isForUnavailability == "1") {
             $ordering_days='';
 
@@ -459,7 +471,10 @@ class SchedulerController extends Controller
     public function edit($id)
     {
         $schedule = Schedule::find($id);
-
+        $gcas = array();
+        $description = array();
+        $quantity = array();
+        $material_list = array();
         $scheduleData = array();
         if(!empty($schedule))
         {
@@ -475,7 +490,23 @@ class SchedulerController extends Controller
                 $nestedData['container_number'] = $schedule->container_number;
                 $nestedData['driver_id'] = $schedule->driver_id;
                 $nestedData['assistant_id'] = $schedule->assistant_id;
-                $nestedData['material_list'] = $schedule->material_list;
+
+                if($schedule->material_list == "" || $schedule->material_list == null){
+                    $gcas = array();
+                    $description = array();
+                    $quantity = array();
+                }else{
+                    
+                    $material_list = explode("-;-", $schedule->material_list);
+
+                    $gcas = explode("|", $material_list[0]);
+                    $description = explode("|", $material_list[1]);
+                    $quantity = explode("|", $material_list[2]);
+                }
+
+                $nestedData['material_list']['gcas'] = $gcas;
+                $nestedData['material_list']['description'] = $description;
+                $nestedData['material_list']['quantity'] = $quantity;
                
                 $nestedData['status'] = $schedule->status == 1 ? "Active" : "Inactive";
 

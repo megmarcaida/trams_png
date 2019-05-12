@@ -222,6 +222,12 @@
             $('div.occupied_slot_box').addClass("slot_box");
             $('div.slot_box').removeClass("occupied_slot_box");
             $('div.slot_box').removeClass("active_slot_box");
+
+            $('#cont').html('');
+            $('document').ready(function(){
+              createTable();
+              addRow('','','');
+            });
             $('#ajaxModel').modal({
               backdrop:'static',
               keyboard: false
@@ -325,6 +331,14 @@
                 $("input[value='" + $.trim(value) + "']").prop('checked', true);
               });
 
+              $('#cont').html('');
+              createTable();
+              $.each(data.material_list.gcas, function(index, item) {
+                  if(item != ""){
+
+                    addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                  }
+              });
 
               $("#slotting_time").val(data.slotting_time_text);
 
@@ -571,11 +585,9 @@
     
     }
 
-     $('document').ready(function(){
-      createTable();
+   $('document').ready(function(){
       testCalendar("Null");
-      addRow();
-    });
+ });
 
     $('body').on('click', '#saveBtn', function (e) {
 
@@ -903,7 +915,7 @@
     }
 
     // ADD A NEW ROW TO THE TABLE.s
-    function addRow() {
+    function addRow(gcas,description,qty) {
         var materialTab = document.getElementById('materialTable');
 
         var rowCnt = materialTab.rows.length;        // GET TABLE ROW COUNT.
@@ -930,14 +942,14 @@
                 var ele = document.createElement('input');
                 ele.setAttribute('type', 'text');
                 ele.setAttribute('name', 'gcas[]');
-                ele.setAttribute('value', '');
+                ele.setAttribute('value', gcas);
 
                 td.appendChild(ele);
             }else if(c== 2){
                 var ele = document.createElement('input');
                 ele.setAttribute('type', 'text');
                 ele.setAttribute('name', 'description[]');
-                ele.setAttribute('value', '');
+                ele.setAttribute('value', description);
 
                 td.appendChild(ele);
             }
@@ -946,7 +958,7 @@
                 ele.setAttribute('type', 'text');
                 ele.setAttribute('name', 'quantity[]');
                 ele.setAttribute('onkeyup', 'addRow()');
-                ele.setAttribute('value', '');
+                ele.setAttribute('value', qty);
 
                 td.appendChild(ele);
             }
