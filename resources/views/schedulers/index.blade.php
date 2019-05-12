@@ -571,7 +571,11 @@
     
     }
 
-    testCalendar("Null");
+     $('document').ready(function(){
+      createTable();
+      testCalendar("Null");
+      addRow();
+    });
 
     $('body').on('click', '#saveBtn', function (e) {
 
@@ -871,6 +875,110 @@
             } 
     }); 
 
+
+
+    // material list
+
+   // ARRAY FOR HEADER.
+    var arrHead = new Array();
+    arrHead = ['', 'GCAS', 'Description', 'Quantity(UOM)'];      // SIMPLY ADD OR REMOVE VALUES IN THE ARRAY FOR TABLE HEADERS.
+
+    // FIRST CREATE A TABLE STRUCTURE BY ADDING A FEW HEADERS AND
+    // ADD THE TABLE TO YOUR WEB PAGE.
+    function createTable() {
+        var materialTable = document.createElement('table');
+        materialTable.setAttribute('id', 'materialTable');
+        materialTable.setAttribute('class', 'table table-condensed');                // SET THE TABLE ID.
+
+        var tr = materialTable.insertRow(-1);
+
+        for (var h = 0; h < arrHead.length; h++) {
+            var th = document.createElement('th');          // TABLE HEADER.
+            th.innerHTML = arrHead[h];
+            tr.appendChild(th);
+        }
+
+        var div = document.getElementById('cont');
+        div.appendChild(materialTable);    // ADD THE TABLE TO YOUR WEB PAGE.
+    }
+
+    // ADD A NEW ROW TO THE TABLE.s
+    function addRow() {
+        var materialTab = document.getElementById('materialTable');
+
+        var rowCnt = materialTab.rows.length;        // GET TABLE ROW COUNT.
+        var tr = materialTab.insertRow(rowCnt);      // TABLE ROW.
+        tr = materialTab.insertRow(rowCnt);
+
+        for (var c = 0; c < arrHead.length; c++) {
+            var td = document.createElement('td');          // TABLE DEFINITION.
+            td = tr.insertCell(c);
+
+            if (c == 0) {           // FIRST COLUMN.
+                // ADD A BUTTON.
+                var button = document.createElement('input');
+
+                // SET INPUT ATTRIBUTE.
+                button.setAttribute('type', 'button');
+                button.setAttribute('value', 'Remove');
+
+                // ADD THE BUTTON's 'onclick' EVENT.
+                button.setAttribute('onclick', 'removeRow(this)');
+
+                td.appendChild(button);
+            }else if(c== 1){
+                var ele = document.createElement('input');
+                ele.setAttribute('type', 'text');
+                ele.setAttribute('name', 'gcas[]');
+                ele.setAttribute('value', '');
+
+                td.appendChild(ele);
+            }else if(c== 2){
+                var ele = document.createElement('input');
+                ele.setAttribute('type', 'text');
+                ele.setAttribute('name', 'description[]');
+                ele.setAttribute('value', '');
+
+                td.appendChild(ele);
+            }
+            else if(c== 3){
+                var ele = document.createElement('input');
+                ele.setAttribute('type', 'text');
+                ele.setAttribute('name', 'quantity[]');
+                ele.setAttribute('onkeyup', 'addRow()');
+                ele.setAttribute('value', '');
+
+                td.appendChild(ele);
+            }
+        }
+    }
+
+    // DELETE TABLE ROW.
+    function removeRow(oButton) {
+        var materialTab = document.getElementById('materialTable');
+        materialTab.deleteRow(oButton.parentNode.parentNode.rowIndex);       // BUTTON -> TD -> TR.
+    }
+
+    // EXTRACT AND SUBMIT TABLE DATA.
+    function submit() {
+        var myTab = document.getElementById('materialTable');
+        var values = new Array();
+
+        // LOOP THROUGH EACH ROW OF THE TABLE.
+        for (row = 1; row < myTab.rows.length - 1; row++) {
+            for (c = 0; c < myTab.rows[row].cells.length; c++) {   // EACH CELL IN A ROW.
+
+                var element = myTab.rows.item(row).cells[c];
+                if (element.childNodes[0].getAttribute('type') == 'text') {
+                    values.push("'" + element.childNodes[0].value + "'");
+                }
+            }
+        }
+        console.log(values);
+    }
+
+      // material list end
+
 </script>
 <div class="container-fluid">
 
@@ -920,7 +1028,7 @@
 <!-- /.container-fluid -->
 <div class="modal fade" id="ajaxModel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="width:750px">
             <div class="modal-header">
                 <h4 class="modal-title" id="modelHeading"></h4>
 
@@ -1120,23 +1228,7 @@
                     <div class="form-group">
                        <label for="name" class="col-sm-12 control-label">*Material List</label>
                        <div class="col-sm-12">
-                          <table class="table table-responsive table-striped">
-                            <tr>
-                              <th>GCAS</th>
-                              <th>Description</th>
-                              <th>Quantity(UOM)</th>
-                            </tr>
-                            <tr>
-                              <td>test</td>
-                              <td>test</td>
-                              <td>2</td>
-                            </tr>
-                            <tr>
-                              <td>test</td>
-                              <td>test</td>
-                              <td>2</td>
-                            </tr>
-                          </table>
+                            <div id="cont"></div>
                         </div>
                     </div>
 

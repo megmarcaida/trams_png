@@ -142,22 +142,29 @@ class SchedulerController extends Controller
 
                     $slotting = explode("|", $schedule->slotting_time);
 
-                    if($schedule->recurrence =="Recurrent"){
-                        // $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
-                        // $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
 
-                        $nestedData['daysOfWeek'] = $dow;
+                    switch ($schedule->recurrence) {
+
+                        case "Single Event":
+                            $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
+                            $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
+                            $nestedData['daysOfWeek'] = null;
+                        $nestedData['startTime'] = null;
+                        $nestedData['endTime'] = null;
+                        $nestedData['startRecur'] = null;
+                        $nestedData['endRecur'] = null;
+                            break;
+                        case "Recurrent":
+                            $nestedData['daysOfWeek'] = $dow;
                         $nestedData['startTime'] = $start;
                         $nestedData['endTime'] = $end;
                         $nestedData['startRecur'] = $schedule->date_of_delivery;
                         $nestedData['endRecur'] = date("Y-m-d", strtotime(date("Y-m-d", strtotime($schedule->date_of_delivery)) . " + 365 day"));
-                        ;
-
-
-
-                    }else{
-                        $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
-                        $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
+                        break;
+                        
+                        default:
+                            # code...
+                            break;
                     }
 
 
@@ -189,9 +196,11 @@ class SchedulerController extends Controller
                     }
                     $nestedData['status'] = $status;
 
+
+                    $data[] = $nestedData;
                     $dow = array();
+
                 }
-                $data[] = $nestedData;
 
             }
         }
@@ -386,8 +395,17 @@ class SchedulerController extends Controller
     public function store(Request $request)
     {
 
+
         if($request->isForUnavailability == "0"){
 
+            $gcas = '';
+            $description = '';
+            $quantity = '';
+
+            foreach($request->gcas as $_gcas){
+                $gcas .= $_gcas ."|";
+            }
+            
             $ordering_days='';
 
             if($request->ordering_days){
@@ -407,7 +425,7 @@ class SchedulerController extends Controller
 
             $ret = ['success'=>'Schedule saved successfully.'];
             Schedule::updateOrCreate(['id' => $request->schedule_id],
-                ['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status]);       
+                ['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $gcas]);       
         }elseif($request->isForUnavailability == "1") {
             $ordering_days='';
 
