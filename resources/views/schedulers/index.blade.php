@@ -495,6 +495,24 @@
         );
       },
        eventClick: function(info) {
+        // Clear View
+            $('#view_delivery_id').html('');
+            $('#view_po_number').html('');
+            $('#view_supplier_name').html('');
+            $('#view_dock_name').html('');
+            $('#view_date_of_delivery').html('');
+            $('#view_reccurence').html('');
+            $('#view_slotting_time').html('');
+            $('#view_truck').html('');
+            $('#view_container_no').html('');
+            $('#view_driver_name').html('');
+            $('#view_assistant').html('');
+
+        // END CLEAR VIEW
+
+
+
+
         $('#recurrence_hidden').val('');
         $('#selected_schedule').val(info.event.id);
         $('#selected_supplierid').val(info.event.extendedProps.supplier_id);
