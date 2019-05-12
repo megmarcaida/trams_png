@@ -25,16 +25,19 @@
     $('body').on('click', '.slot_box', function () {
          
           var slotting_time = $('#slotting_time'); 
+          var slotting_time_unavailability = $('#slotting_time_unavailability'); 
            var _this = $(this);
            value = $(this).html();
            if(_this.hasClass('active_slot_box')){
               $(this).removeClass('active_slot_box');
               var x = slotting_time.val().replace(value + "|","");
-
+              var y = slotting_time_unavailability.val().replace(value + "|","");
               slotting_time.val(x)
+              slotting_time_unavailability.val(y)
            }else{
               $(this).addClass('active_slot_box');
               slotting_time.val(slotting_time.val() + value + "|")
+              slotting_time_unavailability.val(slotting_time_unavailability.val() + value + "|")
            }
          
           
@@ -43,17 +46,20 @@
     $('body').on('click', '.editable_slot_box', function () {
          
           var slotting_time = $('#slotting_time'); 
+          var slotting_time_unavailability = $('#slotting_time_unavailability'); 
            var _this = $(this);
            value = $(this).html();
            if(_this.hasClass('editable_slot_box')){
               $(this).removeClass('editable_slot_box').addClass('slot_box');
                $(this).removeClass('occupied_slot_box');
               var x = slotting_time.val().replace(value + "|","");
-
+              var y = slotting_time_unavailability.val().replace(value + "|","");
               slotting_time.val(x)
+              slotting_time_unavailability.val(y)
            }else{
               $(this).addClass('active_slot_box');
               slotting_time.val(slotting_time.val() + value + "|")
+              slotting_time_unavailability.val(slotting_time_unavailability.val() + value + "|")
            }
          
           
@@ -74,7 +80,35 @@
         $.ajax({
             url: "{{ url('getSlottingTime') }}",
             type: "POST",
-            data: {date_of_delivery:date_of_delivery},
+            data: {date_of_delivery:date_of_delivery,isForUnavailability:'0'},
+            success: function (data) {
+                $.each(JSON.parse(data), function(index, item) {
+                  $.each(item.slotting_time, function(i, slot) {
+                  console.log(slot)
+                    if(slot != ""){
+                      $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                      $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                    }
+                  });
+                });
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+      });
+
+     $('body').on('change', '#dateOfUnavailability', function () {
+        $('div.occupied_slot_box').addClass("slot_box");
+        $('div.slot_box').removeClass("occupied_slot_box");
+        $('div.slot_box').removeClass("active_slot_box");
+
+        $('#slotting_time_unavailability').val('');
+        var date_of_unavailability = $('#dateOfUnavailability').val();
+        $.ajax({
+            url: "{{ url('getSlottingTime') }}",
+            type: "POST",
+            data: {date_of_unavailability:date_of_unavailability,isForUnavailability:'1'},
             success: function (data) {
                 $.each(JSON.parse(data), function(index, item) {
                   $.each(item.slotting_time, function(i, slot) {
@@ -151,7 +185,7 @@
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
       schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
-      plugins: [ 'interaction', 'resourceDayGrid', 'resourceTimeGrid' ],
+      plugins: [ 'interaction', 'resourceDayGrid', 'resourceTimeGrid', 'list' ],
       defaultView: 'timeGridWeek',
       defaultDate: Date.now(),
       editable: true,
@@ -160,7 +194,7 @@
       header: {
         left: 'title',
         center: 'CreateSchedule EditSchedule DeleteSchedule ScheduleDockUnavailability',
-        right: 'today prev,next'
+        right: 'listMonth today prev,next'
       },
       customButtons: {
         CreateSchedule: {
@@ -376,17 +410,13 @@
         ScheduleDockUnavailability: {
           text: 'Schedule Dock Unavailability',
           click: function() {
-            $('#response').html(''); 
-            var id = $('#selected_schedule').val();
-            var selected = $('#selected_supplierid').val();
-            $('#response').show()
-            if(id == "" && selected == ""){
-              $('#response').append('<div class="alert alert-warning">Please select schedule to delete.</div>  ')
-            }
-            $('#ajaxModelDelete').modal({
+            $('#ajaxModelUnavailability').modal({
               backdrop:'static',
               keyboard: false
             })
+
+            $('#modelHeadingUnavailability').append('Schedule Dock Unavailability')
+            
           }
         },
       },
@@ -395,7 +425,8 @@
           type: 'resourceTimeGrid',
           duration: { days: 2 },
           buttonText: '2 days',
-        }
+        },
+        listMonth: { buttonText: 'List Month' }
       },
 
 
@@ -403,12 +434,12 @@
       allDaySlot: false,
 
       //uncomment this for default setup
-      resources: [
-        { id: 'a', title: 'Room A' },
-        { id: 'b', title: 'Room B', eventColor: 'green' },
-        { id: 'c', title: 'Room C', eventColor: 'orange' },
-        { id: 'd', title: 'Room D', eventColor: 'red' }
-      ],
+      // resources: [
+      //   { id: 'a', title: 'Room A' },
+      //   { id: 'b', title: 'Room B', eventColor: 'green' },
+      //   { id: 'c', title: 'Room C', eventColor: 'orange' },
+      //   { id: 'd', title: 'Room D', eventColor: 'red' }
+      // ],
       // events: [
       //   { id: '1', resourceId: 'b', start: '2019-04-06', end: '2019-04-08', title: 'event 1' },
       //   { id: '2', resourceId: 'a', start: '2019-04-07T09:00:00', end: '2019-04-07T14:00:00', title: 'event 2' },
@@ -417,8 +448,14 @@
       //   { id: '5', resourceId: 'd', start: '2019-04-07T10:00:00', end: '2019-04-07T15:00:00', title: 'event 5' }
       // ],
 
-      eventAfterRender: function(info) {
-        console.log("test")
+      eventRender: function(info) {
+        //console.log(info.event.extendedProps.recurrence)
+        // var tooltip = new Tooltip(info.el, {
+        //   title: info.event.title,
+        //   placement: 'top',
+        //   trigger: 'hover',
+        //   container: 'body'
+        // });
       },
 
       events: {
@@ -428,11 +465,17 @@
           _token: '{{csrf_token()}}',
           module: module_name
         },
+        success: function(event){
+          console.log(event)
+        },
         failure: function() {
           alert('there was an error while fetching events!');
         },
         color: '#1e9',   // a non-ajax option
         textColor: 'black' // a non-ajax option
+      },
+      eventSourceSuccess: function(content, xhr) {
+        console.log(content.eventArray);
       },
       select: function(arg) {
         
@@ -466,6 +509,26 @@
           $('.fc-time-grid-event').css('border-color','transparent');
           info.el.style.borderColor = 'blue';
           info.el.style.borderWidth = '2px';
+
+            console.log(info.event.extendedProps)
+            $('#view_delivery_id').append('test');
+            $('#view_po_number').append('test');
+            $('#view_supplier_name').append('test');
+            $('#view_dock_name').append(info.event.extendedProps.dock_name);
+            $('#view_date_of_delivery').append(info.event.extendedProps.date_of_delivery);
+            $('#view_reccurence').append(info.event.extendedProps.recurrence);
+            $('#view_slotting_time').append(info.event.extendedProps.slotting_time);
+            $('#view_truck').append(info.event.extendedProps.truck_details);
+            $('#view_container_no').append(info.event.extendedProps.container_no);
+            $('#view_driver_name').append(info.event.extendedProps.driver_name);
+            $('#view_assistant').append(info.event.extendedProps.assistant_name);
+            $('#modal_view').html(''); 
+            $('#modal_view').show()
+           
+            $('#ajaxModelView').modal({
+              backdrop:'static',
+              keyboard: false
+            })
       }
     });
 
@@ -659,10 +722,135 @@
 
         } 
     });
+
+    $('body').on('click', '#saveBtnUnavailability', function (e) {
+
+
+        var ordering_days = $(':checkbox[name^=ordering_days_unavailability]:checked').length;
+        var recurrence = $(':radio[name^=recurrence_unavailability]:checked');
+
+        var type = $(':radio[name^=type_unavailability]:checked');
+
+
+        if(recurrence.val() == "Recurrent"){
+          if(ordering_days == 0){
+
+          $(".ordering_days").css('color','red')
+            return false;
+          }
+          else{
+            $(".ordering_days").css('color','black')
+          }
+        }
+
+        var today = new Date();
+        var time = today.getHours();
+       
+        if(time > 16)
+        {
+          $('#schedule_id').val('');
+          console.log( $('#schedule_id').val())
+        }
+
+        if($("#dock_id_unavailability").val() ==  "" || recurrence.length == 0 || type.length == 0 || $("#dateOfUnavailability").val() == "" || $("#slotting_time").val() == "" ){
+
+          $(".modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+
+          $('.modalresponse').fadeIn(1000);
+          setTimeout(function(){
+            $('.modalresponse').fadeOut(1000);
+          },2000)
+
+          
+
+         
+
+           if($("#dock_id_unavailability").val() == "0")
+             $("#dock_id_unavailability").css('outline','1px solid red')
+           else
+             $("#dock_id_unavailability").css('outline','1px solid transparent')
+
+           
+           if($("#dateOfUnavailability").val() == "")
+             $("#dateOfUnavailability").css('outline','1px solid red')
+            else
+             $("#dateOfUnavailability").css('outline','1px solid transparent')
+
+           if($("#slotting_time").val() == "")
+            $(".slotting_time").css('color','red')
+           else
+            $(".slotting_time").css('color','black')
+
+
+            if(recurrence.length == 0)
+              $(".recurrence").css('color','red')
+             else
+              $(".recurrence").css('color','black')
+
+            if(type.length == 0)
+              $(".type_unavailability").css('color','red')
+             else
+              $(".type_unavailability").css('color','black')
+
+            return false;
+        }else{
+
+            e.preventDefault();
+            $(this).html('Sending..');
+        
+            console.log($('#unavailabilityForm').serialize())
+            $.ajax({
+              data: $('#unavailabilityForm').serialize(),
+              url: "{{ route('ajaxschedules.store') }}",
+              type: "POST",
+              dataType: 'json',
+              success: function (data) {
+                 $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                  $('#unavailabilityForm').trigger("reset");
+                  $('#ajaxModelUnavailability').modal('hide');
+                  setTimeout(function(){
+                    $('#response').hide("slow");
+                  },2000)
+                  
+
+                  var current_module = $("#current_module").val()
+                   testCalendar(current_module)
+                   $('#saveBtn').html('Save Changes');
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+                  $('#saveBtn').html('Save Changes');
+              }
+            });
+          }
+    });
     
   });
 
+  $('body').on('mousedown','.fc-time-grid-event',function(event) { 
+            switch (event.which) { 
+                case 1: 
+                    console.log('left mouse button');
+                    break; 
+                case 2: 
+                    console.log('middle mouse button');
+                    break; 
+                case 3: 
 
+                    // $(this).contextmenu(function() {
+                    //     return false;
+                    // });
+
+                    $('.fc-time-grid-event').css('border-color','transparent');
+                    $(this).css('border-color','red');
+                    $(this).css('border-width','2');
+                    console.log($('#selected_schedule').val());
+                    return false;
+                    break; 
+                default: 
+                    break; 
+            } 
+    }); 
 
 </script>
 <div class="container-fluid">
@@ -725,6 +913,7 @@
                     
                     <input type="hidden" name="schedule_id" id="schedule_id">
                      <input type="hidden" name="isEditedFinalized" id="isEditedFinalized">
+                     <input type="hidden" value="0" name="isForUnavailability" id="isForUnavailability">
 
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*PO Number</label>
@@ -979,6 +1168,290 @@
                     <button class="btn btn-secondary btn-block" data-dismiss="modal">Cancel</button>
                   </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ajaxModelView" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeadingView">View Schedule</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div class="modal-body">
+                
+               <div class="row">
+                  <div class="col-md-6">
+                    Delivery ID:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_delivery_id"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    P.O. Number:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_po_number"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Supplier:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_supplier_name"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Dock:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_dock_name"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Date of Delivery:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_date_of_delivery"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Recurrence:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_reccurence"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Slotting Time:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_slotting_time"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Truck:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_truck"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Container Number:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_container_no"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Driver:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_driver_name"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Assistant:
+                  </div>
+                  <div class="col-md-6">
+                    <p id="view_assistant"></p>
+                  </div>
+                </div>
+                <br>
+                <button class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ajaxModelUnavailability" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeadingUnavailability"></h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div class="modal-body">
+                <div id="modalresponse"></div> 
+                <form id="unavailabilityForm" name="unavailabilityForm" class="form-horizontal">
+                    
+                    <input type="hidden" name="unavailability_id" id="unavailability_id">
+                     <input type="hidden" value="1" name="isForUnavailability" id="isForUnavailability">
+                     <input type="hidden" name="isEditedFinalized" id="isEditedFinalized">
+
+                   
+
+                    <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Dock</label>
+                       <div class="col-sm-12">
+                          <select  class="form-control" id="dock_id_unavailability" name="dock_id_unavailability">
+                             <option value="0">Please select Dock</option>
+                             @foreach($json_data['dockData']['data'] as $dock)
+                               <option value='{{ $dock->id }}'>{{ $dock->dock_name }}</option>
+                             @endforeach
+                          </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-sm-12 control-label">*Date of Unavailability</label>
+                      <div class="col-sm-12">
+                        <div class="col-sm-12">
+                        <input type="date" class="form-control datepicker" name="dateOfUnavailability" id="dateOfUnavailability" required="">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="col-sm-12 control-label recurrence">*Recurrence</label>
+                      <div class="col-sm-12">
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="recurrence_unavailability" class="recurrence" data-id="single" value="Single Event">
+                          <label class="form-check-label" for="inlineRadio1">Single Event</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="recurrence_unavailability" class="recurrence" data-id="recurrent" value="Recurrent">
+                          <label class="form-check-label" for="inlineRadio1">Recurrent</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group r_ordering_days">
+                      <label class="col-sm-12 control-label ordering_days">*Every</label>
+                      <div class="col-sm-12">
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_m" value="Mon">
+                          <label class="form-check-label" for="inlineCheckbox1">Mon</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_t" value="Tue">
+                          <label class="form-check-label" for="inlineCheckbox2">Tue</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_w" value="Wed">
+                          <label class="form-check-label" for="inlineCheckbox2">Wed</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_th" value="Thu">
+                          <label class="form-check-label" for="inlineCheckbox2">Thu</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_f" value="Fri">
+                          <label class="form-check-label" for="inlineCheckbox2">Fri</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_sat" value="Sat">
+                          <label class="form-check-label" for="inlineCheckbox2">Sat</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_sun" value="Sun">
+                          <label class="form-check-label" for="inlineCheckbox2">Sun</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-sm-12 control-label slotting_time">*Slotting Time</label>
+                      <input type="hidden" class="form-control" id="slotting_time_unavailability" name="slotting_time_unavailability" required="">
+                      <div class="col-sm-12">
+                          <div class="parent_slotting">
+                            <div class="slotting_time">
+                              <div class="slot_box" id="slot1">00:00 - 00:30</div>
+                              <div class="slot_box" id="slot2">00:30 - 01:00</div>
+                              <div class="slot_box" id="slot3">01:00 - 01:30</div>
+                              <div class="slot_box" id="slot4">01:30 - 02:00</div>
+                              <div class="slot_box" id="slot5">02:00 - 02:30</div>
+                              <div class="slot_box" id="slot6">02:30 - 03:00</div>
+                              <div class="slot_box" id="slot7">03:00 - 03:30</div>
+                              <div class="slot_box" id="slot8">03:30 - 04:00</div>
+                              <div class="slot_box" id="slot9">04:00 - 04:30</div>
+                              <div class="slot_box" id="slot10">04:30 - 05:00</div>
+                              <div class="slot_box" id="slot11">05:00 - 05:30</div>
+                              <div class="slot_box" id="slot12">05:30 - 06:00</div>
+                              <div class="slot_box" id="slot13">06:00 - 06:30</div>
+                              <div class="slot_box" id="slot14">06:30 - 07:00</div>
+                              <div class="slot_box" id="slot15">07:00 - 07:30</div>
+                              <div class="slot_box" id="slot16">07:30 - 08:00</div>
+                              <div class="slot_box" id="slot17">08:00 - 08:30</div>
+                              <div class="slot_box" id="slot18">08:30 - 09:00</div>
+                              <div class="slot_box" id="slot19">09:00 - 09:30</div>
+                              <div class="slot_box" id="slot20">09:30 - 10:00</div>
+                              <div class="slot_box" id="slot21">10:00 - 10:30</div>
+                              <div class="slot_box" id="slot22">10:30 - 11:00</div>
+                              <div class="slot_box" id="slot23">11:00 - 11:30</div>
+                              <div class="slot_box" id="slot24">11:30 - 12:00</div>
+                              <div class="slot_box" id="slot25">12:00 - 12:30</div>
+                              <div class="slot_box" id="slot26">12:30 - 13:00</div>
+                              <div class="slot_box" id="slot27">13:00 - 13:30</div>
+                              <div class="slot_box" id="slot28">13:30 - 14:00</div>
+                              <div class="slot_box" id="slot29">14:00 - 14:30</div>
+                              <div class="slot_box" id="slot30">14:30 - 15:00</div>
+                              <div class="slot_box" id="slot31">15:00 - 15:30</div>
+                              <div class="slot_box" id="slot32">15:30 - 16:00</div>
+                              <div class="slot_box" id="slot33">16:00 - 16:30</div>
+                              <div class="slot_box" id="slot34">16:30 - 17:00</div>
+                              <div class="slot_box" id="slot35">17:00 - 17:30</div>
+                              <div class="slot_box" id="slot36">17:30 - 18:00</div>
+                              <div class="slot_box" id="slot37">18:00 - 18:30</div>
+                              <div class="slot_box" id="slot38">18:30 - 19:00</div>
+                              <div class="slot_box" id="slot39">19:00 - 19:30</div>
+                              <div class="slot_box" id="slot40">19:30 - 20:00</div>
+                              <div class="slot_box" id="slot41">20:00 - 20:30</div>
+                              <div class="slot_box" id="slot42">20:30 - 21:00</div>
+                              <div class="slot_box" id="slot43">21:00 - 21:30</div>
+                              <div class="slot_box" id="slot44">21:30 - 22:00</div>
+                              <div class="slot_box" id="slot45">22:00 - 22:30</div>
+                              <div class="slot_box" id="slot46">22:30 - 23:00</div>
+                              <div class="slot_box" id="slot47">23:00 - 23:30</div>
+                              <div class="slot_box" id="slot48">23:30 - 24:00</div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-sm-12 control-label recurrence">*Type</label>
+                      <div class="col-sm-12">
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="type_unavailability" class="recurrence" data-id="single" value="Planned">
+                          <label class="form-check-label" for="inlineRadio1">Planned</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="recurrence_unavailability" class="recurrence" data-id="recurrent" value="Recurrent">
+                          <label class="form-check-label" for="inlineRadio1">Unplanned</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name" class="col-sm-12 control-label">*Reason</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="reason_unavailability" name="reason_unavailability" placeholder="Enter Reason" value="" required="">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-offset-2 col-sm-10">
+                       <button type="submit" class="btn btn-primary" id="saveBtnUnavailability" value="create">Save changes
+                       </button>
+                    </div>
+
+                </form>
+
             </div>
         </div>
     </div>

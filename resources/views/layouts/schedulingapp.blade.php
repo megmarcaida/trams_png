@@ -18,19 +18,28 @@
     <link href="{{ asset('packages/daygrid/main.css') }}" rel="stylesheet">
     <link href="{{ asset('packages/timegrid/main.css') }}" rel="stylesheet">
 
-    <script src="{{ asset('packages/core/main.js') }}"></script>
-    <script src="{{ asset('packages/interaction/main.js') }}"></script>
-    <script src="{{ asset('packages/daygrid/main.js') }}"></script>
-    <script src="{{ asset('packages/timegrid/main.js') }}"></script>
+    <script src="https://fullcalendar.io/releases/core/4.0.2/main.min.js"></script>
+    <script src="https://fullcalendar.io/releases/interaction/4.0.2/main.min.js"></script>
+
+
+    <script src="https://fullcalendar.io/releases/daygrid/4.0.1/main.min.js"></script>
+    <script src="https://fullcalendar.io/releases/timegrid/4.0.1/main.min.js"></script>
+    <script src="https://fullcalendar.io/releases/rrule/4.0.1/main.min.js"></script>
+
     <script src="{{ asset('packages/resource-common/main.js') }}"></script>
     <script src="{{ asset('packages/resource-daygrid/main.js') }}"></script>
     <script src="{{ asset('packages/resource-timegrid/main.js') }}"></script>
 
+    <script src="https://fullcalendar.io/releases/list/4.1.0/main.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  
+    
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    
+
+    <script src="https://unpkg.com/popper.js@1.15.0/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js"></script>
+
 <style>
 
   body {

@@ -8,6 +8,7 @@ use App\Supplier;
 use App\Truck;
 use App\Driver;
 use App\Assistant;
+use App\Dock_Unavailability;
 use Illuminate\Http\Request;
 
 class SchedulerController extends Controller
@@ -51,10 +52,13 @@ class SchedulerController extends Controller
      
     
         $schedules =  Schedule::where("status","1")->get();        
+        $unavailabilities = Dock_Unavailability::where('status','1')->get();    
+
         $search = $request->input('module');
         $status = "";
         $slotting = array();
         $data = array();
+        $dow = array();
         if(!empty($schedules))
         {
             foreach ($schedules as $schedule)
@@ -69,6 +73,42 @@ class SchedulerController extends Controller
                 if($docks == 0){
                     continue;
                 }else{
+                    $scheds = trim($schedule->ordering_days);
+                    $scheds = explode("|", $scheds);
+                    
+                    foreach($scheds as $sched){
+                        $sched = trim($sched);
+                        if($sched == ""){
+                            continue;
+                        }
+                        switch ($sched) {
+                            case 'Mon':
+                                array_push($dow , 1);
+                                break;
+                            case 'Tue':
+                                array_push($dow, 2);
+                                break;
+                            case 'Wed':
+                                array_push($dow, 3);
+                                break;
+                            case 'Thu':
+                                array_push($dow, 4);
+                                break;
+                            case 'Fri':
+                                array_push($dow, 5);
+                                break;
+                            case 'Sat':
+                                array_push($dow, 6);
+                                break;
+                            case 'Sun':
+                                array_push($dow, 7);
+                                break;
+                            
+                            default:
+                                
+                                break;
+                        }
+                    }
 
                     $supplier_name = $supplier->supplier_name;
                     $po_number = $schedule->po_number;
@@ -81,8 +121,13 @@ class SchedulerController extends Controller
                     $nestedData['title'] =  $supplier_name . "\n Trucks" . $truck_details . "\n" . $driver_name . "\n" . $assistant_name;
 
 
-                    $nestedData['supplier_id'] = $supplier->supplier_id;
-                    $nestedData['dock_id'] = $schedule->dock_id;
+                    $nestedData['po_number'] = $schedule->po_number;
+                    $nestedData['supplier_name'] = $supplier->supplier_name;
+                    $nestedData['slotting_time'] = $schedule->slotting_time;
+                    $nestedData['container_no'] = $schedule->container_number;
+                    $nestedData['driver_name'] = $driver_name;
+                    $nestedData['truck_details'] = $truck->plate_number . " " . $truck->model . " " . $truck->brand;
+                    $nestedData['assistant_name'] = $assistant_name;
 
 
                     $nestedData['dock_name'] = $schedule->dock_name;
@@ -95,8 +140,25 @@ class SchedulerController extends Controller
 
                     $slotting = explode("|", $schedule->slotting_time);
 
-                    $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
-                    $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
+                    if($schedule->recurrence =="Recurrent"){
+                        // $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
+                        // $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
+
+                        $nestedData['daysOfWeek'] = $dow;
+                        $nestedData['startTime'] = $start;
+                        $nestedData['endTime'] = $end;
+                        $nestedData['startRecur'] = $schedule->date_of_delivery;
+                        $nestedData['endRecur'] = date("Y-m-d", strtotime(date("Y-m-d", strtotime($schedule->date_of_delivery)) . " + 365 day"));
+                        ;
+
+
+
+                    }else{
+                        $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
+                        $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
+                    }
+
+
                     $nestedData['material_list'] = $schedule->material_list;
                     $nestedData['created_at'] = date('j M Y h:i a',strtotime($schedule->created_at));
                     switch ($schedule->status) {
@@ -124,8 +186,69 @@ class SchedulerController extends Controller
                             break;
                     }
                     $nestedData['status'] = $status;
+
+                    $dow = array();
                 }
                 $data[] = $nestedData;
+
+            }
+        }
+
+        if(!empty($unavailabilities))
+        {
+            foreach ($unavailabilities as $unavailability)
+            {
+
+                $docks =    Dock::where('module','LIKE',"%{$search}%")->count();
+
+                if($docks == 0){
+                    continue;
+                }else{
+
+                    $_Data['id'] = $unavailability->id;
+                    $_Data['title'] =  $unavailability->reason;
+                    $_Data['slotting_time'] = $unavailability->time;
+                    $_Data['dock_name'] = $unavailability->dock_name;
+                    $_Data['date_of_delivery'] = $unavailability->date_of_unavailability;
+                    $_Data['recurrence'] = $unavailability->recurrence;
+
+                    $slotting_ = str_replace("|","",$unavailability->time);
+                    $start = substr($slotting_, 0, 5);
+                    $end = substr($slotting_, -5);
+
+                    $slotting = explode("|", $unavailability->time);
+
+                    $_Data['start'] = $unavailability->date_of_unavailability . "T" .$start .":00";
+                    $_Data['end'] = $unavailability->date_of_unavailability . "T" .$end .":00";
+                    $_Data['created_at'] = date('j M Y h:i a',strtotime($unavailability->created_at));
+                    switch ($schedule->status) {
+                        case 1:
+                            $status = "Active";
+                            break;
+                        case 2:
+                            $status = "Edited";
+                            break;
+                        case 3:
+                            $status = "Archived";
+                            break;
+                        case 4:
+                            $status = "Edited Finalized";
+                            break;
+                        case 5:
+                            $status = "No-Show";
+                            break;
+                        case 6:
+                            $status = "Emergency Reschedule";
+                            break;
+                        
+                        default:
+                            # code...
+                            break;
+                    }
+                    $_Data['status'] = $status;
+                    $_Data['backgroundColor'] = "#ff7f7f";
+                }
+                array_push($data, $_Data);
 
             }
         }
@@ -215,7 +338,13 @@ class SchedulerController extends Controller
 
     public function getSlottingTime(Request $request){
 
-        $slotting = Schedule::where("date_of_delivery",$request->date_of_delivery)->where('status','1')->get();
+        if($request->isForUnavailability == "0"){
+            $slotting = Schedule::where("date_of_delivery",$request->date_of_delivery)->where('status','1')->get();
+        }elseif($request->isForUnavailability == "1") {
+            $slotting = Dock_Unavailability::where("date_of_unavailability",$request->date_of_unavailability)->where('status','1')->get();
+        }
+
+        
         $scheduleData = array();
         $slotting_time = array();
         if(!empty($slotting))
@@ -229,8 +358,12 @@ class SchedulerController extends Controller
                
                 $nestedData['status'] = $slot->status == 1 ? "Active" : "Inactive";
 
+                if($request->isForUnavailability == "0"){
+                    $nestedData['slotting_time'] = explode("|",$slot->slotting_time);
+                }elseif($request->isForUnavailability == "1"){
+                    $nestedData['slotting_time'] = explode("|",$slot->time);
+                }
 
-                $nestedData['slotting_time'] = explode("|",$slot->slotting_time);
                 $scheduleData[] = $nestedData;
 
             }
@@ -249,26 +382,48 @@ class SchedulerController extends Controller
     public function store(Request $request)
     {
 
-        $ordering_days='';
+        if($request->isForUnavailability == "0"){
 
-        if($request->ordering_days){
-            foreach ($request->ordering_days as $ordering_day){
-                $ordering_days .=  $ordering_day.' | ';
-            }    
-        } 
+            $ordering_days='';
 
-        $dock_name = '';
+            if($request->ordering_days){
+                foreach ($request->ordering_days as $ordering_day){
+                    $ordering_days .=  $ordering_day.' | ';
+                }    
+            } 
 
-        $dock = Dock::where('id',$request->dock_id)->first();
-        $dock_name = $dock->dock_name;
+            $dock_name = '';
 
-        $supplier_id = $request->alt_supplier_id == '' ? $request->supplier_id : $request->alt_supplier_id;
-       
-        $status = $request->schedule_id != null ? 2 : 1;
+            $dock = Dock::where('id',$request->dock_id)->first();
+            $dock_name = $dock->dock_name;
 
-        $ret = ['success'=>'Schedule saved successfully.'];
-        Schedule::updateOrCreate(['id' => $request->schedule_id],
-            ['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status]);        
+            $supplier_id = $request->alt_supplier_id == '' ? $request->supplier_id : $request->alt_supplier_id;
+           
+            $status = $request->schedule_id != null ? 2 : 1;
+
+            $ret = ['success'=>'Schedule saved successfully.'];
+            Schedule::updateOrCreate(['id' => $request->schedule_id],
+                ['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status]);       
+        }elseif($request->isForUnavailability == "1") {
+            $ordering_days='';
+
+            if($request->ordering_days_unavailability){
+                foreach ($request->ordering_days as $ordering_day){
+                    $ordering_days .=  $ordering_day.' | ';
+                }    
+            } 
+
+            $dock_name = '';
+
+            $dock = Dock::where('id',$request->dock_id_unavailability)->first();
+            $dock_name = $dock->dock_name;
+
+            $status = $request->schedule_id != null ? 2 : 1;
+
+            $ret = ['success'=>'Schedule saved successfully.'];
+            Dock_Unavailability::updateOrCreate(['id' => $request->unavailability_id],
+                ['dock_id' => $request->dock_id_unavailability,  'dock_name' => $dock_name,'date_of_unavailability' => $request->dateOfUnavailability, 'recurrence' => $request->recurrence_unavailability, 'ordering_days' => $ordering_days, 'time' => $request->slotting_time_unavailability, 'emergency' => "", 'reason' => $request->reason_unavailability, 'status' => $status]); 
+        }
         
         return response()->json($ret);
     }

@@ -13,13 +13,14 @@ class CreateDockUnavailabilityTable extends Migration
      */
     public function up()
     {
-        Schema::create('dock_unavailability', function (Blueprint $table) {
+        Schema::create('dock__unavailabilities', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('dock_id',255)->nullable();
             $table->string('dock_name',255)->nullable();
             $table->datetime('date_of_unavailability')->nullable();
             $table->string('recurrence',255)->nullable();
             $table->string('emergency',255)->nullable();
+            $table->string('ordering_days',255)->nullable();
             $table->string('time',255)->nullable();
             $table->text('reason')->nullable();
             $table->integer('status')->default(1);
