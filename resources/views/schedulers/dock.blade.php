@@ -86,29 +86,53 @@
                       <label class="col-sm-12 control-label module">*Module</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_baby_care" value="Baby Care">
-                          <label class="form-check-label" for="inlineCheckbox1">Baby Care</label>
+                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_baby_care_1" value="Baby Care 1">
+                          <label class="form-check-label" for="inlineCheckbox1">Baby Care 1</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_baby_care_2" value="Baby Care 2">
+                          <label class="form-check-label" for="inlineCheckbox1">Baby Care 2</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_baby_care_3" value="Baby Care 3">
+                          <label class="form-check-label" for="inlineCheckbox1">Baby Care 3</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_baby_care_scrap" value="Baby Care Scrap">
+                          <label class="form-check-label" for="inlineCheckbox1">Baby Care Scrap</label>
                         </div>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_laundry" value="Laundry">
                           <label class="form-check-label" for="inlineCheckbox2">Laundry</label>
                         </div>
+                         <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_laundry_sb" value="Laundry SB">
+                          <label class="form-check-label" for="inlineCheckbox2">Laundry SB</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_laundry_scrap" value="Laundry Scrap">
+                          <label class="form-check-label" for="inlineCheckbox2">Laundry Scrap</label>
+                        </div>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_fem_care" value="Fem Care">
                           <label class="form-check-label" for="inlineCheckbox2">Fem Care</label>
                         </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_liquids" value="Liquids">
+                          <label class="form-check-label" for="inlineCheckbox2">Liquids</label>
+                        </div>
                         <br>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_fe" value="FE">
-                          <label class="form-check-label" for="inlineCheckbox2">FE</label>
+                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_liquids_out_canopy" value="Liquids Out Canopy">
+                          <label class="form-check-label" for="inlineCheckbox2">Liquids Out Canopy</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_dish" value="Dish">
-                          <label class="form-check-label" for="inlineCheckbox2">Dish</label>
+                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_pcc_1" value="PCC 1">
+                          <label class="form-check-label" for="inlineCheckbox2">PCC 1</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_pcc" value="PCC">
-                          <label class="form-check-label" for="inlineCheckbox2">PCC</label>
+                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_pcc_2" value="PCC 2">
+                          <label class="form-check-label" for="inlineCheckbox2">PCC 2</label>
                         </div>
                         </div>
                       </div>

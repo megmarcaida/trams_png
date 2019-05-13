@@ -126,7 +126,41 @@
         });
       });
 
+     // setTimeout(function(){
 
+     //    $.ajax({
+     //        url: "{{ url('fetchIncompleteMaterials') }}",
+     //        type: "POST",
+     //        data: {},
+     //        success: function (data) {
+
+     //            if(data.length != 0){
+
+     //               $('#modelHeadingViewMaterialList').html("Alert - Event in Recurrent Schedule Finalized");
+     //              $.each( data, function( key, value ) {
+
+     //                $('.material_list_details').append('<div class="row"><div class="col-md-7"><p>' + value.date_of_delivery + '</p><br><p>'+ value. +'</p></div><div class="col-md-5"><button class="btn btn-primary">Complate Material List</button></div></div>')
+     //                var ordering_days_arr = value.ordering_days.split("|")
+                    
+     //                $.each( ordering_days_arr, function( key, item ) {
+     //                  console.log(item.trim())
+     //                });
+
+     //              });
+                  
+                  
+
+     //              $('#modelViewMaterialList').modal({
+     //                backdrop:'static',
+     //                keyboard: false
+     //              })
+     //            }
+     //        },
+     //        error: function (data) {
+     //            console.log('Error:', data);
+     //        }
+     //    });
+     // },1000)
 
      $('body').on('change', '#supplier_id', function () {
          
@@ -173,6 +207,10 @@
       }
           
     });
+
+
+
+    
 
 
     var count = 0;
@@ -333,6 +371,10 @@
 
               $('#cont').html('');
               createTable();
+              console.log(data.material_list  + "Test")
+              if(data.material_list == 0){
+                  addRow('','','')
+              }
               $.each(data.material_list.gcas, function(index, item) {
                   if(item != ""){
 
@@ -587,7 +629,7 @@
 
    $('document').ready(function(){
       testCalendar("Null");
- });
+    });
 
     $('body').on('click', '#saveBtn', function (e) {
 
@@ -990,6 +1032,9 @@
     }
 
       // material list end
+
+
+
 
 </script>
 <div class="container-fluid">
@@ -1579,12 +1624,24 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modelViewMaterialList" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeadingViewMaterialList">View Schedule</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div class="modal-body">
+                <div class="material_list_details"></div>
+                
+                <br>
+                <button class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button> 
+            </div>
+        </div>
+    </div>
+</div>
   
-<script type="text/javascript">
-
-    
-
-
-</script>
 
 @endsection

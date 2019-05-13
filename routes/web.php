@@ -84,6 +84,7 @@ Route::post('getSlottingTime', 'SchedulerController@getSlottingTime' )->name('ge
 Route::post('getSupplierData', 'SchedulerController@getSupplierData' )->name('getSupplierData');
 Route::resource('ajaxschedules','SchedulerController');
 Route::post('deactivateOrActivateSchedule', 'SchedulerController@deactivateOrActivateSchedule')->name('deactivateOrActivateSchedule');
+Route::post('fetchIncompleteMaterials', 'SchedulerController@fetchIncompleteMaterials' )->name('fetchIncompleteMaterials');
 #END SCHEDULER
 
 #Docker

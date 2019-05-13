@@ -52,7 +52,7 @@ class SchedulerController extends Controller
      
     
         $schedules =  Schedule::where("status","1")->get();        
-        $unavailabilities = Dock_Unavailability::where('status','1')->get();    
+        $unavailabilities = Dock_Unavailability::where('status','<>','1')->get();    
 
         $search = $request->input('module');
         $status = "";
@@ -353,7 +353,7 @@ class SchedulerController extends Controller
     public function getSlottingTime(Request $request){
 
         if($request->isForUnavailability == "0"){
-            $slotting = Schedule::where("date_of_delivery",$request->date_of_delivery)->where('status','1')->get();
+            $slotting = Schedule::where("date_of_delivery",$request->date_of_delivery)->where('status','<>','0')->get();
         }elseif($request->isForUnavailability == "1") {
             $slotting = Dock_Unavailability::where("date_of_unavailability",$request->date_of_unavailability)->where('status','1')->get();
         }
@@ -496,7 +496,7 @@ class SchedulerController extends Controller
                     $description = array();
                     $quantity = array();
                 }else{
-                    
+
                     $material_list = explode("-;-", $schedule->material_list);
 
                     $gcas = explode("|", $material_list[0]);
@@ -531,9 +531,14 @@ class SchedulerController extends Controller
         return response()->json(['success'=>'Supplier deactivated successfully.']);
     }
 
-     public function deactivateOrActivateSchedule(Request $request)
+    public function deactivateOrActivateSchedule(Request $request)
     {
         Schedule::find($request->id)->update(['reason'=> $request->reason,'status' => 0]);
         return response()->json(['success'=>'Supplier deactivated successfully.']);
+    }
+
+    public function fetchIncompleteMaterials()    {
+        $incompleteMaterialList = Schedule::where('material_list','=',null)->where('status','<>','0')->get();
+        return response()->json($incompleteMaterialList);
     }
 }
