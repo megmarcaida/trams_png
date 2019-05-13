@@ -10726,7 +10726,7 @@ a.text-dark:focus {
   display: inline-block;
   padding: 20px;
   margin: -2px;
-  background: #4dc0b5;
+  background: #4dc0b5 !important;
   cursor: pointer !important;
 }
 

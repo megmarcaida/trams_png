@@ -22,6 +22,323 @@
         }
     });
 
+
+    $('body').on('click', '#edit_single_event', function (e) {
+        $('#ajaxModelEditRecurrent').modal('hide')
+        $('.isEditingRecurrent').val("0")
+        console.log($('#selected_schedule').val())  
+        console.log($('#recurrence_hidden').val())
+
+
+
+          //$('div.slot_box').removeClass("slot_box");
+          $('div.editable_slot_box').addClass('slot_box').removeClass("editable_slot_box");
+          $('div.occupied_slot_box').addClass('slot_box').removeClass("occupied_slot_box");
+
+          $('#saveBtn').html('Save Changes');
+          $('#response').html(''); 
+          var id = $('#selected_schedule').val();
+          var selected = $('#selected_supplierid').val();
+
+          if(id == "" && selected == ""){
+            $('#response').append('<div class="alert alert-warning">Please select schedule to edit.</div>  ')
+          }
+          $('#truck_id').html('');
+          $('#driver_id').html('');
+          $('#assistant_id').html('');
+          $('#alt_supplier_id').val('');
+          //$('#supplier_id').attr("disabled","disabled");
+          $('#po_number').attr("readonly","true");
+
+          $('#supplier_id').not(this).find('option').prop('disabled', 'true');
+
+          $('#supplier_id').addClass('disableSelect');
+
+          $.ajax({
+              url: "{{ url('getSupplierData') }}",
+              type: "POST",
+              data: {id:selected},
+              success: function (data) {
+                //console.log(JSON.parse(data))  
+                $.each(JSON.parse(data), function(index, item) {
+                  // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
+                  if(index == 'truckdata'){
+                    $.each(item, function(index, truck) {
+
+                      $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
+                    });
+                  }
+
+                  if(index == 'driverdata'){
+                    $.each(item, function(index, driver) {
+                      $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
+                    });
+                  }
+
+                  if(index == 'assistantdata'){
+                    $.each(item, function(index, assistant) {
+                      $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
+                    });
+                  }
+                });
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+              }
+          });
+
+
+          $('#scheduleForm').trigger("reset");      
+          
+          $.get("{{ route('ajaxschedules.index') }}" +'/' + id +'/edit', function (data) {
+              $('#modelHeading').html("Edit Schedule");
+              $('#saveBtn').val("edit-user");
+              $('#ajaxModel').modal({
+                backdrop:'static',
+                keyboard: false
+              })
+              console.log(data.date_of_delivery)
+              $('#schedule_id').val(data.id);
+              $('#po_number').val(data.po_number);
+              $('#supplier_id').val(data.supplier_id);
+              $('#alt_supplier_id').val(data.supplier_id);
+              $('#dock_id').val(data.dock_id);
+
+              $('#dateOfDelivery').val(data.date_of_delivery);
+
+              $('#truck_id').val(data.truck_id);
+
+              $('#driver_id').val(data.driver_id);
+
+              $('#assistant_id').val(data.assistant_id);
+
+              $('#container_number').val(data.container_number);
+
+              $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+              if(data.recurrence == "Recurrent"){
+                $(".r_ordering_days").css('display','block')
+              }
+              var ordering_days_arr = data.ordering_days.split("|")
+              $.each( ordering_days_arr, function( key, value ) {
+                $("input[value='" + $.trim(value) + "']").prop('checked', true);
+              });
+
+              $('#cont').html('');
+              createTable();
+              console.log(data.material_list  + "Test")
+              if(data.material_list == 0){
+                  addRow('','','')
+              }
+              $.each(data.material_list.gcas, function(index, item) {
+                  if(item != ""){
+
+                    addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                  }
+              });
+
+              $("#slotting_time").val(data.slotting_time_text);
+
+               $('div.occupied_slot_box').addClass("slot_box");
+
+
+              //refresh slot box
+              $('div.slot_box').removeClass("occupied_slot_box");
+              $('div.slot_box').removeClass("active_slot_box");
+              var date_of_delivery = $('#dateOfDelivery').val();
+              $.ajax({
+                  url: "{{ url('getSlottingTime') }}",
+                  type: "POST",
+                  data: {date_of_delivery:date_of_delivery},
+                  success: function (data) {
+                      $.each(JSON.parse(data), function(index, item) {
+                        $.each(item.slotting_time, function(i, slot) {
+                          if(slot != ""){
+                            $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                            $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                          }
+                        });
+                      });
+                  },
+                  error: function (data) {
+                      console.log('Error:', data);
+                  }
+              });
+              //refresh slot box
+
+
+              $.each(data.slotting_time, function(index, slot) {
+                  console.log(slot)
+                    if(slot != ""){
+                      $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
+                      $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
+                      $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                    }
+                });
+          })
+
+          // change the border color just for fun
+          //info.el.style.borderColor = 'red';
+
+    });
+
+    $('body').on('click', '#edit_recurrence', function (e) {
+        $('#ajaxModelEditRecurrent').modal('hide')
+        $('#isEditingRecurrent').val("1");
+        console.log($('#selected_schedule').val()) 
+
+        console.log($('#recurrence_hidden').val())   
+
+        //$('div.slot_box').removeClass("slot_box");
+          $('div.editable_slot_box').addClass('slot_box').removeClass("editable_slot_box");
+          $('div.occupied_slot_box').addClass('slot_box').removeClass("occupied_slot_box");
+
+          $('#saveBtn').html('Save Changes');
+          $('#response').html(''); 
+          var id = $('#selected_schedule').val();
+          var selected = $('#selected_supplierid').val();
+
+          if(id == "" && selected == ""){
+            $('#response').append('<div class="alert alert-warning">Please select schedule to edit.</div>  ')
+          }
+          $('#truck_id').html('');
+          $('#driver_id').html('');
+          $('#assistant_id').html('');
+          $('#alt_supplier_id').val('');
+          //$('#supplier_id').attr("disabled","disabled");
+          $('#po_number').attr("readonly","true");
+
+          $('#supplier_id').not(this).find('option').prop('disabled', 'true');
+
+          $('#supplier_id').addClass('disableSelect');
+
+          $.ajax({
+              url: "{{ url('getSupplierData') }}",
+              type: "POST",
+              data: {id:selected},
+              success: function (data) {
+                //console.log(JSON.parse(data))  
+                $.each(JSON.parse(data), function(index, item) {
+                  // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
+                  if(index == 'truckdata'){
+                    $.each(item, function(index, truck) {
+
+                      $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
+                    });
+                  }
+
+                  if(index == 'driverdata'){
+                    $.each(item, function(index, driver) {
+                      $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
+                    });
+                  }
+
+                  if(index == 'assistantdata'){
+                    $.each(item, function(index, assistant) {
+                      $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
+                    });
+                  }
+                });
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+              }
+          });
+
+
+          $('#scheduleForm').trigger("reset");      
+          
+          $.get("{{ route('ajaxschedules.index') }}" +'/' + id +'/edit', function (data) {
+              $('#modelHeading').html("Edit Schedule");
+              $('#saveBtn').val("edit-user");
+              $('#ajaxModel').modal({
+                backdrop:'static',
+                keyboard: false
+              })
+              console.log(data.date_of_delivery)
+              $('#schedule_id').val(data.id);
+              $('#po_number').val(data.po_number);
+              $('#supplier_id').val(data.supplier_id);
+              $('#alt_supplier_id').val(data.supplier_id);
+              $('#dock_id').val(data.dock_id);
+
+              $('#dateOfDelivery').val(data.date_of_delivery);
+
+              $('#truck_id').val(data.truck_id);
+
+              $('#driver_id').val(data.driver_id);
+
+              $('#assistant_id').val(data.assistant_id);
+
+              $('#container_number').val(data.container_number);
+
+              $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+              if(data.recurrence == "Recurrent"){
+                $(".r_ordering_days").css('display','block')
+              }
+              var ordering_days_arr = data.ordering_days.split("|")
+              $.each( ordering_days_arr, function( key, value ) {
+                $("input[value='" + $.trim(value) + "']").prop('checked', true);
+              });
+
+              $('#cont').html('');
+              createTable();
+              console.log(data.material_list  + "Test")
+              if(data.material_list == 0){
+                  addRow('','','')
+              }
+              $.each(data.material_list.gcas, function(index, item) {
+                  if(item != ""){
+
+                    addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                  }
+              });
+
+              $("#slotting_time").val(data.slotting_time_text);
+
+               $('div.occupied_slot_box').addClass("slot_box");
+
+
+              //refresh slot box
+              $('div.slot_box').removeClass("occupied_slot_box");
+              $('div.slot_box').removeClass("active_slot_box");
+              var date_of_delivery = $('#dateOfDelivery').val();
+              $.ajax({
+                  url: "{{ url('getSlottingTime') }}",
+                  type: "POST",
+                  data: {date_of_delivery:date_of_delivery},
+                  success: function (data) {
+                      $.each(JSON.parse(data), function(index, item) {
+                        $.each(item.slotting_time, function(i, slot) {
+                          if(slot != ""){
+                            $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                            $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                          }
+                        });
+                      });
+                  },
+                  error: function (data) {
+                      console.log('Error:', data);
+                  }
+              });
+              //refresh slot box
+
+
+              $.each(data.slotting_time, function(index, slot) {
+                  console.log(slot)
+                    if(slot != ""){
+                      $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
+                      $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
+                      $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                    }
+                });
+          })
+
+          // change the border color just for fun
+          //info.el.style.borderColor = 'red';
+    });
+
     $('body').on('click', '.slot_box', function () {
          
           var slotting_time = $('#slotting_time'); 
@@ -276,6 +593,9 @@
           text: 'Edit Schedule',
           click: function() {
 
+          if($('#recurrence_hidden').val() != 'Recurrent'){
+
+
           //$('div.slot_box').removeClass("slot_box");
           $('div.editable_slot_box').addClass('slot_box').removeClass("editable_slot_box");
           $('div.occupied_slot_box').addClass('slot_box').removeClass("occupied_slot_box");
@@ -396,6 +716,7 @@
                   type: "POST",
                   data: {date_of_delivery:date_of_delivery},
                   success: function (data) {
+                      console.log(data)
                       $.each(JSON.parse(data), function(index, item) {
                         $.each(item.slotting_time, function(i, slot) {
                           if(slot != ""){
@@ -424,6 +745,13 @@
 
           // change the border color just for fun
           //info.el.style.borderColor = 'red';
+
+          }else{
+            $('#ajaxModelEditRecurrent').modal({
+                backdrop:'static',
+                keyboard: false
+              })
+          }
           }
         },
         DeleteSchedule: {
@@ -530,9 +858,6 @@
         },
         color: '#1e9',   // a non-ajax option
         textColor: 'black' // a non-ajax option
-      },
-      eventSourceSuccess: function(content, xhr) {
-        console.log(content.eventArray);
       },
       select: function(arg) {
         
@@ -650,6 +975,18 @@
           else{
             $(".ordering_days").css('color','black')
           }
+        }else{
+
+            if($('.gcas').val() == "" || $('.quantity').val() == "" || $('.description').val() == ""){
+                $(".gcas").css('border','1px solid red')
+                $(".description").css('border','1px solid red')
+                $(".quantity").css('border','1px solid red')
+                return false;
+            }else{
+                $(".gcas").css('border','1px solid black')
+                $(".description").css('border','1px solid black')
+                $(".quantity").css('border','1px solid black')
+            }
         }
 
         var today = new Date();
@@ -983,6 +1320,7 @@
             }else if(c== 1){
                 var ele = document.createElement('input');
                 ele.setAttribute('type', 'text');
+                ele.setAttribute('class', 'gcas');
                 ele.setAttribute('name', 'gcas[]');
                 ele.setAttribute('value', gcas);
 
@@ -990,6 +1328,7 @@
             }else if(c== 2){
                 var ele = document.createElement('input');
                 ele.setAttribute('type', 'text');
+                ele.setAttribute('class', 'description');
                 ele.setAttribute('name', 'description[]');
                 ele.setAttribute('value', description);
 
@@ -998,6 +1337,7 @@
             else if(c== 3){
                 var ele = document.createElement('input');
                 ele.setAttribute('type', 'text');
+                ele.setAttribute('class', 'quantity');
                 ele.setAttribute('name', 'quantity[]');
                 ele.setAttribute('onkeyup', 'addRow()');
                 ele.setAttribute('value', qty);
@@ -1032,7 +1372,6 @@
     }
 
       // material list end
-
 
 
 
@@ -1098,6 +1437,7 @@
                     <input type="hidden" name="schedule_id" id="schedule_id">
                      <input type="hidden" name="isEditedFinalized" id="isEditedFinalized">
                      <input type="hidden" value="0" name="isForUnavailability" id="isForUnavailability">
+                     <input type="hidden" value="0" name="isEditingRecurrent" id="isEditingRecurrent">
 
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*PO Number</label>
@@ -1639,6 +1979,36 @@
                 <br>
                 <button class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button> 
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ajaxModelEditRecurrent" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeadingEditRecurrent">Edit  Schedule</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div id="recurrence_modal" class="modal-body">
+                <p id="reccurent">You are editing a recurrent schedule. Are you editing this single event schedule of the entire schedule recurrence?</p>
+                <div class="row">
+                  <div class="col-xl-6">
+                    <button id="edit_single_event" style="width:220px;"class="btn btn-primary">Edit Single <br> Event Schedule</button>
+                  </div>
+                  <div class="col-xl-6">
+                    <button id="edit_recurrence" style="width:220px;"class="btn btn-primary">Edit Recurrence <br> Schedule</button>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-xl-12">
+                    <button class="btn btn-secondary btn-block">Close</button>
+                  </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 </div>

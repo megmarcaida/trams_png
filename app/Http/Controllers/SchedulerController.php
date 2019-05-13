@@ -51,8 +51,8 @@ class SchedulerController extends Controller
 
      
     
-        $schedules =  Schedule::where("status","1")->get();        
-        $unavailabilities = Dock_Unavailability::where('status','<>','1')->get();    
+        $schedules =  Schedule::where("status","<>","0")->get();        
+        $unavailabilities = Dock_Unavailability::where('status','<>','0')->get();    
 
         $search = $request->input('module');
         $status = "";
@@ -143,29 +143,37 @@ class SchedulerController extends Controller
                     $slotting = explode("|", $schedule->slotting_time);
 
 
-                    switch ($schedule->recurrence) {
-
-                        case "Single Event":
-                            $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
+                    $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
                             $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
-                            $nestedData['daysOfWeek'] = null;
-                        $nestedData['startTime'] = null;
-                        $nestedData['endTime'] = null;
-                        $nestedData['startRecur'] = null;
-                        $nestedData['endRecur'] = null;
-                            break;
-                        case "Recurrent":
-                            $nestedData['daysOfWeek'] = $dow;
-                        $nestedData['startTime'] = $start;
-                        $nestedData['endTime'] = $end;
-                        $nestedData['startRecur'] = $schedule->date_of_delivery;
-                        $nestedData['endRecur'] = date("Y-m-d", strtotime(date("Y-m-d", strtotime($schedule->date_of_delivery)) . " + 365 day"));
-                        break;
+                        //     $nestedData['daysOfWeek'] = null;
+                        // $nestedData['startTime'] = null;
+                        // $nestedData['endTime'] = null;
+                        // $nestedData['startRecur'] = null;
+                        // $nestedData['endRecur'] = null;
+
+                    // switch ($schedule->recurrence) {
+
+                    //     case "Single Event":
+                    //         $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
+                    //         $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
+                    //         $nestedData['daysOfWeek'] = null;
+                    //     $nestedData['startTime'] = null;
+                    //     $nestedData['endTime'] = null;
+                    //     $nestedData['startRecur'] = null;
+                    //     $nestedData['endRecur'] = null;
+                    //         break;
+                    //     case "Recurrent":
+                    //         $nestedData['daysOfWeek'] = $dow;
+                    //     $nestedData['startTime'] = $start;
+                    //     $nestedData['endTime'] = $end;
+                    //     $nestedData['startRecur'] = $schedule->date_of_delivery;
+                    //     $nestedData['endRecur'] = date("Y-m-d", strtotime(date("Y-m-d", strtotime($schedule->date_of_delivery)) . " + 365 day"));
+                    //     break;
                         
-                        default:
-                            # code...
-                            break;
-                    }
+                    //     default:
+                    //         # code...
+                    //         break;
+                    // }
 
 
                     $nestedData['material_list'] = $schedule->material_list;
@@ -210,7 +218,7 @@ class SchedulerController extends Controller
             foreach ($unavailabilities as $unavailability)
             {
 
-                $docks =    Dock::where('module','LIKE',"%{$search}%")->first();
+                $docks = Dock::where('module','LIKE',"%{$search}%")->first();
 
                 $hasScheduleModule = Schedule::where('dock_id',$docks['id'])->count();
 
@@ -399,6 +407,12 @@ class SchedulerController extends Controller
 
         if($request->isForUnavailability == "0"){
 
+            
+            if($request->isEditingRecurrent == "1"){
+                $del = Schedule::where('po_number', $request->po_number);
+                $del->delete();
+            }
+
             $gcas = '';
             $description = '';
             $quantity = '';
@@ -433,16 +447,77 @@ class SchedulerController extends Controller
 
             $supplier_id = $request->alt_supplier_id == '' ? $request->supplier_id : $request->alt_supplier_id;
            
-            $status = $request->schedule_id != null ? 2 : 1;
+            $status = $request->schedule_id != null ? '2' : '1';
 
-            $ret = ['success'=>'Schedule saved successfully.'];
-            Schedule::updateOrCreate(['id' => $request->schedule_id],
-                ['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);       
+
+            if($request->recurrence == 'Recurrent'){
+
+                $getSlot = str_replace("|","",$request->slotting_time);
+                $start = substr($getSlot, 0, 5);
+                $end = substr($getSlot, -5);
+
+                $startDateTime = $request->dateOfDelivery;
+                $endDateTime = date("Y-m-d", strtotime(date("Y-m-d", strtotime($request->dateOfDelivery)) . " + 100 day"));
+
+                // $scheds = trim($ordering_days);
+                // $scheds = explode("|", $scheds);
+                
+                $dates = array();
+
+                foreach($request->ordering_days as $sched){
+                    $sched = trim($sched);
+                    if($sched == ""){
+                        continue;
+                    }
+                    switch ($sched) {
+                        case 'Mon':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,1);
+                            break;
+                        case 'Tue':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,2);
+                            break;
+                        case 'Wed':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,3);
+                            break;
+                        case 'Thu':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,4);
+                            break;
+                        case 'Fri':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,5);
+                            break;
+                        case 'Sat':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,6);
+                            break;
+                        case 'Sun':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,7);
+                            break;
+                        
+                        default:
+                            
+                            break;
+                    }
+
+                    foreach($dates as $date){
+                        Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);  
+                    }
+
+                }
+                
+
+                $ret = ['success'=>'Schedule saved successfully.']; 
+            }else{
+                $ret = ['success'=>'Schedule saved successfully.'];
+                Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);  
+            }
+
+
+
+                 
         }elseif($request->isForUnavailability == "1") {
             $ordering_days='';
 
             if($request->ordering_days_unavailability){
-                foreach ($request->ordering_days as $ordering_day){
+                foreach ($request->ordering_days_unavailability as $ordering_day){
                     $ordering_days .=  $ordering_day.' | ';
                 }    
             } 
@@ -454,9 +529,68 @@ class SchedulerController extends Controller
 
             $status = $request->schedule_id != null ? 2 : 1;
 
-            $ret = ['success'=>'Schedule saved successfully.'];
-            Dock_Unavailability::updateOrCreate(['id' => $request->unavailability_id],
+            if($request->recurrence_unavailability == 'Recurrent'){
+
+                $getSlot = str_replace("|","",$request->slotting_time_unavailability);
+                $start = substr($getSlot, 0, 5);
+                $end = substr($getSlot, -5);
+
+                $startDateTime = $request->dateOfUnavailability;
+                $endDateTime = date("Y-m-d", strtotime(date("Y-m-d", strtotime($request->dateOfUnavailability)) . " + 100 day"));
+
+                // $scheds = trim($ordering_days);
+                // $scheds = explode("|", $scheds);
+                
+                $dates = array();
+
+                foreach($request->ordering_days_unavailability as $sched){
+                    $sched = trim($sched);
+                    if($sched == ""){
+                        continue;
+                    }
+                    switch ($sched) {
+                        case 'Mon':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,1);
+                            break;
+                        case 'Tue':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,2);
+                            break;
+                        case 'Wed':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,3);
+                            break;
+                        case 'Thu':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,4);
+                            break;
+                        case 'Fri':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,5);
+                            break;
+                        case 'Sat':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,6);
+                            break;
+                        case 'Sun':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,7);
+                            break;
+                        
+                        default:
+                            
+                            break;
+                    }
+
+                    foreach($dates as $date){
+                        Dock_Unavailability::updateOrCreate(['id' => $request->unavailability_id],['dock_id' => $request->dock_id_unavailability,  'dock_name' => $dock_name,'date_of_unavailability' => $date, 'recurrence' => $request->recurrence_unavailability, 'ordering_days' => $ordering_days, 'time' => $request->slotting_time_unavailability, 'emergency' => "", 'reason' => $request->reason_unavailability, 'status' => $status]);   
+                    }
+
+                }
+                
+
+                $ret = ['success'=>'Schedule saved successfully.']; 
+            }else{
+                $ret = ['success'=>'Schedule saved successfully.'];
+                Dock_Unavailability::updateOrCreate(['id' => $request->unavailability_id],
                 ['dock_id' => $request->dock_id_unavailability,  'dock_name' => $dock_name,'date_of_unavailability' => $request->dateOfUnavailability, 'recurrence' => $request->recurrence_unavailability, 'ordering_days' => $ordering_days, 'time' => $request->slotting_time_unavailability, 'emergency' => "", 'reason' => $request->reason_unavailability, 'status' => $status]); 
+            }
+
+            
         }
         
         return response()->json($ret);
@@ -541,4 +675,13 @@ class SchedulerController extends Controller
         $incompleteMaterialList = Schedule::where('material_list','=',null)->where('status','<>','0')->get();
         return response()->json($incompleteMaterialList);
     }
+
+    public function getDateForSpecificDayBetweenDates($startDate,$endDate,$day_number){
+    $endDate = strtotime($endDate);
+    $days=array('1'=>'Monday','2' => 'Tuesday','3' => 'Wednesday','4'=>'Thursday','5' =>'Friday','6' => 'Saturday','7'=>'Sunday');
+    for($i = strtotime($days[$day_number], strtotime($startDate)); $i <= $endDate; $i = strtotime('+1 week', $i))
+        $date_array[]=date('Y-m-d',$i);
+
+        return $date_array;
+     }
 }
