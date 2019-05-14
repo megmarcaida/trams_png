@@ -18,19 +18,28 @@
     <link href="{{ asset('packages/daygrid/main.css') }}" rel="stylesheet">
     <link href="{{ asset('packages/timegrid/main.css') }}" rel="stylesheet">
 
-    <script src="https://fullcalendar.io/releases/core/4.0.2/main.min.js"></script>
-    <script src="https://fullcalendar.io/releases/interaction/4.0.2/main.min.js"></script>
+    <!-- <script src="https://fullcalendar.io/releases/core/4.0.2/main.min.js"></script> -->
+    <script src="{{ asset('packages/core/new_main.min.js') }}"></script>
 
 
-    <script src="https://fullcalendar.io/releases/daygrid/4.0.1/main.min.js"></script>
-    <script src="https://fullcalendar.io/releases/timegrid/4.0.1/main.min.js"></script>
-    <script src="https://fullcalendar.io/releases/rrule/4.0.1/main.min.js"></script>
+ <!--    <script src="https://fullcalendar.io/releases/interaction/4.0.2/main.min.js"></script> -->
+    <script src="{{ asset('packages/interaction/new_main.min.js') }}"></script>
+
+
+   <!--  <script src="https://fullcalendar.io/releases/daygrid/4.0.1/main.min.js"></script> -->
+    <script src="{{ asset('packages/resource-daygrid/new_main.min.js') }}"></script>
+
+<!--     <script src="https://fullcalendar.io/releases/timegrid/4.0.1/main.min.js"></script> -->
+    <script src="{{ asset('packages/resource-timegrid/new_main.min.js') }}"></script>
+
+
 
     <script src="{{ asset('packages/resource-common/main.js') }}"></script>
     <script src="{{ asset('packages/resource-daygrid/main.js') }}"></script>
     <script src="{{ asset('packages/resource-timegrid/main.js') }}"></script>
 
-    <script src="https://fullcalendar.io/releases/list/4.1.0/main.min.js"></script>
+<!--     <script src="https://fullcalendar.io/releases/list/4.1.0/main.min.js"></script> -->
+    <script src="{{ asset('packages/list/main.min.js') }}"></script>
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     
