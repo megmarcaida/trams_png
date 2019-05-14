@@ -220,7 +220,7 @@ class SchedulerController extends Controller
 
                 $docks = Dock::where('module','LIKE',"%{$search}%")->first();
 
-                $hasScheduleModule = Schedule::where('dock_id',$docks['id'])->count();
+                $hasScheduleModule = Dock_Unavailability::where('dock_id',$docks['id'])->count();
 
                 if($hasScheduleModule == 0 || $docks['id'] != $unavailability->dock_id){
                     continue;
@@ -407,7 +407,7 @@ class SchedulerController extends Controller
 
         if($request->isForUnavailability == "0"){
 
-            
+
             if($request->isEditingRecurrent == "1"){
                 $del = Schedule::where('po_number', $request->po_number);
                 $del->delete();
