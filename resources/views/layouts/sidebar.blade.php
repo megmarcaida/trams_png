@@ -13,7 +13,7 @@
         </a>
         <div class="dropdown-container">
           <!-- <h6 class="dropdown-header">Record Maintenance:</h6> -->
-          @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2)  
+          @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 4)  
           <a class="dropdown-item" href="/recordmaintenance/supplier">Supplier</a>
           <a class="dropdown-item" href="/recordmaintenance/truck">Trucks</a>
           @endif

@@ -13,8 +13,9 @@ class RolesTableSeeder extends Seeder
     {
     	$roles = [
             ['id' => 1, 'name' => 'Admin', 'description' => 'Administrator'],
-            ['id' => 2, 'name' => 'Docker Officer', 'description' => 'Docker Officer'],
+            ['id' => 2, 'name' => 'North Dock Officer', 'description' => 'North'],
             ['id' => 3, 'name' => 'Security Officer', 'description' => 'Security Officer'],
+            ['id' => 4, 'name' => 'South Dock Officer', 'description' => 'South'],
         ];
 
         DB::table('roles')->insert($roles);
