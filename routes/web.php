@@ -140,5 +140,6 @@ Route::post('dockingDashboard', 'DashboardController@dockingDashboard' )->name('
 Route::post('parkingDashboard', 'DashboardController@parkingDashboard' )->name('parkingDashboard');
 Route::post('gateDashboard', 'DashboardController@gateDashboard' )->name('gateDashboard');
 Route::post('setOvertime', 'DashboardController@setOvertime' )->name('setOvertime');
+Route::post('securityDashboard', 'DashboardController@securityDashboard' )->name('securityDashboard');
 
 #end all stand alone dashboards
