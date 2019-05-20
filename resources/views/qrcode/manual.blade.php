@@ -73,6 +73,7 @@
               type: "POST",
               dataType: 'json',
               success: function (data) {
+                $('#response').show();
                  $('#response').html("<div class='alert alert-success'>"+data.message+"</div>")
                   $('#scheduleForm').trigger("reset");
                   

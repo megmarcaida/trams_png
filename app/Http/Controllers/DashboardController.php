@@ -9,6 +9,7 @@ use App\Supplier;
 use App\Truck;
 use App\Dock;
 use App\Role;
+use App\Parking;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -502,12 +503,20 @@ class DashboardController extends Controller
             $id = $request->delivery_ticket_id;
         }
 
+        $parking_ = Parking::where("id",1)->first();
+
         $sched = Schedule::find($id);
         if(!empty($sched)){
 
             //Gate-IN
             if($sched->status == 10 && $sched->process_status == "incoming"){
+                
+                if($parking_->parking_slot == $parking_->parking_area){
+                    return json_encode(["message"=>"Parking is Full"]);
+                }    
+
                 $sched->update(['process_status'=>"incoming","status"=> 8,"gate_in_timestamp"=>Carbon::now()]);
+                $parking_->update(['parking_slot'=> $parking_->parking_slot + 1]);
                 if($sched){
                     $ret = "Successfully Gate-IN";
                 }else{
@@ -519,9 +528,11 @@ class DashboardController extends Controller
 
             //Dock-IN
             if($sched->status == 8 && $sched->process_status == "incoming"){
+
                 $gate_in_datetime = $sched->gate_in_timestamp;
                 $parking_time = time() - strtotime($gate_in_datetime);
                 $sched->update(['process_status'=>"incoming_dock_in","status"=> 9,"dock_in_timestamp"=>Carbon::now(),"parking_timestamp"=>$parking_time]);
+                 $parking_->update(['parking_slot'=> $parking_->parking_slot - 1]);
                 if($sched){
                     $ret = "Successfully Dock-IN";
                 }else{

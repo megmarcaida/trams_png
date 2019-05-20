@@ -60,10 +60,11 @@
         </a>
         <div class="dropdown-container">
           
-          <a class="dropdown-item" href="/dashboard/parking">Parking</a>
+          <a class="dropdown-item" href="/dashboard/parking">Parking Dashboard</a>
           <a class="dropdown-item" href="/dashboard/dock">Dock</a>
           <a class="dropdown-item" href="/dashboard/gate">Gate</a>
           <a class="dropdown-item" href="/dashboard/manual">Manual Process</a>
+          <a class="dropdown-item" href="/others/parking">Parking Module</a>
         </div>
       </li>
       <!-- <li class="nav-item">

@@ -143,3 +143,13 @@ Route::post('setOvertime', 'DashboardController@setOvertime' )->name('setOvertim
 Route::post('securityDashboard', 'DashboardController@securityDashboard' )->name('securityDashboard');
 
 #end all stand alone dashboards
+
+#Parking  Routes
+Route::get('/others/parking', ['middleware' => 'auth', 'uses' => 'ParkingController@index']);
+Route::resource('ajaxparking','ParkingController');
+Route::post('allparking', 'ParkingController@allParking' )->name('allparking');
+Route::post('deactivateOrActivateParking', 'ParkingController@deactivateOrActivateParking')->name('deactivateOrActivateParking');
+
+Route::get('exportParking', 'ParkingController@export')->name('exportParking');
+Route::post('importParking', 'ParkingController@import')->name('importParking');
+#End Parking Route

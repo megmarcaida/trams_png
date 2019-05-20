@@ -13,7 +13,7 @@ class CreateParkingTable extends Migration
      */
     public function up()
     {
-        Schema::create('parking', function (Blueprint $table) {
+        Schema::create('parkings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('parking_name',255)->nullable();
             $table->string('parking_description',255)->nullable();
