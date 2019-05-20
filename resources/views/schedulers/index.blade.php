@@ -1,8 +1,23 @@
 @extends('layouts.schedulingapp')
 
 @section('content')
+<script src="{{ asset('js/jquery.qrcode.js') }}"></script>
+<script src="{{ asset('js/qrcode.js') }}" ></script>
+<script type="text/javascript">
+   //make qr code
+   function makeCode(){
+     $("#dataUrlQRCode").val('');
+      jQuery('#qrcode').qrcode({width: 120,height:120,text: $("#view_delivery_id").html()});
 
-
+     var canvas = document.querySelector("#qrcode > canvas");
+     var dataURL = canvas.toDataURL();
+     //$("#dataUrlQRCode").val(dataURL);
+     $('#img_qrcode').attr("src",dataURL);
+      $("#qrcode").html('')
+   }
+    
+    //end make qr code
+</script>
 <script>
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -889,7 +904,8 @@
             $('#view_container_no').html('');
             $('#view_driver_name').html('');
             $('#view_assistant').html('');
-
+            $('#view_plate_number').html('');
+            $('#view_material_list').html('');
         // END CLEAR VIEW
 
 
@@ -911,20 +927,26 @@
           info.el.style.borderWidth = '2px';
 
             console.log(info.event.extendedProps)
-            $('#view_delivery_id').append('test');
-            $('#view_po_number').append('test');
-            $('#view_supplier_name').append('test');
+            $('#view_delivery_id').append(info.event.extendedProps.delivery_id);
+            $('#view_po_number').append(info.event.extendedProps.po_number);
+            $('#view_supplier_name').append(info.event.extendedProps.supplier_name);
             $('#view_dock_name').append(info.event.extendedProps.dock_name);
             $('#view_date_of_delivery').append(info.event.extendedProps.date_of_delivery);
             $('#view_reccurence').append(info.event.extendedProps.recurrence);
-            $('#view_slotting_time').append(info.event.extendedProps.slotting_time);
+            $('#view_slotting_time').append(formatAMPM(info.event.start) + " - " + formatAMPM(info.event.end));
             $('#view_truck').append(info.event.extendedProps.truck_details);
             $('#view_container_no').append(info.event.extendedProps.container_no);
             $('#view_driver_name').append(info.event.extendedProps.driver_name);
             $('#view_assistant').append(info.event.extendedProps.assistant_name);
+            $('#view_plate_number').append(info.event.extendedProps.plate_number);
+            $('#view_material_list').append(info.event.extendedProps.material_list);
             $('#modal_view').html(''); 
             $('#modal_view').show()
+
+            $('#ajaxModelView .modal-dialog').css("margin-left","40em")
            
+            makeCode();
+
             $('#ajaxModelView').modal({
               backdrop:'static',
               keyboard: false
@@ -932,7 +954,16 @@
       }
     });
 
-
+    function formatAMPM(date) {
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      var strTime = hours + ':' + minutes + ' ' + ampm;
+      return strTime;
+    }
 
       var value = "";
       $('body').on('click', '.btn-modules', function () {
@@ -1266,7 +1297,9 @@
             } 
     }); 
 
-
+    $('body').on('click', '#print-schedule', function () {
+          printDiv('forPrint');
+    });
 
     // material list
 
@@ -1373,7 +1406,22 @@
 
       // material list end
 
+    // for print
 
+    function printDiv(divName) {
+       var printContents = document.getElementById(divName).innerHTML;
+       var originalContents = document.body.innerHTML;
+
+       document.body.innerHTML = printContents;
+
+       window.print();
+
+       document.body.innerHTML = originalContents;
+  }
+
+    // end for print
+
+   
 
 </script>
 <div class="container-fluid">
@@ -1683,104 +1731,127 @@
 
 <div class="modal fade" id="ajaxModelView" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="width:950px;">
             <div class="modal-header">
                 <h4 class="modal-title" id="modelHeadingView">View Schedule</h4>
 
                 <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
             <div class="modal-body">
+              <div id="forPrint" >
+                <div class="row">
+                  
+                    
+                  <div class="col-xl-12 text-center">
+                    <div class="col-xl-12 text-center">
+                      <img style="width: 200px;" src="{{ asset('images/logo_png.png') }}">
+                    </div>
+                     <b>Procter & Gamble Philippines, Incorporated<br>
+                    Cabuyao Plant</b>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <h1>TRAMS</h1>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2">
+                    <img id="img_qrcode" style="width:130px; height:130px; margin-top:15px;">
+                    <div id="qrcode" style="width:10px; height:10px; margin-top:15px;"></div>
+                    <input type="hidden" id="dataUrlQRCode">
+                  </div>
+                  <div class="col-md-4">
+                    Delivery ID
+                    <br>
+                    <h1><b><div id="view_delivery_id"></div></b></h1>
+                    <h5><b>P.O. Number : </b><b id="view_po_number"></b></h5>
+                  </div>
+                  <div class="col-md-6">
+                     
+                      <!-- supplier -->
+                      <div class="row">
+                        <div class="col-md-6" style="line-height: 0px">
+                          Supplier:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_supplier_name"></p></b>
+                        </div>
+                     
+                        <div class="col-md-6" style="line-height: 0px">
+                          Truck:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_truck"></p></b>
+                        </div>
+                   
+                        <div class="col-md-6" style="line-height: 0px">
+                          Plate Number:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_plate_number"></p></b>
+                        </div>
+                    
+                        <div class="col-md-6" style="line-height: 0px">
+                          Container Number:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_container_no"></p></b>
+                        </div>
+                     
+                        <div class="col-md-6" style="line-height: 0px">
+                          Driver:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_driver_name"></p></b>
+                        </div>
+                    
+                        <div class="col-md-6" style="line-height: 0px">
+                          Assistant:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_assistant"></p></b>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-md-4 text-center">
+                    <h5>Dock:</h5> 
+                    <h4><b><div id="view_dock_name"></div></b></h4>
+                  </div>
+                  <div class="col-md-4 text-center">
+                    <h5>Date of Delivery:</h5>
+                    <h4><b><div id="view_date_of_delivery"></div></b></h4>
+                  </div>
+                  <div class="col-md-4 text-center">
+                    <h5>Slotting Time:</h5>
+                    <h4><b><div id="view_slotting_time"></div></b></h4>
+                  </div>
+                </div>
+                 <hr>
+                <div class="row">
+                  
+                  <div class="col-md-12 text-center">
+                      <h5>Material List:</h5>
+                      <div id="view_material_list"></div>
+                  </div>
+                </div>
                 
-               <div class="row">
-                  <div class="col-md-6">
-                    Delivery ID:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_delivery_id"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    P.O. Number:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_po_number"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Supplier:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_supplier_name"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Dock:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_dock_name"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Date of Delivery:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_date_of_delivery"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Recurrence:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_reccurence"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Slotting Time:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_slotting_time"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Truck:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_truck"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Container Number:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_container_no"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Driver:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_driver_name"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Assistant:
-                  </div>
-                  <div class="col-md-6">
-                    <p id="view_assistant"></p>
-                  </div>
-                </div>
+            </div> 
+                
                 <br>
-                <button class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button> 
+                <div class="row">
+                  <div class="col-md-6">
+                    <button class="btn btn-success btn-xs btn-block" type="button" id="print-schedule">Print</button> 
+                  </div>
+                  <div class="col-md-6">
+                    <button class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button> 
+                  </div>
+                </div>
+                
+                
             </div>
         </div>
     </div>

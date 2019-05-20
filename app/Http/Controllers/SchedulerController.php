@@ -128,10 +128,12 @@ class SchedulerController extends Controller
                     $nestedData['slotting_time'] = $schedule->slotting_time;
                     $nestedData['container_no'] = $schedule->container_number;
                     $nestedData['driver_name'] = $driver_name;
-                    $nestedData['truck_details'] = $truck->plate_number . " " . $truck->model . " " . $truck->brand;
+                    $nestedData['truck_details'] =  $truck->model . " " . $truck->brand;
                     $nestedData['assistant_name'] = $assistant_name;
-
-
+                    $nestedData['plate_number'] = $truck->plate_number;
+                    $num = $schedule->id;
+                    $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+                    $nestedData['delivery_id'] = $number;
                     $nestedData['dock_name'] = $schedule->dock_name;
                     $nestedData['date_of_delivery'] = $schedule->date_of_delivery;
                     $nestedData['recurrence'] = $schedule->recurrence;
@@ -145,38 +147,31 @@ class SchedulerController extends Controller
 
                     $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
                             $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
-                        //     $nestedData['daysOfWeek'] = null;
-                        // $nestedData['startTime'] = null;
-                        // $nestedData['endTime'] = null;
-                        // $nestedData['startRecur'] = null;
-                        // $nestedData['endRecur'] = null;
+                  
+                    $mat_list = explode("-;-", $schedule->material_list);
+               
 
-                    // switch ($schedule->recurrence) {
+                    $gcas = explode("|", $mat_list[0]);
+                    $description = explode("|", $mat_list[1]);
+                    $quantity = explode("|", $mat_list[2]);
 
-                    //     case "Single Event":
-                    //         $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
-                    //         $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
-                    //         $nestedData['daysOfWeek'] = null;
-                    //     $nestedData['startTime'] = null;
-                    //     $nestedData['endTime'] = null;
-                    //     $nestedData['startRecur'] = null;
-                    //     $nestedData['endRecur'] = null;
-                    //         break;
-                    //     case "Recurrent":
-                    //         $nestedData['daysOfWeek'] = $dow;
-                    //     $nestedData['startTime'] = $start;
-                    //     $nestedData['endTime'] = $end;
-                    //     $nestedData['startRecur'] = $schedule->date_of_delivery;
-                    //     $nestedData['endRecur'] = date("Y-m-d", strtotime(date("Y-m-d", strtotime($schedule->date_of_delivery)) . " + 365 day"));
-                    //     break;
-                        
-                    //     default:
-                    //         # code...
-                    //         break;
-                    // }
+                    $material_list = "<table class='table table-bordered' style='width:100%'>";
+                    $material_list .= "<tr>";
+                    $material_list .= "<th>GCAS</th> <th>Description</th> <th>Quantity</th>";
+                    $material_list .= "<tr>";
+                    foreach($gcas as $key => $value){
 
+                        $material_list .= "<tr>";
+                        $material_list .= "<td>". $value ."</td>";
+                        $material_list .= "<td>". $description[$key] . "</td>";
+                        $material_list .= "<td>". $quantity[$key] . "</td>";
+                        $material_list .= "<tr>";
 
-                    $nestedData['material_list'] = $schedule->material_list;
+                    }
+                    $material_list .= "</table>";
+
+                    $nestedData['material_list'] = $material_list;
+
                     $nestedData['created_at'] = date('j M Y h:i a',strtotime($schedule->created_at));
                     switch ($schedule->status) {
                         case 1:

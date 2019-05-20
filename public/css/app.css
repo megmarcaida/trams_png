@@ -10845,3 +10845,9 @@ a.text-dark:focus {
 .tooltip-inner{
   background-color: #000;
 }
+
+#forPrint{
+  height: 950px;
+  border: 1px solid #000;
+  padding: 10px;
+}

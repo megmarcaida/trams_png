@@ -30,6 +30,16 @@ class CreateSchedulesTable extends Migration
             $table->text('reason')->nullable();
             $table->string('material_list',255)->nullable();
             $table->integer('status')->default(1);
+            $table->string('process_status',255)->nullable();
+            $table->integer('isDocked')->default(0)->nullable();
+            $table->datetime('gate_in_timestamp')->nullable();
+            $table->integer('parking_timestamp')->nullable();
+            $table->datetime('dock_in_timestamp')->nullable();
+            $table->integer('unloading_timestamp')->nullable();
+            $table->datetime('dock_out_timestamp')->nullable();
+            $table->integer('egress_timestamp')->nullable();
+            $table->datetime('gate_out_timestamp')->nullable();
+            $table->integer('truck_turnaround_timestamp')->nullable();
             $table->timestamps();
         });
     }

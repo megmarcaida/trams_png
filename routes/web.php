@@ -18,7 +18,7 @@
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/', ['middleware' => 'auth', 'uses' => 'HomeController@index']);
+// Route::get('/', ['middleware' => 'auth', 'uses' => 'HomeController@index']);
 
 #Supplier  Routes
 Route::get('/recordmaintenance/supplier', ['middleware' => 'auth', 'uses' => 'SupplierController@index']);
@@ -118,3 +118,27 @@ Route::post('allusers', 'UserRoleController@allusers' )->name('allusers');
 Route::post('deactivateOrActivateUser', 'UserRoleController@deactivateOrActivateUser')->name('deactivateOrActivateUser');
 #End UserRole Routes
 #END MASTERFILE
+
+
+#General Dashboard
+Route::get('/', ['middleware' => 'auth', 'uses' => 'DashboardController@index']);
+Route::post('allgeneraldashboardsched', 'DashboardController@allGeneralSchedule' )->name('allgeneraldashboardsched');
+Route::post('alldockdashboardsched', 'DashboardController@allDockSchedule' )->name('alldockdashboardsched');
+Route::post('getCountDock', 'DashboardController@getCountDock' )->name('getCountDock');
+Route::post('getFirstDockData', 'DashboardController@getFirstDockData' )->name('getFirstDockData');
+Route::post('changeProcessStatus', 'DashboardController@changeProcessStatus' )->name('changeProcessStatus');
+Route::post('checkIfIncoming', 'DashboardController@checkIfIncoming' )->name('checkIfIncoming');
+#end dashboard
+
+#all stand alone dashboards
+Route::get('/dashboard/parking', ['middleware' => 'auth', 'uses' => 'DashboardController@parking']);
+Route::get('/dashboard/dock', ['middleware' => 'auth', 'uses' => 'DashboardController@docking']);
+Route::get('/dashboard/gate', ['middleware' => 'auth', 'uses' => 'DashboardController@gate']);
+Route::get('/dashboard/manual', ['middleware' => 'auth', 'uses' => 'DashboardController@manual']);
+
+Route::post('dockingDashboard', 'DashboardController@dockingDashboard' )->name('dockingDashboard');
+Route::post('parkingDashboard', 'DashboardController@parkingDashboard' )->name('parkingDashboard');
+Route::post('gateDashboard', 'DashboardController@gateDashboard' )->name('gateDashboard');
+Route::post('setOvertime', 'DashboardController@setOvertime' )->name('setOvertime');
+
+#end all stand alone dashboards

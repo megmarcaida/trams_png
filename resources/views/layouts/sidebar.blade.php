@@ -53,6 +53,19 @@
           <a class="dropdown-item" href="/scheduler/dock">Dock</a>
         </div>
       </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-btn" href="#">
+          <i class="fas fa-fw fa-folder"></i>
+          <span>Stand Alone App</span>
+        </a>
+        <div class="dropdown-container">
+          
+          <a class="dropdown-item" href="/dashboard/parking">Parking</a>
+          <a class="dropdown-item" href="/dashboard/dock">Dock</a>
+          <a class="dropdown-item" href="/dashboard/gate">Gate</a>
+          <a class="dropdown-item" href="/dashboard/manual">Manual Process</a>
+        </div>
+      </li>
       <!-- <li class="nav-item">
         <a class="nav-link" href="tables.html">
           <i class="fas fa-fw fa-table"></i>
