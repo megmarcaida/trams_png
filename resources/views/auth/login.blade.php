@@ -41,7 +41,8 @@
                         <div style="text-align: center;margin: 50px;font-size:20px;">
                         <code>Email: admin@trams.com Password: admin123</code>
                         <br>
-                        <code>Email: docker@trams.com Password: docker123</code><br>
+                        <code>Email: northdock@trams.com Password: northdock</code><br>
+                        <code>Email: southdock@trams.com Password: southdock</code><br>
                         <code>Email: security@trams.com Password: security123</code>
                         </div>
 
