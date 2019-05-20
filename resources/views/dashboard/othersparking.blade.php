@@ -43,8 +43,9 @@
                   <tr>
                       <th>Parking Name</th>
                       <th>Parking Description</th>
-                      <th>Parking Slots</th>
-                      <th>Parking Area</th>
+                      <th>Parking Slots Taken</th>
+                      <th>Parking Total</th>
+                      <th>Parking Available</th>
                       <th>Parking Block</th>
                       <th>Parking Status</th>
                       <th>Active</th>
@@ -149,6 +150,7 @@
             {"data": 'parking_description'},
             {"data": 'parking_slot'},
             {"data": 'parking_area'},
+            {"data": 'parking_available'},
             {"data": 'parking_block'},
             {"data": 'parking_status'},
             { "data": "created_at" },

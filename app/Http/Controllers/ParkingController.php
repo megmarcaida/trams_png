@@ -113,6 +113,7 @@ class ParkingController extends Controller
                 $nestedData['parking_area'] = $park->parking_area;
                 $nestedData['parking_block'] = $park->parking_block;
                 $nestedData['parking_status'] = $park->parking_status;
+                $nestedData['parking_available'] = $park->parking_area - $park->parking_slot;
                 $nestedData['created_at'] = date('j M Y h:i a',strtotime($park->created_at));
                 if($park->status == 1){
 
