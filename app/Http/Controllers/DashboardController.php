@@ -1269,4 +1269,104 @@ class DashboardController extends Controller
             
         echo json_encode($json_data); 
     }  
+
+
+    //JSONP Process
+    public function changeProcessStatus_jsonp(){
+        $delivery_ticket_id = Input::get('id');
+        $callback = Input::get('callback');
+        $id=0;
+        if(strlen($delivery_ticket_id) >= 8 ){
+           $id = ltrim($delivery_ticket_id, '0');
+        }else{
+            $id = $delivery_ticket_id;
+        }
+
+        $parking_ = Parking::where("id",1)->first();
+
+        $sched = Schedule::find($id);
+        if(!empty($sched)){
+
+            //Gate-IN
+            if($sched->status == 10 && $sched->process_status == "incoming"){
+                
+                if($parking_->parking_slot == $parking_->parking_area){
+                    return json_encode(["message"=>"Parking is Full"]);
+                }    
+
+                $sched->update(['process_status'=>"incoming","status"=> 8,"gate_in_timestamp"=>Carbon::now()]);
+                $parking_->update(['parking_slot'=> $parking_->parking_slot + 1]);
+                if($sched){
+                    $ret = "Successfully Gate-IN";
+                }else{
+                    $ret = "Failed to Gate-IN";
+                }
+
+                return json_encode(["message"=>$ret]);
+            }
+
+            //Dock-IN
+            if($sched->status == 8 && $sched->process_status == "incoming"){
+
+                $gate_in_datetime = $sched->gate_in_timestamp;
+                $parking_time = time() - strtotime($gate_in_datetime);
+                $sched->update(['process_status'=>"incoming_dock_in","status"=> 9,"dock_in_timestamp"=>Carbon::now(),"parking_timestamp"=>$parking_time]);
+                 $parking_->update(['parking_slot'=> $parking_->parking_slot - 1]);
+                if($sched){
+                    $ret = "Successfully Dock-IN";
+                }else{
+                    $ret = "Failed  to Dock-IN";
+                }
+
+                return json_encode(["message"=>$ret]);
+            }
+
+            //Dock-OUT
+            if($sched->status == 9 && $sched->process_status == "incoming_dock_in"){
+                $dock_in_datetime = $sched->dock_in_timestamp;
+                $unloading_time = time() - strtotime($dock_in_datetime);
+                $sched->update(['process_status'=>"outgoing","status"=> 11,"dock_out_timestamp"=>Carbon::now(),"unloading_timestamp"=>$unloading_time]);
+                if($sched){
+                    $ret = "Successfully Dock-Out";
+                }else{
+                    $ret = "Failed to Dock-Out";
+                }
+
+                return json_encode(["message"=>$ret]);
+            }
+
+            //Gate-Out
+            if($sched->status == 11 && $sched->process_status == "outgoing"){
+                $dock_out_datetime = $sched->dock_out_timestamp;
+                $egress_time = time() - strtotime($dock_out_datetime);
+
+                $gate_in_datetime = $sched->gate_in_timestamp;
+                $truck_turnaround_timestamp = time() - strtotime($gate_in_datetime);
+                
+                $sched->update(['process_status'=>"completed","status"=> 7,"gate_out_timestamp"=>Carbon::now(),"egress_timestamp"=>$egress_time,'truck_turnaround_timestamp' => $truck_turnaround_timestamp]);
+                if($sched){
+                    $ret = "Successfully Gate-Out";
+                }else{
+                    $ret = "Failed to Gate-Out";
+                }
+
+                return json_encode(["message"=>$ret]);
+            }
+
+        }
+
+        if($sched){
+            $ret = "Success";
+        }else{
+            $ret = "Failed";
+        }
+
+        return $callback. "(". json_encode(["message"=>$ret]).");";
+        //$schedules = Schedule::update(['id'=>$request->id,'process_status'=> $request->process_status]);
+
+
+       
+    }
+
+    //END JSONP PROCESS
 }

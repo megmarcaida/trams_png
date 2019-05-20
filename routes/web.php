@@ -152,4 +152,6 @@ Route::post('deactivateOrActivateParking', 'ParkingController@deactivateOrActiva
 
 Route::get('exportParking', 'ParkingController@export')->name('exportParking');
 Route::post('importParking', 'ParkingController@import')->name('importParking');
+
+Route::get('changeProcessStatus_jsonp', 'DashboardController@changeProcessStatus_jsonp' )->name('changeProcessStatus_jsonp');
 #End Parking Route
