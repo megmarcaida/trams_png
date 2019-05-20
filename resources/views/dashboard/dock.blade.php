@@ -33,7 +33,7 @@
           url: "{{ url('getFirstDockData') }}",
           type: "POST",
           global: false,
-          data: {process_status:"incoming",module_name:module_name,status:"9"},
+          data: {process_status:"incoming_dock_in",module_name:module_name,status:"9"},
           success: function (data) {
             if(JSON.parse(data).length != 0){
                 $.each(JSON.parse(data), function(index, item) {
@@ -95,7 +95,7 @@
           url: "{{ url('getFirstDockData') }}",
           type: "POST",
           global: false,
-          data: {process_status:"incoming",module_name:module_name,status:"9"},
+          data: {process_status:"incoming_dock_in",module_name:module_name,status:"9"},
           success: function (data) {
             $.each(JSON.parse(data), function(index, item) {
                 del_id.html(item.id)
@@ -329,10 +329,11 @@
                 <br>
                 <div class="row">
                   <div class="col-xl-4 col-sm-12">
-                    <button id="btn-dock-in" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Dock-In</button>
-                    <button id="btn-dock-out" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Dock-Out</button>
+                    <button id="btn-dock-in" class="btn btn-secondary btn-xs btn-block" type="button">Dock-In</button>
+                    <button id="btn-dock-out" class="btn btn-secondary btn-xs btn-block" type="button">Dock-Out</button>
                   </div>
                   <div class="col-xl-4 col-sm-12">
+                    <button id="btn-change-dock" class="btn btn-secondary btn-xs btn-block" type="button">Change Dock</button>
                     <button id="btn-overtime" class="btn btn-secondary btn-xs btn-block" type="button">Overtime</button>
                   </div>
                   <div class="col-xl-4 col-sm-12">  

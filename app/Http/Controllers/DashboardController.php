@@ -514,7 +514,7 @@ class DashboardController extends Controller
             if($sched->status == 8 && $sched->process_status == "incoming"){
                 $gate_in_datetime = $sched->gate_in_timestamp;
                 $parking_time = time() - strtotime($gate_in_datetime);
-                $sched->update(['process_status'=>"incoming","status"=> 9,"dock_in_timestamp"=>Carbon::now(),"parking_timestamp"=>$parking_time]);
+                $sched->update(['process_status'=>"incoming_dock_in","status"=> 9,"dock_in_timestamp"=>Carbon::now(),"parking_timestamp"=>$parking_time]);
                 if($sched){
                     $ret = "Successfully Dock-IN";
                 }else{
@@ -525,7 +525,7 @@ class DashboardController extends Controller
             }
 
             //Dock-OUT
-            if($sched->status == 9 && $sched->process_status == "incoming"){
+            if($sched->status == 9 && $sched->process_status == "incoming_dock_in"){
                 $dock_in_datetime = $sched->dock_in_timestamp;
                 $unloading_time = time() - strtotime($dock_in_datetime);
                 $sched->update(['process_status'=>"outgoing","status"=> 11,"dock_out_timestamp"=>Carbon::now(),"unloading_timestamp"=>$unloading_time]);
@@ -825,7 +825,10 @@ class DashboardController extends Controller
                
                 $truck = Truck::where('id',$Schedule->truck_id)->where('status', 1)->first();
 
-                $nestedData['id'] = $Schedule->id;
+                $num = $Schedule->id;
+                $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+
+                $nestedData['id'] = $number;
                 $nestedData['slotting_time'] = $start . " " . $end;
                 $nestedData['supplier_name'] = $suppliers['supplier_name'];
                 $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
@@ -898,7 +901,7 @@ class DashboardController extends Controller
 
         $dock = Dock::where('status', 1)->get();
         $dock_id_ = 0;
-        $totalData = Schedule::where("date_of_delivery", $datenow)->count();
+        $totalData = Schedule::where("date_of_delivery", $datenow)->where("process_status",$request->process_status)->count();
             
         $totalFiltered = $totalData; 
 
@@ -906,6 +909,14 @@ class DashboardController extends Controller
         $start = $request->input('start');
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
+
+        $status = array();
+        if($request->process_status == "incoming"){
+            $status = array(10);
+        }
+        if($request->process_status ==  "outgoing"){
+            $status = array(8,11);
+        } 
         if(empty($request->input('search.value')))
         {   
             if($request->module != null){
@@ -914,14 +925,15 @@ class DashboardController extends Controller
                     if(strpos($d->module, $module_name) !== false){
                         $dock_id_ = $d->id;
                     }
-                }  
-                $Schedules = Schedule::where("date_of_delivery", $datenow)->where("dock_id",$dock_id_)
+                } 
+
+                $Schedules = Schedule::where("date_of_delivery", $datenow)->whereIn("status",$status)->where("dock_id",$dock_id_)
                          ->offset($start)
                          ->limit($limit)
                          ->orderBy($order,$dir)
                          ->get();
             }else{
-                $Schedules = Schedule::where("date_of_delivery", $datenow)
+                $Schedules = Schedule::where("date_of_delivery", $datenow)->whereIn("status",$status)
                          ->offset($start)
                          ->limit($limit)
                          ->orderBy($order,$dir)
@@ -932,14 +944,14 @@ class DashboardController extends Controller
         else {
             $search = $request->input('search.value'); 
             
-            $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->OrWhere("date_of_delivery", $datenow)->offset($start)
+            $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->OrWhere("date_of_delivery", $datenow)->whereIn("status",$status)->offset($start)
                  ->limit($limit)
                  ->orderBy($order,$dir)
                  ->get();
 
 
 
-            $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->OrWhere("date_of_delivery", $datenow)->count();
+            $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->OrWhere("date_of_delivery", $datenow)->whereIn("status",$status)->count();
         }
 
         $data = array();
@@ -960,7 +972,10 @@ class DashboardController extends Controller
                
                 $truck = Truck::where('id',$Schedule->truck_id)->where('status', 1)->first();
 
-                $nestedData['id'] = $Schedule->id;
+                $num = $Schedule->id;
+                $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+
+                $nestedData['id'] = $number;
                 $nestedData['slotting_time'] = $start . " " . $end;
                 $nestedData['supplier_name'] = $suppliers['supplier_name'];
                 $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
@@ -968,7 +983,26 @@ class DashboardController extends Controller
                 $nestedData['container_number'] = $Schedule->container_number;
                 $nestedData['dock'] = $Schedule->dock_name;
                 
-                $nestedData['status'] = $Schedule->status == 1 ? "Completed" : "Inactive";
+                 switch ($Schedule->status) {
+                    case 8:
+                        $nestedData['status'] = "In Process";
+                        break;
+                    case 10:
+                        $dateofentry = $Schedule->date_of_delivery . " " . $start;
+                        if(strtotime($dateofentry) - time() <= 3601){
+                            $nestedData['status'] = "For-Entry";
+                        }else{
+                            $nestedData['status'] = "";
+                        }
+                        break;
+                    case 11:
+                        $nestedData['status'] = "For-Gate-Out";
+                        break;   
+                        
+                    default:
+                        $nestedData['status'] = "";
+                        break;
+                }
                 $data[] = $nestedData;
 
             }

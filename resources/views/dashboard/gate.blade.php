@@ -17,16 +17,36 @@
 
     <div class="row">
         <div class="col-xl-12 col-sm-12 mb-3">
-          <h3>Gate Dashboard</h3>
+          <h3>Incoming</h3>
              <div id="response">
-              @if(session()->has('import_message'))
-                <div class="alert alert-success">
-                    {{ session()->get('import_message') }}
-                </div>
-            @endif
+              
             </div>
             <div class="table table-responsive">
-              <table class="table table-bordered table-striped data-table">
+              <table class="table table-bordered table-striped data-table-incoming">
+                  <thead>
+                      <tr>
+                          <th>Delivery Ticket No.</th>
+                          <th>Slotting Number</th>
+                          <th>Supplier Name</th>
+                          <th>Truck</th>
+                          <th>Plate Number</th>
+                          <th>Container Number</th>
+                          <th>Dock</th>
+                          <th>Status</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
+            </div>
+        </div>
+        <div class="col-xl-12 col-sm-12 mb-3">
+          <h3>Outgoing</h3>
+             <div id="response">
+              
+            </div>
+            <div class="table table-responsive">
+              <table class="table table-bordered table-striped data-table-outgoing">
                   <thead>
                       <tr>
                           <th>Delivery Ticket No.</th>
@@ -59,7 +79,7 @@
           }
     });
     
-    var table = $('.data-table').DataTable({
+  var table = $('.data-table-incoming').DataTable({
         "bPaginate": true,
         "bLengthChange": false,
         "bFilter": false,
@@ -68,10 +88,10 @@
         "processing": true,
         "serverSide": true,
         "ajax":{
-                 "url": "{{ url('parkingDashboard') }}",
+                 "url": "{{ url('gateDashboard') }}",
                  "dataType": "json",
                  "type": "POST",
-                 "data":{ _token: "{{csrf_token()}}"}
+                 "data":{ _token: "{{csrf_token()}}",process_status:"incoming"}
                },
         "columns": [
             { "data": "id" },
@@ -82,7 +102,43 @@
             {"data": 'container_number'},
             {"data": 'dock'},
             {"data": 'status'},
-        ]  
+        ],
+        'columnDefs': [ {
+        'targets': [0,1,2,3,4,5], // column index (start from 0)
+        'orderable': false, // set orderable false for selected columns
+        }]    
+
+     
+  });
+
+  var table = $('.data-table-outgoing').DataTable({
+        "bPaginate": true,
+        "bLengthChange": false,
+        "bFilter": false,
+        "bInfo": false,
+        "bAutoWidth": false,
+        "processing": true,
+        "serverSide": true,
+        "ajax":{
+                 "url": "{{ url('gateDashboard') }}",
+                 "dataType": "json",
+                 "type": "POST",
+                 "data":{ _token: "{{csrf_token()}}",process_status:"outgoing"}
+               },
+        "columns": [
+            { "data": "id" },
+            {"data": 'slotting_time'},
+            {"data": 'supplier_name'},
+            {"data": 'truck'},
+            {"data": 'plate_number'},
+            {"data": 'container_number'},
+            {"data": 'dock'},
+            {"data": 'status'},
+        ],
+        'columnDefs': [ {
+        'targets': [0,1,2,3,4,5], // column index (start from 0)
+        'orderable': false, // set orderable false for selected columns
+        }]    
 
     });
      
