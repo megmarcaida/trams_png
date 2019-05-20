@@ -33,7 +33,7 @@
           url: "{{ url('getFirstDockData') }}",
           type: "POST",
           global: false,
-          data: {process_status:"incoming",module_name:module_name,status:"8"},
+          data: {process_status:"incoming",module_name:module_name,status:"9"},
           success: function (data) {
             if(JSON.parse(data).length != 0){
                 $.each(JSON.parse(data), function(index, item) {
@@ -86,12 +86,16 @@
       truck.html('')
       plate_number.html('')
       container_number.html('')
+
+      moduleClass.addClass('alert alert-secondary')
+      moduleClass.removeClass('alert-success')
+      moduleClass.removeClass('alert-danger')
       $.ajax({
           async: false,
           url: "{{ url('getFirstDockData') }}",
           type: "POST",
           global: false,
-          data: {process_status:"incoming",module_name:module_name,status:"8"},
+          data: {process_status:"incoming",module_name:module_name,status:"9"},
           success: function (data) {
             $.each(JSON.parse(data), function(index, item) {
                 del_id.html(item.id)
@@ -112,10 +116,14 @@
                     moduleClass.addClass('alert alert-success')
                     moduleClass.removeClass('alert-secondary')
                     moduleClass.removeClass('alert-danger')
-                }else if(item.isDocked == "Overtime"){
+                }else if(item.status == "Overtime"){
                     moduleClass.addClass('alert alert-danger')
                     moduleClass.removeClass('alert-secondary')
                     moduleClass.removeClass('alert-success')
+                }else{
+                    moduleClass.addClass('alert alert-secondary')
+                    moduleClass.removeClass('alert-success')
+                    moduleClass.removeClass('alert-danger')
                 }
 
                 // if(timenow > item.endtime){
@@ -313,7 +321,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-md-12">
+                  <div class="col-md-12 material_list">
                     Material List:
                     <table class="view_material_list"></table>
                   </div>
@@ -557,19 +565,26 @@
 
     $('body').on( 'click', '.data', function () {
        
-        $.ajax({
-            async: false,
-            url: "{{ url('setOvertime') }}",
-            type: "POST",
-            global: false,
-            data: {delivery_id:"incoming"},
-            success: function (data) {
-              tmp_incoming = data; 
-            },
-            error: function (data) {
-                console.log('Error:', data);
-            }
-        });
+            $('.view_delivery_id').html($(this).find("tr:nth-child(1) > td:nth-child(2)").first().text())  
+            $('.view_slotting_time').html($(this).find("tr:nth-child(2) > td:nth-child(2)").first().text())  
+            $('.view_supplier_name').html($(this).find("tr:nth-child(3) > td:nth-child(2)").first().text()) 
+            $('.view_truck').html($(this).find("tr:nth-child(4) > td:nth-child(2)").text()) 
+            $('.view_container_no').html($(this).find("tr:nth-child(5) > td:nth-child(2)").text())
+            //$('.view_material_list').html($(this).find("td:nth-child(8)").html())    
+            $('.material_list').hide();
+
+            $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
+            $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+
+            $("#btn-dock-out").show();
+            $("#btn-dock-in").hide();
+            $("#btn-overtime").show();
+
+            $('#ajaxModelView').modal({
+                backdrop:'static',
+                keyboard: false
+            })
     });
     
 
@@ -634,14 +649,33 @@
             url: "{{ url('changeProcessStatus') }}",
             type: "POST",
             global: false,
-            data: {delivery_id:$(".view_delivery_id").html(),status:8,process_status:'incoming'},
+            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:8,process_status:'incoming'},
             success: function (data) {
-              tmp_incoming = data; 
+              console.log(JSON.parse(data).message) 
             },
             error: function (data) {
                 console.log('Error:', data);
             }
         });
-    });  
+    });
+
+    $('body').on( 'click', '#btn-dock-out', function () {
+            
+        $.ajax({
+            async: false,
+            url: "{{ url('changeProcessStatus') }}",
+            type: "POST",
+            global: false,
+            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:9,process_status:'incoming'},
+            success: function (data) {
+              console.log(JSON.parse(data).message) 
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+    });
+
+
 </script>
 @endsection
