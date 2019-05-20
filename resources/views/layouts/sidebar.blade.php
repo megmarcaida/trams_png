@@ -56,7 +56,7 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-btn" href="#">
           <i class="fas fa-fw fa-folder"></i>
-          <span>Stand Alone App</span>
+          <span>Others / Dashboards</span>
         </a>
         <div class="dropdown-container">
           
