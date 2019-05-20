@@ -227,7 +227,7 @@
                         // //if(new_first_dock_data != first_data){
                         //   first_data = new_first_dock_data
                         // //}
-                      },1000)
+                      },5000)
                         </script>
                     @endforeach
                     </div>
@@ -610,9 +610,6 @@
     });
 
   $('body').on( 'click', '#btn-overtime', function () {
-       
-            console.log($(".view_delivery_id").html()) 
-
             
         $.ajax({
             async: false,
@@ -629,5 +626,22 @@
         });
     });
     
+
+    $('body').on( 'click', '#btn-dock-in', function () {
+            
+        $.ajax({
+            async: false,
+            url: "{{ url('changeProcessStatus') }}",
+            type: "POST",
+            global: false,
+            data: {delivery_id:$(".view_delivery_id").html(),status:8,process_status:'incoming'},
+            success: function (data) {
+              tmp_incoming = data; 
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+    });  
 </script>
 @endsection

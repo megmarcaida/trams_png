@@ -67,6 +67,7 @@
         "bAutoWidth": false,
         "processing": true,
         "serverSide": true,
+        "orderable": false,
         "ajax":{
                  "url": "{{ url('dockingDashboard') }}",
                  "dataType": "json",
@@ -82,9 +83,17 @@
             {"data": 'container_number'},
             {"data": 'dock'},
             {"data": 'status'},
-        ]  
+        ],
+        'columnDefs': [ {
+        'targets': [0,1,2,3,4,5,6,7], // column index (start from 0)
+        'orderable': false, // set orderable false for selected columns
+        }]  
 
     });
+
+    setInterval(function(){
+      table.draw();
+    },5000)
      
   });
 

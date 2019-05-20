@@ -114,7 +114,11 @@
             {"data": 'truck'},
             {"data": 'plate_number'},
             {"data": 'container_number'},
-        ]  
+        ],
+        'columnDefs': [ {
+        'targets': [0,1,2,3,4,5], // column index (start from 0)
+        'orderable': false, // set orderable false for selected columns
+        }]   
 
         });
     });

@@ -497,43 +497,48 @@ class DashboardController extends Controller
 
         $sched = Schedule::find($id);
         if(!empty($sched)){
+
+            //Gate-IN
             if($sched->status == 10 && $sched->process_status == "incoming"){
                 $sched->update(['process_status'=>"incoming","status"=> 8,"gate_in_timestamp"=>Carbon::now()]);
                 if($sched){
-                    $ret = "Success";
+                    $ret = "Successfully Gate-IN";
                 }else{
-                    $ret = "Failed";
+                    $ret = "Failed to Gate-IN";
                 }
 
                 return json_encode(["message"=>$ret]);
             }
 
+            //Dock-IN
             if($sched->status == 8 && $sched->process_status == "incoming"){
                 $gate_in_datetime = $sched->gate_in_timestamp;
                 $parking_time = time() - strtotime($gate_in_datetime);
                 $sched->update(['process_status'=>"incoming","status"=> 9,"dock_in_timestamp"=>Carbon::now(),"parking_timestamp"=>$parking_time]);
                 if($sched){
-                    $ret = "Success";
+                    $ret = "Successfully Dock-IN";
                 }else{
-                    $ret = "Failed";
+                    $ret = "Failed  to Dock-IN";
                 }
 
                 return json_encode(["message"=>$ret]);
             }
 
+            //Dock-OUT
             if($sched->status == 9 && $sched->process_status == "incoming"){
                 $dock_in_datetime = $sched->dock_in_timestamp;
                 $unloading_time = time() - strtotime($dock_in_datetime);
                 $sched->update(['process_status'=>"outgoing","status"=> 11,"dock_out_timestamp"=>Carbon::now(),"unloading_timestamp"=>$unloading_time]);
                 if($sched){
-                    $ret = "Success";
+                    $ret = "Successfully Dock-Out";
                 }else{
-                    $ret = "Failed";
+                    $ret = "Failed to Dock-Out";
                 }
 
                 return json_encode(["message"=>$ret]);
             }
 
+            //Gate-Out
             if($sched->status == 11 && $sched->process_status == "outgoing"){
                 $dock_out_datetime = $sched->dock_out_timestamp;
                 $egress_time = time() - strtotime($dock_out_datetime);
@@ -543,9 +548,9 @@ class DashboardController extends Controller
                 
                 $sched->update(['process_status'=>"completed","status"=> 7,"gate_out_timestamp"=>Carbon::now(),"egress_timestamp"=>$egress_time,'truck_turnaround_timestamp' => $truck_turnaround_timestamp]);
                 if($sched){
-                    $ret = "Success";
+                    $ret = "Successfully Gate-Out";
                 }else{
-                    $ret = "Failed";
+                    $ret = "Failed to Gate-Out";
                 }
 
                 return json_encode(["message"=>$ret]);
@@ -828,7 +833,38 @@ class DashboardController extends Controller
                 $nestedData['container_number'] = $Schedule->container_number;
                 $nestedData['dock'] = $Schedule->dock_name;
                 
-                $nestedData['status'] = $Schedule->status == 1 ? "Completed" : "Inactive";
+                 switch ($Schedule->status) {
+                    case 1:
+                        $dateofdockin = $Schedule->date_of_delivery . " " . $start;
+                        $dateofdockout = $Schedule->date_of_delivery . " " . $end;
+                        if(time() - strtotime($dateofdockin) > 0 && time() - strtotime($dateofdockout) < 1){
+                            $nestedData['status'] = "For Dock-In";
+                        }else{
+                            $nestedData['status'] = "";
+                        }
+                        break;
+                    case 9:
+                        $dateofdockout = $Schedule->date_of_delivery . " " . $end;
+                        if(time() - strtotime($dateofdockout) < 1){
+                            $nestedData['status'] = "UNLOADING";
+                        }elseif(time() - strtotime($dateofdockout) > 0){
+                            $nestedData['status'] = "Overtime";
+                        }
+                        break;  
+                    case 11:
+                        $dateofgateout = $Schedule->date_of_delivery . " " . $end;
+                        if(time() - strtotime($dateofgateout) < 1){
+                            $nestedData['status'] = "For-Gate-Out";
+                        }elseif(time() - strtotime($dateofgateout) > 0){
+
+                        $nestedData['status'] = "Over Staying";
+                        }
+                        break;   
+                        
+                    default:
+                        $nestedData['status'] = "";
+                        break;
+                }
                 $data[] = $nestedData;
 
             }
@@ -952,5 +988,85 @@ class DashboardController extends Controller
         $date = Carbon::now();
         $datenow = $date->format("M d, Y"); 
         return view('qrcode/reader')->with('datenow',$datenow);
+    }
+
+    public function setOvertime(Request $request){
+
+        $id=0;
+        if(strlen($request->delivery_ticket_id) >= 8 ){
+           $id = ltrim($request->delivery_ticket_id, '0');
+        }else{
+            $id = $request->delivery_ticket_id;
+        }
+
+        $sched = Schedule::find($id);
+        if(!empty($sched)){
+            if($sched->status == 10 && $sched->process_status == "incoming"){
+                $sched->update(['process_status'=>"incoming","status"=> 8,"gate_in_timestamp"=>Carbon::now()]);
+                if($sched){
+                    $ret = "Success";
+                }else{
+                    $ret = "Failed";
+                }
+
+                return json_encode(["message"=>$ret]);
+            }
+
+            if($sched->status == 8 && $sched->process_status == "incoming"){
+                $gate_in_datetime = $sched->gate_in_timestamp;
+                $parking_time = time() - strtotime($gate_in_datetime);
+                $sched->update(['process_status'=>"incoming","status"=> 9,"dock_in_timestamp"=>Carbon::now(),"parking_timestamp"=>$parking_time]);
+                if($sched){
+                    $ret = "Success";
+                }else{
+                    $ret = "Failed";
+                }
+
+                return json_encode(["message"=>$ret]);
+            }
+
+            if($sched->status == 9 && $sched->process_status == "incoming"){
+                $dock_in_datetime = $sched->dock_in_timestamp;
+                $unloading_time = time() - strtotime($dock_in_datetime);
+                $sched->update(['process_status'=>"outgoing","status"=> 11,"dock_out_timestamp"=>Carbon::now(),"unloading_timestamp"=>$unloading_time]);
+                if($sched){
+                    $ret = "Success";
+                }else{
+                    $ret = "Failed";
+                }
+
+                return json_encode(["message"=>$ret]);
+            }
+
+            if($sched->status == 11 && $sched->process_status == "outgoing"){
+                $dock_out_datetime = $sched->dock_out_timestamp;
+                $egress_time = time() - strtotime($dock_out_datetime);
+
+                $gate_in_datetime = $sched->gate_in_timestamp;
+                $truck_turnaround_timestamp = time() - strtotime($gate_in_datetime);
+                
+                $sched->update(['process_status'=>"completed","status"=> 7,"gate_out_timestamp"=>Carbon::now(),"egress_timestamp"=>$egress_time,'truck_turnaround_timestamp' => $truck_turnaround_timestamp]);
+                if($sched){
+                    $ret = "Success";
+                }else{
+                    $ret = "Failed";
+                }
+
+                return json_encode(["message"=>$ret]);
+            }
+
+        }
+
+        if($sched){
+            $ret = "Success";
+        }else{
+            $ret = "Failed";
+        }
+
+        return json_encode(["message"=>$ret]);
+        //$schedules = Schedule::update(['id'=>$request->id,'process_status'=> $request->process_status]);
+
+
+       
     }  
 }
