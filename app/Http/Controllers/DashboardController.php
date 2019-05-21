@@ -593,7 +593,7 @@ class DashboardController extends Controller
         $date = Carbon::now();
         $datenow = $date->format("Y-m-d"); 
         $count = 0;
-        $incoming = Schedule::where("date_of_delivery", $datenow)->whereNull("process_status")->where("status",1)->get();
+        $incoming = Schedule::where("date_of_delivery", $datenow)->whereNull("process_status")->whereIn("status",[1,2])->get();
         
         foreach($incoming as $val){
 
