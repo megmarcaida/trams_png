@@ -1273,8 +1273,8 @@ class DashboardController extends Controller
 
     //JSONP Process
     public function changeProcessStatus_jsonp(){
-        $delivery_ticket_id = Request::get('id');
-        $callback = Request::get('callback');
+        $delivery_ticket_id = $_GET['id'];
+        //$callback = $_GET['callback'];
         $id=0;
         if(strlen($delivery_ticket_id) >= 8 ){
            $id = ltrim($delivery_ticket_id, '0');
@@ -1356,13 +1356,13 @@ class DashboardController extends Controller
         }
 
         if($sched){
-            $ret = "Success";
+            $ret = "This ticket is already processed.";
         }else{
-            $ret = "Failed";
+            $ret = "Failed to process";
         }
 
-        //return $callback. "(". json_encode(["message"=>$ret]).");";
-        return Response::json(["message"=>$ret])->setCallback($callback);    
+        return json_encode(["message"=>$ret]);
+        //return Response::json(["message"=>$ret])->setCallback($callback);    
 
         //$schedules = Schedule::update(['id'=>$request->id,'process_status'=> $request->process_status]);
 
