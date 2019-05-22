@@ -4,7 +4,7 @@
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" /> -->
 <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/shieldui-all.min.css" />
 <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light/all.min.css" />
-<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/jquery-1.10.2.min.js"></script>
+<!-- <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/jquery-1.10.2.min.js"></script> -->
 <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
 <script src="{{ asset('js/gridData.js') }}"></script>
 <style>
@@ -178,7 +178,7 @@
                                 <b>ON-TIME ARRIVALS</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress9" style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress9">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
@@ -199,7 +199,47 @@
     </div>
 </div>
 
-    
+<div class="modal fade" id="ajaxModalView" aria-hidden="true">
+    <div class="modal-dialog" style="margin-left: 25%;">
+        <div class="modal-content" style="min-width: 1000px;width: 100%;">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeadingView">View Schedule</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div class="modal-body">
+              <div class="table table-responsive">
+              <table class="table table-bordered table-striped data-table">
+                  <thead>
+                      <tr>
+                          <th>Delivery Ticket No.</th>
+                          <th>Slotting Number</th>
+                          <th>Supplier Name</th>
+                          <th>Truck</th>
+                          <th>Plate Number</th>
+                          <th>Container Number</th>
+                          <th>Dock</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
+            </div>
+            </div> 
+                
+            <br>
+            <div class="row">
+              <div class="col-md-12">
+                <button class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button> 
+              </div>
+            </div>
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+   
     
 <script type="text/javascript">
   $(function () {
@@ -221,6 +261,21 @@
     initializeProgress8();
     initializeProgress9();
     initializeProgress10();
+
+
+   setInterval(function(){
+
+      initializeProgress1();
+      initializeProgress2();
+      initializeProgress3();
+      initializeProgress4();
+      initializeProgress5();
+      initializeProgress6();
+      initializeProgress7();
+      initializeProgress8();
+      initializeProgress9();
+      initializeProgress10();
+    },5000)
 
     function initializeProgress1() {
         $.ajax({
@@ -584,10 +639,57 @@
         });
     }
 
-   setInterval(function(){
-    },5000)
+
+    function getData(url,process_status,status,isModal){
+      if(url == "getTrucksThatsIsNotOnTime"){
+        url = "{{ url('getOnTimeDepartures') }}"
+      }
+      var table_incoming = $('.data-table').DataTable({
+            "bPaginate": true,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+            "bAutoWidth": false,
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+                     "url": url,
+                     "dataType": "json",
+                     "type": "POST",
+                     "data":{ _token: "{{csrf_token()}}",process_status:process_status,status:status,isModal:isModal}
+                   },
+            "columns": [
+                { "data": "id" },
+                {"data": 'slotting_time'},
+                {"data": 'supplier_name'},
+                {"data": 'truck'},
+                {"data": 'plate_number'},
+                {"data": 'container_number'},
+                {"data": 'dock'},
+            ],
+            'columnDefs': [ {
+            'targets': [0,1,2,3,4,5], // column index (start from 0)
+            'orderable': false, // set orderable false for selected columns
+            }]    
+      });
+    }
+      
+
+
+    //click reports
+    $("body").on("click",".progress9",function(){
+      console.log("clicked");
+
+      getData("getTrucksThatsIsNotOnTime","incoming",[8,10],1)
+      $('#ajaxModalView').modal({
+        backdrop:'static',
+        keyboard: false
+      });
+    });
      
   });
+
+
 
       
 </script>

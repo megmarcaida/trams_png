@@ -1390,39 +1390,137 @@ class DashboardController extends Controller
     }
 
     public function getOnTimeDepartures(Request $request){
-        $date = Carbon::now();
-        $datenow = $date->format("Y-m-d"); 
-        $data = array();
-        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->get();
-        $count = 0;
-        $total = 0;
-        $percentage = 0;
-        
-        foreach($getSchedules as $schedule){
+
+        if($request->isModal == 1){
+
+            $columns = array( 
+                            0 =>'id', 
+                            1 =>'slotting_time',
+                            2 => 'supplier_name',
+                            3 => 'truck',
+                            4 => 'plate_number',
+                            5 => 'container_number',
+                            6 => 'dock',
+                        );
+            
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+
+            $totalData = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->count();
+                
+            $totalFiltered = $totalData; 
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            if($order == "id"){
+                $order = "slotting_time";
+            }
+            $dir = $request->input('order.0.dir');
+
+            
+            if(empty($request->input('search.value')))
+            {   
+                
+                $Schedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())
+                             ->offset($start)
+                             ->limit($limit)
+                             ->orderBy($order,$dir)
+                             ->get();
+                
+            }
+            else {
+                $search = $request->input('search.value'); 
+                
+                $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())->offset($start)
+                     ->limit($limit)
+                     ->orderBy($order,$dir)
+                     ->get();
 
 
-            $slotting_ = str_replace("|","",$schedule->slotting_time);
-            $end = substr($slotting_, -5);
-            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
-            $timestamp = strtotime($dateofdeparture) + 60*60;
-            $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
-            if($schedule->gate_out_timestamp < $time){
-                $count++;
+
+                $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())->count();
             }
 
-            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+            $data = array();
+            $trucks_suppliers='';
+            $trucks = '';
 
-            $total++;
+            if(!empty($Schedules))
+            {
+                foreach ($Schedules as $Schedule)
+                {
+                   
+                    
+                    $slotting_ = str_replace("|","",$Schedule->slotting_time);
+                        $start = substr($slotting_, 0, 5);
+                        $end = substr($slotting_, -5);
 
-            //$data[] = $nestedData;
+                    $suppliers = Supplier::where('id',$Schedule->supplier_id)->where('status', 1)->first();
+                   
+                    $truck = Truck::where('id',$Schedule->truck_id)->where('status', 1)->first();
 
+                    $num = $Schedule->id;
+                    $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+
+                    $nestedData['id'] = $number;
+                    $nestedData['slotting_time'] = $start . " " . $end;
+                    $nestedData['supplier_name'] = $suppliers['supplier_name'];
+                    $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
+                    $nestedData['plate_number'] = $truck['plate_number'];
+                    $nestedData['container_number'] = $Schedule->container_number;
+                    $nestedData['dock'] = $Schedule->dock_name;
+                    
+                    $data[] = $nestedData;
+
+                }
+            }
+              
+            $json_data = array(
+                        "draw"            => intval($request->input('draw')),  
+                        "recordsTotal"    => intval($totalData),  
+                        "recordsFiltered" => intval($totalFiltered), 
+                        "data"            => $data   
+                        );
+                
+            return json_encode($json_data);
+
+        }else{
+
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+            $data = array();
+            $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->get();
+            $count = 0;
+            $total = 0;
+            $percentage = 0;
+            
+            foreach($getSchedules as $schedule){
+
+
+                $slotting_ = str_replace("|","",$schedule->slotting_time);
+                $end = substr($slotting_, -5);
+                $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+                $timestamp = strtotime($dateofdeparture) + 60*60;
+                $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+                if($schedule->gate_out_timestamp < $time){
+                    $count++;
+                }
+
+                //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+                $total++;
+
+                //$data[] = $nestedData;
+
+            }
+            if($total == 0){
+                return json_encode(0);
+            }
+            $percentage = round((($count / $total) * 100),1);
+
+            return json_encode($percentage);
         }
-        if($total == 0){
-            return json_encode(0);
-        }
-        $percentage = round((($count / $total) * 100),1);
-
-        return json_encode($percentage);
     }
 
     public function getOnTimeArrivals(Request $request){
