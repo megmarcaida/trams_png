@@ -619,6 +619,12 @@ class DashboardController extends Controller
         return view('qrcode/manual')->with('datenow',$datenow);
     }
 
+    public function executive(){
+        $date = Carbon::now();
+        $datenow = $date->format("M d, Y"); 
+        return view('dashboard/executive')->with('datenow',$datenow);
+    }
+
     public function parking(){
         $date = Carbon::now();
         $datenow = $date->format("M d, Y"); 
@@ -1371,4 +1377,300 @@ class DashboardController extends Controller
     }
 
     //END JSONP PROCESS
+
+
+    //executive dashboards
+    public function getTrucksCount(Request $request){
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+
+        $schedulesTruck = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->count();
+
+        return json_encode($schedulesTruck);
+    }
+
+    public function getOnTimeDepartures(Request $request){
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+        $data = array();
+        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->get();
+        $count = 0;
+        $total = 0;
+        $percentage = 0;
+        
+        foreach($getSchedules as $schedule){
+
+
+            $slotting_ = str_replace("|","",$schedule->slotting_time);
+            $end = substr($slotting_, -5);
+            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+            $timestamp = strtotime($dateofdeparture) + 60*60;
+            $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+            if($schedule->gate_out_timestamp < $time){
+                $count++;
+            }
+
+            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+            $total++;
+
+            //$data[] = $nestedData;
+
+        }
+        if($total == 0){
+            return json_encode(0);
+        }
+        $percentage = round((($count / $total) * 100),1);
+
+        return json_encode($percentage);
+    }
+
+    public function getOnTimeArrivals(Request $request){
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+        $data = array();
+        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->get();
+        $count = 0;
+        $total = 0;
+        $percentage = 0;
+        
+        foreach($getSchedules as $schedule){
+
+
+            $slotting_ = str_replace("|","",$schedule->slotting_time);
+            $start = substr($slotting_, 0, 5);
+            $dateofarrival = $schedule->date_of_delivery . " " . $start;
+
+            if($schedule->gate_in_timestamp < $dateofarrival){
+                $count++;
+            }
+
+            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+            $total++;
+
+            //$data[] = $nestedData;
+
+        }
+        if($total == 0){
+            return json_encode(0);
+        }
+        $percentage = round((($count / $total) * 100),1);
+
+        return json_encode($percentage);
+    }
+
+    public function getSlottingCompliance(Request $request){
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+        $data = array();
+        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->get();
+        $count = 0;
+        $total = 0;
+        $percentage = 0;
+        
+        foreach($getSchedules as $schedule){
+
+
+            $slotting_ = str_replace("|","",$schedule->slotting_time);
+             $end = substr($slotting_, -5);
+            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+
+            if($schedule->dock_out_timestamp < $dateofdeparture){
+                $count++;
+            }
+
+            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+            $total++;
+
+            //$data[] = $nestedData;
+
+        }
+        if($total == 0){
+            return json_encode(0);
+        }
+        $percentage = round((($count / $total) * 100),1);
+
+        return json_encode($percentage);
+    }
+
+    public function getAverageTurnAroundTime(Request $request){
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+        $data = array();
+        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->where("status",7)->where("process_status","completed")->get();
+        
+        $turnAroundTime=0;
+        $total = 0;
+        $percentage = 0;
+        $hours = "";
+        
+        foreach($getSchedules as $schedule){
+
+
+            $slotting_ = str_replace("|","",$schedule->slotting_time);
+             $end = substr($slotting_, -5);
+            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+
+            $turnAroundTime += $schedule->truck_turnaround_timestamp;
+  
+            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+            $total++;
+
+            //$data[] = $nestedData;
+
+        }
+        if($total == 0){
+            return json_encode(0);
+        }
+        $percentage = $turnAroundTime / $total;
+        $hours = gmdate('h',(int)$percentage) . " h " . gmdate('i',(int)$percentage) . " m";
+        return json_encode($hours);
+    }
+
+    public function getOverStaying(Request $request){
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+        $data = array();
+        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[8,9,11])->get();
+        $count = 0;
+        
+        foreach($getSchedules as $schedule){
+
+
+            $slotting_ = str_replace("|","",$schedule->slotting_time);
+            $end = substr($slotting_, 0, 5);
+            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+            $timestamp = strtotime($dateofdeparture) + 60*60;
+            if(strtotime($timestamp) - time()  > 1){
+                $count++;
+            }
+
+            $nestedData['time'] = strtotime($timestamp) - time();
+            $data[] = $nestedData;
+
+        }
+
+        
+
+        return json_encode($count);
+    }
+    
+    public function getOvertime(Request $request){
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+        $data = array();
+        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[9])->whereNull("dock_out_timestamp")->get();
+        $count = 0;
+        foreach($getSchedules as $schedule){
+
+
+            $slotting_ = str_replace("|","",$schedule->slotting_time);
+            $end = substr($slotting_, -5);
+            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+            $timestamp = strtotime($dateofdeparture) + 60*60;
+            $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+            $count++;
+
+            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+
+            //$data[] = $nestedData;
+
+        }
+
+        
+
+        return json_encode($count);
+    }
+
+    public function getDelayed(){
+
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+        $data = array();
+        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[8,10])->whereNull("dock_in_timestamp")->get();
+        $count = 0;
+        foreach($getSchedules as $schedule){
+
+
+            $slotting_ = str_replace("|","",$schedule->slotting_time);
+            $end = substr($slotting_, -5);
+            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+            $timestamp = strtotime($dateofdeparture) + 60*60;
+            $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+            $count++;
+
+            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+
+            //$data[] = $nestedData;
+
+        }
+
+        
+
+        return json_encode($count);
+    }
+
+    public function getUnloading(){
+
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+        $data = array();
+        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[9])->whereNotNull("dock_in_timestamp")->where("process_status","incoming_dock_in")->whereNull("unloading_timestamp")->get();
+        $count = 0;
+        foreach($getSchedules as $schedule){
+
+
+            $slotting_ = str_replace("|","",$schedule->slotting_time);
+            $end = substr($slotting_, -5);
+            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+            $timestamp = strtotime($dateofdeparture) + 60*60;
+            $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+            $count++;
+
+            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+
+            //$data[] = $nestedData;
+
+        }
+
+        
+
+        return json_encode($count);
+    }
+
+    public function getOnSite(){
+
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+        $data = array();
+        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->get();
+        $count = 0;
+        foreach($getSchedules as $schedule){
+
+
+            $slotting_ = str_replace("|","",$schedule->slotting_time);
+            $end = substr($slotting_, -5);
+            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+            $timestamp = strtotime($dateofdeparture) + 60*60;
+            $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+            $count++;
+
+            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+
+            //$data[] = $nestedData;
+
+        }
+
+        
+
+        return json_encode($count);
+    }
 }

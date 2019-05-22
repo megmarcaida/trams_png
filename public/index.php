@@ -59,4 +59,3 @@ $response->send();
 
 $kernel->terminate($request, $response);
 
-header("Access-Control-Allow-Origin: http://trams-png.herokuapp.com/");

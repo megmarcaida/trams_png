@@ -61,6 +61,7 @@
         <div class="dropdown-container">
           
           <a class="dropdown-item" href="/dashboard/parking">Parking Dashboard</a>
+          <a class="dropdown-item" href="/dashboard/executive">Executive Module</a>
           <a class="dropdown-item" href="/dashboard/dock">Dock</a>
           <a class="dropdown-item" href="/dashboard/gate">Gate</a>
           <a class="dropdown-item" href="/dashboard/manual">Manual Process</a>

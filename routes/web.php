@@ -131,6 +131,7 @@ Route::post('checkIfIncoming', 'DashboardController@checkIfIncoming' )->name('ch
 #end dashboard
 
 #all stand alone dashboards
+Route::get('/dashboard/executive', ['middleware' => 'auth', 'uses' => 'DashboardController@executive']);
 Route::get('/dashboard/parking', ['middleware' => 'auth', 'uses' => 'DashboardController@parking']);
 Route::get('/dashboard/dock', ['middleware' => 'auth', 'uses' => 'DashboardController@docking']);
 Route::get('/dashboard/gate', ['middleware' => 'auth', 'uses' => 'DashboardController@gate']);
@@ -155,3 +156,17 @@ Route::post('importParking', 'ParkingController@import')->name('importParking');
 
 Route::get('changeProcessStatus_jsonp', 'DashboardController@changeProcessStatus_jsonp' )->name('changeProcessStatus_jsonp');
 #End Parking Route
+
+#executivedashboard
+
+Route::post('getTrucksCount', 'DashboardController@getTrucksCount' )->name('getTrucksCount');
+Route::post('getOnTimeDepartures', 'DashboardController@getOnTimeDepartures' )->name('getOnTimeDepartures');
+Route::post('getOnTimeArrivals', 'DashboardController@getOnTimeArrivals' )->name('getOnTimeArrivals');
+Route::post('getSlottingCompliance', 'DashboardController@getSlottingCompliance' )->name('getSlottingCompliance');
+Route::post('getAverageTurnAroundTime', 'DashboardController@getAverageTurnAroundTime' )->name('getAverageTurnAroundTime');
+Route::post('getOverStaying', 'DashboardController@getOverStaying' )->name('getOverStaying');
+Route::post('getOvertime', 'DashboardController@getOvertime' )->name('getOvertime');
+Route::post('getDelayed', 'DashboardController@getDelayed' )->name('getDelayed');
+Route::post('getUnloading', 'DashboardController@getUnloading' )->name('getUnloading');
+Route::post('getOnSite', 'DashboardController@getOnSite' )->name('getOnSite');
+#endexecutivedashboard
