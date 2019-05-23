@@ -1406,6 +1406,145 @@ class DashboardController extends Controller
             $date = Carbon::now();
             $datenow = $date->format("Y-m-d"); 
 
+            $totalData = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereNotNull('gate_out_timestamp')->count();
+                
+            $totalFiltered = $totalData; 
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            if($order == "id"){
+                $order = "slotting_time";
+            }
+            $dir = $request->input('order.0.dir');
+
+            
+            if(empty($request->input('search.value')))
+            {   
+                
+                $Schedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereNotNull('gate_out_timestamp')
+                             ->offset($start)
+                             ->limit($limit)
+                             ->orderBy($order,$dir)
+                             ->get();
+                
+            }
+            else {
+                $search = $request->input('search.value'); 
+                
+                $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereNotNull('gate_out_timestamp')->offset($start)
+                     ->limit($limit)
+                     ->orderBy($order,$dir)
+                     ->get();
+
+
+
+                $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereNotNull('gate_out_timestamp')->count();
+            }
+
+            $data = array();
+            $trucks_suppliers='';
+            $trucks = '';
+
+            if(!empty($Schedules))
+            {
+                foreach ($Schedules as $Schedule)
+                {
+                    $slotting_ = str_replace("|","",$Schedule->slotting_time);
+                    $start = substr($slotting_, 0, 5);
+                    $end = substr($slotting_, -5);
+
+                    $dateofdeparture = $Schedule->date_of_delivery . " " . $end;
+                    $timestamp = strtotime($dateofdeparture) + 60*60;
+                    $time = $Schedule->date_of_delivery . " " . date('H:i', $timestamp);
+                    if($Schedule->gate_out_timestamp < $time){
+                        continue;
+                    }
+
+                    $suppliers = Supplier::where('id',$Schedule->supplier_id)->where('status', 1)->first();
+                   
+                    $truck = Truck::where('id',$Schedule->truck_id)->where('status', 1)->first();
+
+                    $num = $Schedule->id;
+                    $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+
+                    $nestedData['id'] = $number;
+                    $nestedData['slotting_time'] = $start . " " . $end;
+                    $nestedData['supplier_name'] = $suppliers['supplier_name'];
+                    $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
+                    $nestedData['plate_number'] = $truck['plate_number'];
+                    $nestedData['container_number'] = $Schedule->container_number;
+                    $nestedData['dock'] = $Schedule->dock_name;
+                    
+                    $data[] = $nestedData;
+
+                }
+            }
+              
+            $json_data = array(
+                        "draw"            => intval($request->input('draw')),  
+                        "recordsTotal"    => intval($totalData),  
+                        "recordsFiltered" => intval($totalFiltered), 
+                        "data"            => $data   
+                        );
+                
+            return json_encode($json_data);
+
+        }else{
+
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+            $data = array();
+            $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereNotNull('gate_out_timestamp')->get();
+            $count = 0;
+            $total = 0;
+            $percentage = 0;
+            
+            foreach($getSchedules as $schedule){
+
+
+                $slotting_ = str_replace("|","",$schedule->slotting_time);
+                $end = substr($slotting_, -5);
+                $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+                $timestamp = strtotime($dateofdeparture) + 60*60;
+                $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+                if($schedule->gate_out_timestamp < $time){
+                    $count++;
+                }
+
+                //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+                $total++;
+
+                //$data[] = $nestedData;
+
+            }
+            if($total == 0){
+                return json_encode(0);
+            }
+            $percentage = round((($count / $total) * 100),1);
+
+            return json_encode($percentage);
+        }
+    }
+
+    public function getOnTimeArrivals(Request $request){
+
+         if($request->isModal == 1){
+
+            $columns = array( 
+                            0 =>'id', 
+                            1 =>'slotting_time',
+                            2 => 'supplier_name',
+                            3 => 'truck',
+                            4 => 'plate_number',
+                            5 => 'container_number',
+                            6 => 'dock',
+                        );
+            
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+
             $totalData = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->count();
                 
             $totalFiltered = $totalData; 
@@ -1450,11 +1589,15 @@ class DashboardController extends Controller
             {
                 foreach ($Schedules as $Schedule)
                 {
-                   
-                    
+
                     $slotting_ = str_replace("|","",$Schedule->slotting_time);
-                        $start = substr($slotting_, 0, 5);
-                        $end = substr($slotting_, -5);
+                    $start = substr($slotting_, 0, 5);
+                    $end = substr($slotting_, -5);
+                    $dateofarrival = $Schedule->date_of_delivery . " " . $start;
+
+                    if($Schedule->gate_in_timestamp < $dateofarrival){
+                        continue;
+                    }
 
                     $suppliers = Supplier::where('id',$Schedule->supplier_id)->where('status', 1)->first();
                    
@@ -1464,7 +1607,7 @@ class DashboardController extends Controller
                     $number = str_pad($num, 8, "0", STR_PAD_LEFT);
 
                     $nestedData['id'] = $number;
-                    $nestedData['slotting_time'] = $start . " " . $end;
+                    $nestedData['slotting_time'] = $start . " - " . $end;
                     $nestedData['supplier_name'] = $suppliers['supplier_name'];
                     $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
                     $nestedData['plate_number'] = $truck['plate_number'];
@@ -1499,11 +1642,10 @@ class DashboardController extends Controller
 
 
                 $slotting_ = str_replace("|","",$schedule->slotting_time);
-                $end = substr($slotting_, -5);
-                $dateofdeparture = $schedule->date_of_delivery . " " . $end;
-                $timestamp = strtotime($dateofdeparture) + 60*60;
-                $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
-                if($schedule->gate_out_timestamp < $time){
+                $start = substr($slotting_, 0, 5);
+                $dateofarrival = $schedule->date_of_delivery . " " . $start;
+
+                if($schedule->gate_in_timestamp < $dateofarrival){
                     $count++;
                 }
 
@@ -1521,41 +1663,6 @@ class DashboardController extends Controller
 
             return json_encode($percentage);
         }
-    }
-
-    public function getOnTimeArrivals(Request $request){
-        $date = Carbon::now();
-        $datenow = $date->format("Y-m-d"); 
-        $data = array();
-        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->get();
-        $count = 0;
-        $total = 0;
-        $percentage = 0;
-        
-        foreach($getSchedules as $schedule){
-
-
-            $slotting_ = str_replace("|","",$schedule->slotting_time);
-            $start = substr($slotting_, 0, 5);
-            $dateofarrival = $schedule->date_of_delivery . " " . $start;
-
-            if($schedule->gate_in_timestamp < $dateofarrival){
-                $count++;
-            }
-
-            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
-
-            $total++;
-
-            //$data[] = $nestedData;
-
-        }
-        if($total == 0){
-            return json_encode(0);
-        }
-        $percentage = round((($count / $total) * 100),1);
-
-        return json_encode($percentage);
     }
 
     public function getSlottingCompliance(Request $request){
@@ -1629,146 +1736,626 @@ class DashboardController extends Controller
     }
 
     public function getOverStaying(Request $request){
-        $date = Carbon::now();
-        $datenow = $date->format("Y-m-d"); 
-        $data = array();
-        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[8,9,11])->get();
-        $count = 0;
-        
-        foreach($getSchedules as $schedule){
+
+        if($request->isModal == 1){
+            $columns = array( 
+                            0 =>'id', 
+                            1 =>'slotting_time',
+                            2 => 'supplier_name',
+                            3 => 'truck',
+                            4 => 'plate_number',
+                            5 => 'container_number',
+                            6 => 'dock',
+                        );
+            
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+
+            $totalData = Schedule::whereIn("status",[8,9,11])->count();
+                
+            $totalFiltered = $totalData; 
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            if($order == "id"){
+                $order = "slotting_time";
+            }
+            $dir = $request->input('order.0.dir');
+
+            
+            if(empty($request->input('search.value')))
+            {   
+                
+                $Schedules = Schedule::whereIn("status",[8,9,11])->offset($start)
+                             ->limit($limit)
+                             ->orderBy($order,$dir)
+                             ->get();
+                
+            }
+            else {
+                $search = $request->input('search.value'); 
+                
+                $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->whereIn("status",[8,9,11])->offset($start)
+                     ->limit($limit)
+                     ->orderBy($order,$dir)
+                     ->get();
 
 
-            $slotting_ = str_replace("|","",$schedule->slotting_time);
-            $end = substr($slotting_, 0, 5);
-            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
-            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
-            $timestamp = strtotime($dateofdeparture) + 60*60;
-            if(strtotime($timestamp) - time()  > 1){
-                $count++;
+
+                $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->whereIn("status",[8,9,11])->count();
             }
 
-            $nestedData['time'] = strtotime($timestamp) - time();
-            $data[] = $nestedData;
+            $data = array();
+            $trucks_suppliers='';
+            $trucks = '';
 
+            if(!empty($Schedules))
+            {
+                foreach ($Schedules as $Schedule)
+                {
+
+                    $slotting_ = str_replace("|","",$Schedule->slotting_time);
+                    $start = substr($slotting_, 0, 5);
+                    $end = substr($slotting_, -5);
+                    $dateofarrival = $Schedule->date_of_delivery . " " . $start;
+
+
+                    $suppliers = Supplier::where('id',$Schedule->supplier_id)->where('status', 1)->first();
+                   
+                    $truck = Truck::where('id',$Schedule->truck_id)->where('status', 1)->first();
+
+                    $num = $Schedule->id;
+                    $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+
+                    $nestedData['id'] = $number;
+                    $nestedData['slotting_time'] = $start . " - " . $end;
+                    $nestedData['supplier_name'] = $suppliers['supplier_name'];
+                    $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
+                    $nestedData['plate_number'] = $truck['plate_number'];
+                    $nestedData['container_number'] = $Schedule->container_number;
+                    $nestedData['dock'] = $Schedule->dock_name;
+                    
+                    $data[] = $nestedData;
+
+                }
+            }
+              
+            $json_data = array(
+                        "draw"            => intval($request->input('draw')),  
+                        "recordsTotal"    => intval($totalData),  
+                        "recordsFiltered" => intval($totalFiltered), 
+                        "data"            => $data   
+                        );
+                
+            return json_encode($json_data);
+        }else{
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+            $data = array();
+            $getSchedules = Schedule::whereIn("status",[8,9,11])->get();
+            $count = 0;
+            
+            foreach($getSchedules as $schedule){
+
+
+                $slotting_ = str_replace("|","",$schedule->slotting_time);
+                $end = substr($slotting_, -5);
+                $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+                $timestamp = strtotime($dateofdeparture) + 60*60;
+                if($timestamp - time()  < 3601){
+                    $count++;
+                }
+
+                $nestedData['time'] = strtotime($timestamp) - time();
+                $data[] = $nestedData;
+
+            }
+
+            
+
+            return json_encode($count);
         }
-
-        
-
-        return json_encode($count);
     }
     
     public function getOvertime(Request $request){
-        $date = Carbon::now();
-        $datenow = $date->format("Y-m-d"); 
-        $data = array();
-        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[9])->whereNull("dock_out_timestamp")->get();
-        $count = 0;
-        foreach($getSchedules as $schedule){
+
+        if($request->isModal == 1){
+            $columns = array( 
+                            0 =>'id', 
+                            1 =>'slotting_time',
+                            2 => 'supplier_name',
+                            3 => 'truck',
+                            4 => 'plate_number',
+                            5 => 'container_number',
+                            6 => 'dock',
+                        );
+            
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+
+            $totalData = Schedule::whereIn("status",[9])->whereNull("dock_out_timestamp")->count();
+                
+            $totalFiltered = $totalData; 
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            if($order == "id"){
+                $order = "slotting_time";
+            }
+            $dir = $request->input('order.0.dir');
+
+            
+            if(empty($request->input('search.value')))
+            {   
+                
+                $Schedules = Schedule::whereIn("status",[9])->whereNull("dock_out_timestamp")->offset($start)
+                             ->limit($limit)
+                             ->orderBy($order,$dir)
+                             ->get();
+                
+            }
+            else {
+                $search = $request->input('search.value'); 
+                
+                $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->whereIn("status",[9])->whereNull("dock_out_timestamp")->offset($start)
+                     ->limit($limit)
+                     ->orderBy($order,$dir)
+                     ->get();
 
 
-            $slotting_ = str_replace("|","",$schedule->slotting_time);
-            $end = substr($slotting_, -5);
-            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
-            $timestamp = strtotime($dateofdeparture) + 60*60;
-            $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
-            $count++;
 
-            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+                $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->whereIn("status",[9])->whereNull("dock_out_timestamp")->count();
+            }
+
+            $data = array();
+            $trucks_suppliers='';
+            $trucks = '';
+
+            if(!empty($Schedules))
+            {
+                foreach ($Schedules as $Schedule)
+                {
+
+                    $slotting_ = str_replace("|","",$Schedule->slotting_time);
+                    $start = substr($slotting_, 0, 5);
+                    $end = substr($slotting_, -5);
+                    $dateofarrival = $Schedule->date_of_delivery . " " . $start;
 
 
-            //$data[] = $nestedData;
+                    $suppliers = Supplier::where('id',$Schedule->supplier_id)->where('status', 1)->first();
+                   
+                    $truck = Truck::where('id',$Schedule->truck_id)->where('status', 1)->first();
 
+                    $num = $Schedule->id;
+                    $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+
+                    $nestedData['id'] = $number;
+                    $nestedData['slotting_time'] = $start . " - " . $end;
+                    $nestedData['supplier_name'] = $suppliers['supplier_name'];
+                    $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
+                    $nestedData['plate_number'] = $truck['plate_number'];
+                    $nestedData['container_number'] = $Schedule->container_number;
+                    $nestedData['dock'] = $Schedule->dock_name;
+                    
+                    $data[] = $nestedData;
+
+                }
+            }
+              
+            $json_data = array(
+                        "draw"            => intval($request->input('draw')),  
+                        "recordsTotal"    => intval($totalData),  
+                        "recordsFiltered" => intval($totalFiltered), 
+                        "data"            => $data   
+                        );
+                
+            return json_encode($json_data);
+        }else{
+
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+            $data = array();
+            $getSchedules = Schedule::whereIn("status",[9])->whereNull("dock_out_timestamp")->get();
+            $count = 0;
+            foreach($getSchedules as $schedule){
+
+
+                $slotting_ = str_replace("|","",$schedule->slotting_time);
+                $end = substr($slotting_, -5);
+                $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+                $timestamp = strtotime($dateofdeparture);
+                $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+                if(strtotime($time) - time()  < 1){
+                    $count++;
+                }
+
+                //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+
+                //$data[] = $nestedData;
+
+            }
+
+            
+
+            return json_encode($count);
         }
-
-        
-
-        return json_encode($count);
     }
 
-    public function getDelayed(){
+    public function getDelayed(Request $request){
 
-        $date = Carbon::now();
-        $datenow = $date->format("Y-m-d"); 
-        $data = array();
-        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[8,10])->whereNull("dock_in_timestamp")->get();
-        $count = 0;
-        foreach($getSchedules as $schedule){
+        if($request->isModal == 1){
+
+            $columns = array( 
+                            0 =>'id', 
+                            1 =>'slotting_time',
+                            2 => 'supplier_name',
+                            3 => 'truck',
+                            4 => 'plate_number',
+                            5 => 'container_number',
+                            6 => 'dock',
+                        );
+            
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+
+            $totalData = Schedule::whereNull("dock_in_timestamp")->count();
+                
+            $totalFiltered = $totalData; 
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            if($order == "id"){
+                $order = "slotting_time";
+            }
+            $dir = $request->input('order.0.dir');
+
+            
+            if(empty($request->input('search.value')))
+            {   
+                
+                $Schedules = Schedule::whereNull("dock_in_timestamp")
+                             ->offset($start)
+                             ->limit($limit)
+                             ->orderBy($order,$dir)
+                             ->get();
+                
+            }
+            else {
+                $search = $request->input('search.value'); 
+                
+                $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->whereNull("dock_in_timestamp")->offset($start)
+                     ->limit($limit)
+                     ->orderBy($order,$dir)
+                     ->get();
 
 
-            $slotting_ = str_replace("|","",$schedule->slotting_time);
-            $end = substr($slotting_, -5);
-            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
-            $timestamp = strtotime($dateofdeparture) + 60*60;
-            $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
-            $count++;
 
-            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+                $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->whereNull("dock_in_timestamp")->count();
+            }
+
+            $data = array();
+            $trucks_suppliers='';
+            $trucks = '';
+
+            if(!empty($Schedules))
+            {
+                foreach ($Schedules as $Schedule)
+                {
+
+                    $slotting_ = str_replace("|","",$Schedule->slotting_time);
+                    $start = substr($slotting_, 0, 5);
+                    $end = substr($slotting_, -5);
+                    $dateofarrival = $Schedule->date_of_delivery . " " . $start;
 
 
-            //$data[] = $nestedData;
+                    $suppliers = Supplier::where('id',$Schedule->supplier_id)->where('status', 1)->first();
+                   
+                    $truck = Truck::where('id',$Schedule->truck_id)->where('status', 1)->first();
+
+                    $num = $Schedule->id;
+                    $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+
+                    $nestedData['id'] = $number;
+                    $nestedData['slotting_time'] = $start . " - " . $end;
+                    $nestedData['supplier_name'] = $suppliers['supplier_name'];
+                    $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
+                    $nestedData['plate_number'] = $truck['plate_number'];
+                    $nestedData['container_number'] = $Schedule->container_number;
+                    $nestedData['dock'] = $Schedule->dock_name;
+                    
+                    $data[] = $nestedData;
+
+                }
+            }
+              
+            $json_data = array(
+                        "draw"            => intval($request->input('draw')),  
+                        "recordsTotal"    => intval($totalData),  
+                        "recordsFiltered" => intval($totalFiltered), 
+                        "data"            => $data   
+                        );
+                
+            return json_encode($json_data);
+
+        }else{
+
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+            $data = array();
+            $getSchedules = Schedule::whereIn("status",[8,10])->whereNull("dock_in_timestamp")->get();
+            $count = 0;
+            foreach($getSchedules as $schedule){
+
+
+                $slotting_ = str_replace("|","",$schedule->slotting_time);
+                $end = substr($slotting_, -5);
+                $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+                $timestamp = strtotime($dateofdeparture) + 60*60;
+                $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+                $count++;
+
+                //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+
+                //$data[] = $nestedData;
+
+            }
+
+            
+
+            return json_encode($count);
 
         }
-
-        
-
-        return json_encode($count);
     }
 
-    public function getUnloading(){
+    public function getUnloading(Request $request){
 
-        $date = Carbon::now();
-        $datenow = $date->format("Y-m-d"); 
-        $data = array();
-        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[9])->whereNotNull("dock_in_timestamp")->where("process_status","incoming_dock_in")->whereNull("unloading_timestamp")->get();
-        $count = 0;
-        foreach($getSchedules as $schedule){
+        if($request->isModal == 1){
+            $columns = array( 
+                            0 =>'id', 
+                            1 =>'slotting_time',
+                            2 => 'supplier_name',
+                            3 => 'truck',
+                            4 => 'plate_number',
+                            5 => 'container_number',
+                            6 => 'dock',
+                        );
+            
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+
+            $totalData = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[9])->whereNotNull("dock_in_timestamp")->where("process_status","incoming_dock_in")->whereNull("unloading_timestamp")->count();
+                
+            $totalFiltered = $totalData; 
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            if($order == "id"){
+                $order = "slotting_time";
+            }
+            $dir = $request->input('order.0.dir');
+
+            
+            if(empty($request->input('search.value')))
+            {   
+                
+                $Schedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[9])->whereNotNull("dock_in_timestamp")->where("process_status","incoming_dock_in")->whereNull("unloading_timestamp")->limit($limit)
+                             ->orderBy($order,$dir)
+                             ->get();
+                
+            }
+            else {
+                $search = $request->input('search.value'); 
+                
+                $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[9])->whereNotNull("dock_in_timestamp")->where("process_status","incoming_dock_in")->whereNull("unloading_timestamp")->offset($start)
+                     ->limit($limit)
+                     ->orderBy($order,$dir)
+                     ->get();
 
 
-            $slotting_ = str_replace("|","",$schedule->slotting_time);
-            $end = substr($slotting_, -5);
-            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
-            $timestamp = strtotime($dateofdeparture) + 60*60;
-            $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
-            $count++;
 
-            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+                $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[9])->whereNotNull("dock_in_timestamp")->where("process_status","incoming_dock_in")->whereNull("unloading_timestamp")->count();
+            }
+
+            $data = array();
+            $trucks_suppliers='';
+            $trucks = '';
+
+            if(!empty($Schedules))
+            {
+                foreach ($Schedules as $Schedule)
+                {
+
+                    $slotting_ = str_replace("|","",$Schedule->slotting_time);
+                    $start = substr($slotting_, 0, 5);
+                    $end = substr($slotting_, -5);
+                    $dateofarrival = $Schedule->date_of_delivery . " " . $start;
 
 
-            //$data[] = $nestedData;
+                    $suppliers = Supplier::where('id',$Schedule->supplier_id)->where('status', 1)->first();
+                   
+                    $truck = Truck::where('id',$Schedule->truck_id)->where('status', 1)->first();
 
+                    $num = $Schedule->id;
+                    $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+
+                    $nestedData['id'] = $number;
+                    $nestedData['slotting_time'] = $start . " - " . $end;
+                    $nestedData['supplier_name'] = $suppliers['supplier_name'];
+                    $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
+                    $nestedData['plate_number'] = $truck['plate_number'];
+                    $nestedData['container_number'] = $Schedule->container_number;
+                    $nestedData['dock'] = $Schedule->dock_name;
+                    
+                    $data[] = $nestedData;
+
+                }
+            }
+              
+            $json_data = array(
+                        "draw"            => intval($request->input('draw')),  
+                        "recordsTotal"    => intval($totalData),  
+                        "recordsFiltered" => intval($totalFiltered), 
+                        "data"            => $data   
+                        );
+                
+            return json_encode($json_data);
+        }else{
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+            $data = array();
+            $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereIn("status",[9])->whereNotNull("dock_in_timestamp")->where("process_status","incoming_dock_in")->whereNull("unloading_timestamp")->get();
+            $count = 0;
+            foreach($getSchedules as $schedule){
+
+
+                $slotting_ = str_replace("|","",$schedule->slotting_time);
+                $end = substr($slotting_, -5);
+                $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+                $timestamp = strtotime($dateofdeparture) + 60*60;
+                $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+                $count++;
+
+                //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+
+                //$data[] = $nestedData;
+
+            }
+
+            
+
+            return json_encode($count);
         }
-
-        
-
-        return json_encode($count);
     }
 
-    public function getOnSite(){
+    public function getOnSite(Request $request){
 
-        $date = Carbon::now();
-        $datenow = $date->format("Y-m-d"); 
-        $data = array();
-        $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->get();
-        $count = 0;
-        foreach($getSchedules as $schedule){
+        if($request->isModal == 1){
+            $columns = array( 
+                            0 =>'id', 
+                            1 =>'slotting_time',
+                            2 => 'supplier_name',
+                            3 => 'truck',
+                            4 => 'plate_number',
+                            5 => 'container_number',
+                            6 => 'dock',
+                        );
+            
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+
+            $totalData = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->count();
+                
+            $totalFiltered = $totalData; 
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            if($order == "id"){
+                $order = "slotting_time";
+            }
+            $dir = $request->input('order.0.dir');
+
+            
+            if(empty($request->input('search.value')))
+            {   
+                
+                $Schedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->offset($start)
+                             ->limit($limit)
+                             ->orderBy($order,$dir)
+                             ->get();
+                
+            }
+            else {
+                $search = $request->input('search.value'); 
+                
+                $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())
+                     ->offset($start)
+                     ->limit($limit)
+                     ->orderBy($order,$dir)
+                     ->get();
 
 
-            $slotting_ = str_replace("|","",$schedule->slotting_time);
-            $end = substr($slotting_, -5);
-            $dateofdeparture = $schedule->date_of_delivery . " " . $end;
-            $timestamp = strtotime($dateofdeparture) + 60*60;
-            $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
-            $count++;
 
-            //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+                $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())->count();
+            }
+
+            $data = array();
+            $trucks_suppliers='';
+            $trucks = '';
+
+            if(!empty($Schedules))
+            {
+                foreach ($Schedules as $Schedule)
+                {
+
+                    $slotting_ = str_replace("|","",$Schedule->slotting_time);
+                    $start = substr($slotting_, 0, 5);
+                    $end = substr($slotting_, -5);
+                    $dateofarrival = $Schedule->date_of_delivery . " " . $start;
 
 
-            //$data[] = $nestedData;
+                    $suppliers = Supplier::where('id',$Schedule->supplier_id)->where('status', 1)->first();
+                   
+                    $truck = Truck::where('id',$Schedule->truck_id)->where('status', 1)->first();
 
+                    $num = $Schedule->id;
+                    $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+
+                    $nestedData['id'] = $number;
+                    $nestedData['slotting_time'] = $start . " - " . $end;
+                    $nestedData['supplier_name'] = $suppliers['supplier_name'];
+                    $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
+                    $nestedData['plate_number'] = $truck['plate_number'];
+                    $nestedData['container_number'] = $Schedule->container_number;
+                    $nestedData['dock'] = $Schedule->dock_name;
+                    
+                    $data[] = $nestedData;
+
+                }
+            }
+              
+            $json_data = array(
+                        "draw"            => intval($request->input('draw')),  
+                        "recordsTotal"    => intval($totalData),  
+                        "recordsFiltered" => intval($totalFiltered), 
+                        "data"            => $data   
+                        );
+                
+            return json_encode($json_data);
+        }else{
+
+            $date = Carbon::now();
+            $datenow = $date->format("Y-m-d"); 
+            $data = array();
+            $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->get();
+            $count = 0;
+            foreach($getSchedules as $schedule){
+
+
+                $slotting_ = str_replace("|","",$schedule->slotting_time);
+                $end = substr($slotting_, -5);
+                $dateofdeparture = $schedule->date_of_delivery . " " . $end;
+                $timestamp = strtotime($dateofdeparture) + 60*60;
+                $time = $schedule->date_of_delivery . " " . date('H:i', $timestamp);
+                $count++;
+
+                //$nestedData['sched'] = $schedule->gate_in_timestamp . " " . $dateofentry;
+
+
+                //$data[] = $nestedData;
+
+            }
+
+            
+
+            return json_encode($count);
         }
-
-        
-
-        return json_encode($count);
     }
 }

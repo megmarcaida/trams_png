@@ -66,6 +66,7 @@
           <a class="dropdown-item" href="/dashboard/gate">Gate</a>
           <a class="dropdown-item" href="/dashboard/manual">Manual Process</a>
           <a class="dropdown-item" href="/others/parking">Parking Module</a>
+          <a class="dropdown-item" href="/others/bannedIssueReporting">Banned and Issue Reporting</a>
         </div>
       </li>
       <!-- <li class="nav-item">

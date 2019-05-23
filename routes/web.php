@@ -170,3 +170,15 @@ Route::post('getDelayed', 'DashboardController@getDelayed' )->name('getDelayed')
 Route::post('getUnloading', 'DashboardController@getUnloading' )->name('getUnloading');
 Route::post('getOnSite', 'DashboardController@getOnSite' )->name('getOnSite');
 #endexecutivedashboard
+
+
+#BannedIssue  Routes
+Route::get('/others/bannedIssueReporting', ['middleware' => 'auth', 'uses' => 'BannedIssueController@index']);
+
+Route::resource('ajaxBannedIssue','BannedIssueController');
+Route::post('allBannedIssue', 'BannedIssueController@allBannedIssue' )->name('allBannedIssue');
+Route::post('deactivateOrActivateBannedIssue', 'BannedIssueController@deactivateOrActivateBannedIssue')->name('deactivateOrActivateBannedIssue');
+
+Route::get('exportBannedIssue', 'BannedIssueController@export')->name('exportBannedIssue');
+Route::post('importBannedIssue', 'BannedIssueController@import')->name('importBannedIssue');
+#End BannedIssue Route

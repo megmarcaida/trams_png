@@ -109,35 +109,35 @@
                     </div>
                     <div>
                         <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 offset-1">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 offset-1 progress1"style="cursor: pointer;">
                               <div style="width: 190px; height: 190px; margin-left: 30px;" id="progress1">
                               </div>
-                              <div class="text-center" style="margin-top:10px;">
+                              <div class="text-center" style="margin-top:10px;" >
                                 <b>ON SITE</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress2"  style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress2">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
                                 <b>UNLOADING</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress3" style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress3">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
                                 <b>DELAYED</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress4"  style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress4">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
                                 <b>OVERTIME</b>
                               </div>
                             </div>
-                             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress5"  style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress5">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
@@ -171,7 +171,7 @@
                                 <b>SLOTTING COMPLIANCE</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress8" style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress8">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
@@ -280,7 +280,7 @@
     function initializeProgress1() {
         $.ajax({
             async: false,
-            url: "{{ url('getUnloading') }}",
+            url: "{{ url('getOnSite') }}",
             type: "POST",
             global: false,
             data: {},
@@ -641,9 +641,41 @@
 
 
     function getData(url,process_status,status,isModal){
-      if(url == "getTrucksThatsIsNotOnTime"){
-        url = "{{ url('getOnTimeDepartures') }}"
+
+      switch(url){
+        
+        case "getTrucksThatsIsNotOnTime":
+          url = "{{ url('getOnTimeDepartures') }}"
+        break;
+        
+        case "getOnTimeArrivals":
+          url = "{{ url('getOnTimeArrivals') }}"
+        break;
+        
+        case "getOnSite":
+          url = "{{ url('getOnSite') }}"
+        break;
+
+        case "getUnloading":
+          url = "{{ url('getUnloading') }}"
+        break;
+
+        case "getDelayed":
+          url = "{{ url('getDelayed') }}"
+        break;
+
+        case "getOvertime":
+          url = "{{ url('getOvertime') }}"
+        break;
+
+        case "getOverStaying":
+          url = "{{ url('getOverStaying') }}"
+        break;
+
+        default:
+        break;
       }
+      
       var table_incoming = $('.data-table').DataTable({
             "bPaginate": true,
             "bLengthChange": false,
@@ -675,12 +707,79 @@
     }
       
 
-
+    var count = 0;
     //click reports
     $("body").on("click",".progress9",function(){
       console.log("clicked");
-
+      $('.data-table').DataTable().destroy();
       getData("getTrucksThatsIsNotOnTime","incoming",[8,10],1)
+      
+      $('#ajaxModalView').modal({
+        backdrop:'static',
+        keyboard: false
+      });
+    });
+
+    $("body").on("click",".progress8",function(){
+      console.log("clicked");
+      $('.data-table').DataTable().destroy();
+      getData("getOnTimeArrivals","incoming",[8,10],1)
+      
+      $('#ajaxModalView').modal({
+        backdrop:'static',
+        keyboard: false
+      });
+    });
+
+    $("body").on("click",".progress1",function(){
+      console.log("clicked");
+      $('.data-table').DataTable().destroy();
+      getData("getOnSite","incoming",[8,10],1)
+      
+      $('#ajaxModalView').modal({
+        backdrop:'static',
+        keyboard: false
+      });
+    });
+
+     $("body").on("click",".progress2",function(){
+      console.log("clicked");
+      $('.data-table').DataTable().destroy();
+      getData("getUnloading","incoming",[8,10],1)
+      
+      $('#ajaxModalView').modal({
+        backdrop:'static',
+        keyboard: false
+      });
+    });
+
+     $("body").on("click",".progress3",function(){
+      console.log("clicked");
+      $('.data-table').DataTable().destroy();
+      getData("getDelayed","incoming",[8,10],1)
+      
+      $('#ajaxModalView').modal({
+        backdrop:'static',
+        keyboard: false
+      });
+    });
+
+     $("body").on("click",".progress4",function(){
+      console.log("clicked");
+      $('.data-table').DataTable().destroy();
+      getData("getOvertime","incoming",[8,10],1)
+      
+      $('#ajaxModalView').modal({
+        backdrop:'static',
+        keyboard: false
+      });
+    });
+
+     $("body").on("click",".progress5",function(){
+      console.log("clicked");
+      $('.data-table').DataTable().destroy();
+      getData("getOverStaying","incoming",[8,10],1)
+      
       $('#ajaxModalView').modal({
         backdrop:'static',
         keyboard: false
