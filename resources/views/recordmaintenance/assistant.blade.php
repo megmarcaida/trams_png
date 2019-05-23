@@ -33,6 +33,7 @@
                 <input type="file" name="file" class="form-control">
                 <br>
                 <button class="btn btn-success text-right">Import Assistants Data</button>
+                <a class="btn btn-secondary" href="{{ route('exportAssistant') }}">Download Template Data</a>
             </form> 
           </div>
         </div>

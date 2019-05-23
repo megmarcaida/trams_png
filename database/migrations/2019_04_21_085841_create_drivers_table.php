@@ -22,7 +22,7 @@ class CreateDriversTable extends Migration
             $table->string('last_name',255);
             $table->string('mobile_number',255)->default('');
             $table->string('company_id_number',255);
-            $table->string('license_number',255);
+            $table->string('license_number',100)->nullable()->unique();
             $table->datetime('dateOfSafetyOrientation')->nullable();
             $table->integer('isApproved')->default(0)->nullable();
             $table->integer('status')->default(1);

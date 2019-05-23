@@ -27,6 +27,7 @@
                 <input type="file" name="file" class="form-control">
                 <br>
                 <button class="btn btn-success text-right">Import Trucks Data</button>
+                <a class="btn btn-secondary" href="{{ route('exportTruck') }}">Download Template Data</a>
             </form>    
           </div>
         </div>
