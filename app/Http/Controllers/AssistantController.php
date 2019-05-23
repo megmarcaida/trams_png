@@ -137,8 +137,9 @@ class AssistantController extends Controller
                     }
                     $assistants_suppliers .= $suppliers->supplier_name . " | ";
                 }
-
-                $nestedData['id'] = $assistant->id;
+                $num = $assistant->id;
+                $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+                $nestedData['id'] = $number;
                 $nestedData['supplier_ids'] =  $assistants_suppliers;
                 // $nestedData['supplier_name'] = substr(strip_tags($post->supplier_name),0,50)."...";
                 $nestedData['logistics_company'] = $assistant->logistics_company;
@@ -188,7 +189,7 @@ class AssistantController extends Controller
     public function store(Request $request)
     {
 
-        Assistant::updateOrCreate(['id' => $request->id],
+        Assistant::updateOrCreate(['id' => ltrim($request->id,0)],
                 ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'company_id_number' => $request->company_id_number, 'valid_id_present' => $request->valid_id_present,'valid_id_number' => $request->valid_id_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
    
         return response()->json(['success'=>'Assistant saved successfully.']);

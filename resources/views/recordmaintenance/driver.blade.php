@@ -345,7 +345,10 @@
     $(".datepicker").datepicker();
   } ); 
 
-
+  function pad (str, max) {
+    str = str.toString();
+    return str.length < max ? pad("0" + str, max) : str;
+  }
     $('body').on('click', '.editProduct', function () {
       $(".driver_id").show();
       $('.modalresponse').empty();
@@ -359,7 +362,7 @@
             keyboard: false
           })
           //console.log(data.id)
-          $('#driver_id').val(data.id);
+          $('#driver_id').val(pad(data.id,8));
           $('#logistics_company').val(data.logistics_company);
           $('#first_name').val(data.first_name);
          

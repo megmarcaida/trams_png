@@ -170,8 +170,9 @@ class DriverController extends Controller
                     }
                     $drivers_suppliers .= $suppliers->supplier_name . " | ";
                 }
-
-                $nestedData['id'] = $driver->id;
+                $num = $driver->id;
+                $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+                $nestedData['id'] = $number;
                 $nestedData['supplier_ids'] =  $drivers_suppliers;
                 // $nestedData['supplier_name'] = substr(strip_tags($post->supplier_name),0,50)."...";
                 $nestedData['logistics_company'] = $driver->logistics_company;
@@ -221,7 +222,7 @@ class DriverController extends Controller
     public function store(Request $request)
     {
 
-        Driver::updateOrCreate(['id' => $request->id],
+        Driver::updateOrCreate(['id' => ltrim($request->id,0)],
                 ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'company_id_number' => $request->company_id_number, 'license_number' => $request->license_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
    
         return response()->json(['success'=>'Driver saved successfully.']);

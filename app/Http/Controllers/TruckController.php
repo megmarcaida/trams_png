@@ -158,8 +158,9 @@ class TruckController extends Controller
                     }
                     $trucks_suppliers .= $suppliers->supplier_name . " | ";
                 }
-
-                $nestedData['id'] = $truck->id;
+                $num = $truck->id;
+                $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+                $nestedData['id'] = $number;
                 $nestedData['supplier_ids'] =  $trucks_suppliers;
                 // $nestedData['supplier_name'] = substr(strip_tags($post->supplier_name),0,50)."...";
                 $nestedData['trucking_company'] = $truck->trucking_company;
@@ -228,7 +229,47 @@ class TruckController extends Controller
     public function edit($id)
     {
         $truck = Truck::find($id);
-        return response()->json($truck);
+        $trucks_suppliers = "";
+        $trucks_id = "";
+        $data = array();
+        if(!empty($truck))
+        {
+            
+              
+            $supplier_ids = explode('|',$truck['supplier_ids']);
+            
+            foreach($supplier_ids as $supplier_id){
+                if($supplier_id == null){
+                    continue;
+                }
+                $suppliers = Supplier::where('id',$supplier_id)->where('status', 1)->first();
+                if($suppliers == null){
+                    continue;
+                }
+                $trucks_suppliers .= $suppliers->supplier_name . " | ";
+                $trucks_id .= $suppliers->id . "| ";
+            }
+            $num = $truck['id'];
+            $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+            $nestedData['id'] = $number;
+            $nestedData['supplier_ids'] =  $trucks_suppliers;
+            $nestedData['supplier_trucks_ids'] =  $trucks_id;
+            // $nestedData['supplier_name'] = substr(strip_tags($post->supplier_name),0,50)."...";
+            $nestedData['trucking_company'] = $truck['trucking_company'];
+            $nestedData['plate_number'] = $truck['plate_number'];
+            $nestedData['brand'] = $truck['brand'];
+            $nestedData['model'] = $truck['model'];
+            $nestedData['type'] = $truck['type'];
+           
+            $data[] = $nestedData;
+            $trucks_suppliers = '';
+            
+        }
+          
+        
+            
+        return response()->json($data);
+        
     }
   
     /**

@@ -79,7 +79,10 @@
                     <div class="form-group truck_id">
                         <label for="name" class="col-sm-12 control-label">*Trucking ID</label>
                         <div class="col-sm-12">
-                            <input  type="text" readonly class="form-control" id="truck_id" name="id" value="" maxlength="100" required="">
+                            <input type="text" readonly class="form-control" id="truck_id_display" name="id" value="" maxlength="100" required="">
+                        </div>
+                        <div class="col-sm-12">
+                            <input  type="hidden" readonly class="form-control" id="truck_id" name="id" value="" maxlength="100" required="">
                         </div>
                     </div>
 
@@ -242,32 +245,32 @@
             backdrop:'static',
             keyboard: false
           })
-          //console.log(data.id)
-          $('#truck_id').val(data.id);
-          $('#trucking_company').val(data.trucking_company);
-          $('#plate_number').val(data.plate_number);
+          $('#truck_id_display').val(data[0].id);
+          $('#truck_id').val(data[0].id);
+          $('#trucking_company').val(data[0].trucking_company);
+          $('#plate_number').val(data[0].plate_number);
          
-          $('#brand').val(data.brand);
+          $('#brand').val(data[0].brand);
 
-          $('#model').val(data.model);
+          $('#model').val(data[0].model);
 
-          $('#type').val(data.type);
+          $('#type').val(data[0].type);
 
-          var x = data.supplier_ids.split("|")
+          var x = data[0].supplier_ids.split("|")
           
           x.splice(-1,1)
           
           var supplier_trucks = "";
           $.each( x, function( key, value ) {
           
-            var _supplier_name = $("#supplier_id option[value='"+value+"']").text()
-            supplier_trucks += _supplier_name + " | ";
-            //console.log(_supplier_name)
+            // var _supplier_name = $("#supplier_id option[value='"+value.trim()+"']").text()
+            supplier_trucks += value + " | ";
+            console.log(value)
           });
 
           $('#truck_suppliers').val(supplier_trucks);
-          $('#supplier_ids').val(data.supplier_ids);
-          $("input[name=types][value=" + data.type + "]").prop('checked', 'checked');
+          $('#supplier_ids').val(data[0].supplier_trucks_ids);
+          $("input[name=types][value=" + data[0]  .type + "]").prop('checked', 'checked');
           // $('#delivery_type').val(data.delivery_type);
       })
    });

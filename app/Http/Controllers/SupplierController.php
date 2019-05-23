@@ -119,8 +119,9 @@ class SupplierController extends Controller
             foreach ($suppliers as $supplier)
             {
               
-
-                $nestedData['id'] = $supplier->id;
+                $num = $supplier->id;
+                $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+                $nestedData['id'] = $number;
                 $nestedData['vendor_code'] = $supplier->vendor_code;
                 // $nestedData['supplier_name'] = substr(strip_tags($post->supplier_name),0,50)."...";
                 $nestedData['supplier_name'] = $supplier->supplier_name;
