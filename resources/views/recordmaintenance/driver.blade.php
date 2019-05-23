@@ -80,12 +80,11 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
             <div class="modal-body">
-                <div class="modalresponse"></div> 
                 <form id="driverForm" name="driverForm" class="form-horizontal">
                     
                     <input type="hidden" name="id" id="id">
 
-                    <div class="form-group">
+                    <div class="form-group driver_id">
                         <label for="name" class="col-sm-12 control-label">*Driver ID</label>
                         <div class="col-sm-12">
                             <input type="text" readonly="" class="form-control" id="driver_id" name="id" value="" maxlength="100" required="">
@@ -182,6 +181,9 @@
                        </button>
                     </div>
 
+                    <br>
+                    <div class="modalresponse"></div>  
+
                 </form>
 
             </div>
@@ -244,6 +246,7 @@
     });
      
     $('#createNewProduct').click(function () {
+        $(".driver_id").hide();
         $('#saveBtn').val("create-product");
         $('#id').val('');
         $("#driver_suppliers").val("");
@@ -344,6 +347,7 @@
 
 
     $('body').on('click', '.editProduct', function () {
+      $(".driver_id").show();
       $('.modalresponse').empty();
       $('#driverForm').trigger("reset");      
       var id = $(this).data('id');

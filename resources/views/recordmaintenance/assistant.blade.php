@@ -81,7 +81,6 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
             <div class="modal-body">
-                <div class="modalresponse"></div> 
                 <form id="assistantForm" name="assistantForm" class="form-horizontal">
                     
                     <input type="hidden" name="id" id="id">
@@ -191,7 +190,8 @@
                        <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
                        </button>
                     </div>
-
+                    <br>
+                    <div class="modalresponse"></div> 
                 </form>
 
             </div>

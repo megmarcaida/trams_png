@@ -15,7 +15,7 @@ class CreateSuppliersTable extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('vendor_code',100);
+            $table->string('vendor_code',100)->unique();
             $table->string('supplier_name',255);
             $table->string('delivery_type',100);
             $table->string('ordering_days',255);
@@ -25,7 +25,7 @@ class CreateSuppliersTable extends Migration
             $table->string('spoc_lastname',255);
             $table->string('spoc_contact_number',255);
             $table->string('spoc_email_address',255);
-            $table->integer('status')->default(1);
+            $table->integer('status')->default(1)->nullable();
             $table->timestamps();
         });
     }

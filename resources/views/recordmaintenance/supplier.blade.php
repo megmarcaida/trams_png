@@ -46,8 +46,7 @@
                       <th>Delivery Type</th>
                       <th>Ordering Days</th>
                       <th>Module</th>
-                      <th>SPOC First Name</th>
-                      <th>SPOC Last Name</th>
+                      <th>SPOC Full Name</th>
                       <th>SPOC Contact Number</th>
                       <th>SPOC Email Address</th>
                       <th>Created At</th>
@@ -74,7 +73,6 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
             <div class="modal-body">
-                <div id="modalresponse"></div> 
                 <form id="supplierForm" name="supplierForm" class="form-horizontal">
                     
                     <input type="hidden" name="supplier_id" id="supplier_id">
@@ -189,6 +187,8 @@
                        </button>
                     </div>
 
+                    <br>
+                    <div id="modalresponse"></div> 
                 </form>
 
             </div>
@@ -222,8 +222,7 @@
             {"data": 'delivery_type'},
             {"data": 'ordering_days'},
             {"data": 'module'},
-            {"data": 'spoc_firstname'},
-            {"data": 'spoc_lastname'},
+            {"data": 'spoc_fullname'},
             {"data": 'spoc_contact_number'},
             {"data": 'spoc_email_address'},
             { "data": "created_at" },

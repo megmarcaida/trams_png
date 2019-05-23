@@ -57,8 +57,7 @@ class SupplierController extends Controller
                             3 => 'ordering_days',
                             4 => 'id',
                             5 => 'module',
-                            6 => 'spoc_firstname',
-                            7 => 'spoc_lastname',
+                            6 => 'spoc_fullname',
                             8 => 'spoc_contact_number',
                             9 => 'spoc_email_address',
                             10 => 'created_at',
@@ -104,7 +103,7 @@ class SupplierController extends Controller
             $totalFiltered = Supplier::where('id','LIKE',"%{$search}%")
                             ->orWhere('vendor_code','LIKE',"%{$search}%")
                             ->orWhere('supplier_name','LIKE',"%{$search}%")
-                            ->orWhere('spoc_firstname','LIKE',"%{$search}%")
+                            ->orWhereRaw('spoc_firstname','LIKE',"%{$search}%")
                             ->orWhere('spoc_lastname','LIKE',"%{$search}%")
                             ->orWhere('spoc_email_address','LIKE',"%{$search}%")
                             ->orWhere('spoc_contact_number','LIKE',"%{$search}%")
@@ -128,8 +127,19 @@ class SupplierController extends Controller
                 $nestedData['delivery_type'] = $supplier->delivery_type;
                 $nestedData['ordering_days'] = $supplier->ordering_days;
                 $nestedData['module'] = $supplier->module;
-                $nestedData['spoc_firstname'] = $supplier->spoc_firstname;
-                $nestedData['spoc_lastname'] = $supplier->spoc_lastname;
+                // $nestedData['spoc_fullname'] = str_replace("|", "", $supplier->spoc_firstname) . " " . str_replace("|", "",$supplier->spoc_lastname) . " | ";
+                $spoc_fname = explode("|", $supplier->spoc_firstname); 
+                $spoc_lname = explode("|", $supplier->spoc_lastname); 
+                $name = "";
+                foreach ($spoc_fname as $key => $value) {
+                    if($value != ""){
+                        $name .= $value . " " . $spoc_lname[$key] . " | ";
+                    }
+                    
+                }
+
+                $nestedData['spoc_fullname'] = $name;
+                // $nestedData['spoc_lastname'] = $supplier->spoc_lastname;
                 $nestedData['spoc_contact_number'] = $supplier->spoc_contact_number;
                 $nestedData['spoc_email_address'] = $supplier->spoc_email_address;
                 $nestedData['created_at'] = date('j M Y h:i a',strtotime($supplier->created_at));

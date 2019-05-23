@@ -72,15 +72,14 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
             <div class="modal-body">
-                <div id="modalresponse"></div> 
                 <form id="truckForm" name="truckForm" class="form-horizontal">
                     
                     <input type="hidden" name="id" id="id">
 
-                    <div class="form-group">
+                    <div class="form-group truck_id">
                         <label for="name" class="col-sm-12 control-label">*Trucking ID</label>
                         <div class="col-sm-12">
-                            <input type="text" readonly class="form-control" id="truck_id" name="id" value="" maxlength="100" required="">
+                            <input  type="text" readonly class="form-control" id="truck_id" name="id" value="" maxlength="100" required="">
                         </div>
                     </div>
 
@@ -155,6 +154,8 @@
                        <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
                        </button>
                     </div>
+                    <br>
+                    <div id="modalresponse"></div> 
 
                 </form>
 
@@ -216,6 +217,7 @@
     // });
      
     $('#createNewProduct').click(function () {
+        $(".truck_id").hide();
         $('#saveBtn').val("create-product");
         $('#id').val('');
         $("#truck_suppliers").val("");
@@ -230,7 +232,7 @@
     });
     
     $('body').on('click', '.editProduct', function () {
-
+      $(".truck_id").show();
       $('#truckForm').trigger("reset");      
       var id = $(this).data('id');
       $.get("{{ route('ajaxtrucks.index') }}" +'/' + id +'/edit', function (data) {
@@ -272,7 +274,7 @@
     
     $('#saveBtn').click(function (e) {
 
-        
+       
         var types = $(':radio[name^=types]:checked').length;
         if($("#trucking_company").val() == "" || $("#plate_number").val() == "" || $("#model").val() == "" || $("#brand").val() == "" || types==0 || $("#truck_suppliers").val() == ""){
           $("#modalresponse").show();
@@ -337,6 +339,7 @@
 
                       table.draw();
                   }else if(data.error != null){
+                    $('#modalresponse').show();
                     $('#modalresponse').html("<div class='alert alert-danger'>"+data.error+"</div>")
                   }
 
