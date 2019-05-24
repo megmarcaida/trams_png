@@ -85,7 +85,7 @@
                     
                     <input type="hidden" name="id" id="id">
 
-                    <div class="form-group">
+                    <div class="form-group assistant_id">
                         <label for="name" class="col-sm-12 control-label">*Assistant ID</label>
                         <div class="col-sm-12">
                             <input type="text" readonly="" class="form-control" id="assistant_id" name="id" value="" maxlength="100" required="">
@@ -266,6 +266,7 @@
     $('#createNewProduct').click(function () {
         $('#saveBtn').val("create-product");
         $('#id').val('');
+        $(".assistant_id").hide();
         $("#assistant_suppliers").val("");
         $("#supplier_ids").val("");
         $('#assistantForm').trigger("reset");
@@ -369,6 +370,7 @@
       $('.modalresponse').empty();
       $('#assistantForm').trigger("reset");      
       var id = $(this).data('id');
+      $(".assistant_id").show();
       $.get("{{ route('ajaxassistants.index') }}" +'/' + id +'/edit', function (data) {
           $('#modelHeading').html("Edit Assistant");
           $('#saveBtn').val("edit-user");
