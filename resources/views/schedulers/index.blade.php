@@ -989,7 +989,7 @@
 
     $('body').on('click', '#saveBtn', function (e) {
 
-
+       
         var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
         var recurrence = $(':radio[name^=recurrence]:checked');
 
@@ -999,16 +999,31 @@
 
         if(recurrence.val() == "Recurrent"){
           if(ordering_days == 0){
-
+             $("#modalresponse").show();
           $(".ordering_days").css('color','red')
+            $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+
+          $('#modalresponse').fadeIn(1000);
+          setTimeout(function(){
+            $('#modalresponse').fadeOut(1000);
+          },2000)
             return false;
           }
           else{
             $(".ordering_days").css('color','black')
           }
-        }else{
-
+        }else if(recurrence.val() == "Single Event"){
+           
             if($('.gcas').val() == "" || $('.quantity').val() == "" || $('.description').val() == ""){
+
+                $("#modalresponse").show();
+                $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+
+                $('#modalresponse').fadeIn(1000);
+                setTimeout(function(){
+                  $('#modalresponse').fadeOut(1000);
+                },2000)
+
                 $(".gcas").css('border','1px solid red')
                 $(".description").css('border','1px solid red')
                 $(".quantity").css('border','1px solid red')
@@ -1030,12 +1045,12 @@
         }
 
         if($("#po_number").val() == "" || $("#supplier_id").val() == "0" || $("#dock_id").val() ==  "" || $("#truck_id").val() == "" || $("#driver_id").val() == "" || $("#assistant_id").val() == "" || recurrence.length == 0 || $("#dateOfDelivery").val() == "" || $("#slotting_time").val() == "" ){
+          $("#modalresponse").show();
+          $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
-          $(".modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
-
-          $('.modalresponse').fadeIn(1000);
+          $('#modalresponse').fadeIn(1000);
           setTimeout(function(){
-            $('.modalresponse').fadeOut(1000);
+            $('#modalresponse').fadeOut(1000);
           },2000)
 
            if($("#po_number").val() == "")
@@ -1053,17 +1068,17 @@
            else
              $("#dock_id").css('outline','1px solid transparent')
 
-           if($("#truck_id").val() == "0" || $("#truck_id").val() == "")
+           if($("#truck_id").val() == "0" || $("#truck_id").val() == "" || $("#truck_id").val() == null)
              $("#truck_id").css('outline','1px solid red')
            else
              $("#truck_id").css('outline','1px solid transparent')
 
-            if($("#driver_id").val() == "0" || $("#driver_id").val() == "")
+            if($("#driver_id").val() == "0" || $("#driver_id").val() == "" || $("#driver_id").val() == null)
              $("#driver_id").css('outline','1px solid red')
             else
              $("#driver_id").css('outline','1px solid transparent')
 
-            if($("#assistant_id").val() == "0" || $("#assistant_id").val() == "")
+            if($("#assistant_id").val() == "0" || $("#assistant_id").val() == "" || $("#assistant_id").val() == null)
              $("#assistant_id").css('outline','1px solid red')
             else
              $("#assistant_id").css('outline','1px solid transparent')
@@ -1199,11 +1214,11 @@
 
         if($("#dock_id_unavailability").val() ==  "" || recurrence.length == 0 || type.length == 0 || $("#dateOfUnavailability").val() == "" || $("#slotting_time").val() == "" ){
 
-          $(".modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+          $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
-          $('.modalresponse').fadeIn(1000);
+          $('#modalresponse').fadeIn(1000);
           setTimeout(function(){
-            $('.modalresponse').fadeOut(1000);
+            $('#modalresponse').fadeOut(1000);
           },2000)
 
           
@@ -1479,7 +1494,6 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
             <div class="modal-body">
-                <div id="modalresponse"></div> 
                 <form id="scheduleForm" name="scheduleForm" class="form-horizontal">
                     
                     <input type="hidden" name="schedule_id" id="schedule_id">
@@ -1677,6 +1691,7 @@
                         </div>
                     </div>
 
+                    <div id="modalresponse"></div> 
                     <div class="col-sm-offset-2 col-sm-10">
                        <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
                        </button>
