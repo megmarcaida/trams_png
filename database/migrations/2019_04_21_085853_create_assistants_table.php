@@ -20,6 +20,7 @@ class CreateAssistantsTable extends Migration
             $table->string('logistics_company',255);
             $table->string('first_name',255);
             $table->string('last_name',255);
+            $table->string('full_name',255);
             $table->string('mobile_number',255)->default('');
             $table->string('company_id_number',255);
             $table->string('valid_id_present',255);

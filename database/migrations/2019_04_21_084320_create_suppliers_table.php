@@ -21,7 +21,7 @@ class CreateSuppliersTable extends Migration
             $table->string('ordering_days',255);
             $table->string('module',255);
             $table->string('spoc_firstname',255);
-            $table->string('spoc_middlename',255)->default('');
+            $table->string('spoc_full_name',255)->default('');
             $table->string('spoc_lastname',255);
             $table->string('spoc_contact_number',255);
             $table->string('spoc_email_address',255);

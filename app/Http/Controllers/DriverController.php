@@ -176,9 +176,8 @@ class DriverController extends Controller
                 $nestedData['supplier_ids'] =  $drivers_suppliers;
                 // $nestedData['supplier_name'] = substr(strip_tags($post->supplier_name),0,50)."...";
                 $nestedData['logistics_company'] = $driver->logistics_company;
-                $nestedData['first_name'] = $driver->first_name;
+                 $nestedData['fullname'] = $driver->first_name . " " . $driver->last_name;
                 $nestedData['mobile_number'] = $driver->mobile_number;
-                $nestedData['last_name'] = $driver->last_name;
                 $nestedData['company_id_number'] = $driver->company_id_number;
                 $nestedData['license_number'] = $driver->license_number;
 
@@ -223,7 +222,7 @@ class DriverController extends Controller
     {
 
         Driver::updateOrCreate(['id' => ltrim($request->id,0)],
-                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'company_id_number' => $request->company_id_number, 'license_number' => $request->license_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
+                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => $request->company_id_number, 'license_number' => $request->license_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
    
         return response()->json(['success'=>'Driver saved successfully.']);
     }

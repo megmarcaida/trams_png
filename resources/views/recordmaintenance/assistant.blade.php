@@ -52,8 +52,7 @@
                       <th>ID</th>
                       <th>Suppliers</th>
                       <th>Logistics Company</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
+                      <th>Full Name</th>
                       <th>Mobile Number</th>
                       <th>Company ID Number</th>
                       <th>Valid ID Present</th>
@@ -241,8 +240,7 @@
             { "data": "id" },
             {"data": 'supplier_ids'},
             {"data": 'logistics_company'},
-            {"data": 'first_name'},
-            {"data": 'last_name'},
+            {"data": 'fullname'},
             {"data": 'mobile_number'},
             {"data": 'company_id_number'},
             {"data": 'valid_id_present'},

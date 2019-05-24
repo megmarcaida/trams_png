@@ -143,9 +143,8 @@ class AssistantController extends Controller
                 $nestedData['supplier_ids'] =  $assistants_suppliers;
                 // $nestedData['supplier_name'] = substr(strip_tags($post->supplier_name),0,50)."...";
                 $nestedData['logistics_company'] = $assistant->logistics_company;
-                $nestedData['first_name'] = $assistant->first_name;
+                $nestedData['fullname'] = $assistant->first_name . " " . $assistant->last_name;
                 $nestedData['mobile_number'] = $assistant->mobile_number;
-                $nestedData['last_name'] = $assistant->last_name;
                 $nestedData['company_id_number'] = $assistant->company_id_number;
                 $nestedData['valid_id_present'] = $assistant->valid_id_present;
 
@@ -190,7 +189,7 @@ class AssistantController extends Controller
     {
 
         Assistant::updateOrCreate(['id' => ltrim($request->id,0)],
-                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'company_id_number' => $request->company_id_number, 'valid_id_present' => $request->valid_id_present,'valid_id_number' => $request->valid_id_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
+                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => $request->company_id_number, 'valid_id_present' => $request->valid_id_present,'valid_id_number' => $request->valid_id_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
    
         return response()->json(['success'=>'Assistant saved successfully.']);
     }

@@ -129,17 +129,8 @@ class SupplierController extends Controller
                 $nestedData['ordering_days'] = $supplier->ordering_days;
                 $nestedData['module'] = $supplier->module;
                 // $nestedData['spoc_fullname'] = str_replace("|", "", $supplier->spoc_firstname) . " " . str_replace("|", "",$supplier->spoc_lastname) . " | ";
-                $spoc_fname = explode("|", $supplier->spoc_firstname); 
-                $spoc_lname = explode("|", $supplier->spoc_lastname); 
-                $name = "";
-                foreach ($spoc_fname as $key => $value) {
-                    if($value != ""){
-                        $name .= $value . " " . $spoc_lname[$key] . " | ";
-                    }
-                    
-                }
-
-                $nestedData['spoc_fullname'] = $name;
+               
+                $nestedData['spoc_fullname'] = $supplier->spoc_full_name;
                 // $nestedData['spoc_lastname'] = $supplier->spoc_lastname;
                 $nestedData['spoc_contact_number'] = $supplier->spoc_contact_number;
                 $nestedData['spoc_email_address'] = $supplier->spoc_email_address;
@@ -186,6 +177,7 @@ class SupplierController extends Controller
         $spoc_last_name = '';
         $spoc_contact_number = '';
         $spoc_email_address = '';
+        $spoc_fullname = '';
 
         foreach ($request->ordering_days as $ordering_day){
             $ordering_days .=  $ordering_day.' | ';
@@ -196,19 +188,24 @@ class SupplierController extends Controller
         }
 
         foreach ($request->spoc_first_name as $fname){
-            $spoc_first_name .=  $fname.' |<br> ';
+            $spoc_first_name .=  $fname.' <br> ';
         }
 
         foreach ($request->spoc_last_name as $lname){
-            $spoc_last_name .=  $lname.' |<br> ';
+            $spoc_last_name .=  $lname.' <br> ';
         }
 
+        foreach ($request->spoc_first_name as $fname){
+            $spoc_fullname .=  $fname. ' '. $lname .' <br> ';
+        }
+
+
         foreach ($request->spoc_contact_number as $cnumber){
-            $spoc_contact_number .=  $cnumber.' |<br> ';
+            $spoc_contact_number .=  $cnumber.' <br> ';
         }
 
         foreach ($request->spoc_email_address as $email){
-            $spoc_email_address .=  $email.' |<br> ';
+            $spoc_email_address .=  $email.' <br> ';
         }
 
         $isExistVendorCode = Supplier::where("vendor_code",$request->vendor_code)->first();
@@ -220,7 +217,7 @@ class SupplierController extends Controller
         }else{
             $ret = ['success'=>'Supplier saved successfully.'];
             Supplier::updateOrCreate(['id' => $request->supplier_id],
-                ['vendor_code' => $request->vendor_code, 'supplier_name' => $request->supplier_name, 'delivery_type' => $request->delivery_types, 'ordering_days' => $ordering_days, 'module' => $modules, 'spoc_firstname' => $spoc_first_name, 'spoc_lastname' => $spoc_last_name, 'spoc_contact_number' => $spoc_contact_number, 'spoc_email_address' => $spoc_email_address]);        
+                ['vendor_code' => $request->vendor_code, 'supplier_name' => $request->supplier_name, 'delivery_type' => $request->delivery_types, 'ordering_days' => $ordering_days, 'module' => $modules, 'spoc_firstname' => $spoc_first_name, 'spoc_lastname' => $spoc_last_name, 'spoc_full_name' => $spoc_fullname,'spoc_contact_number' => $spoc_contact_number, 'spoc_email_address' => $spoc_email_address]);        
         }
 
         return response()->json($ret);

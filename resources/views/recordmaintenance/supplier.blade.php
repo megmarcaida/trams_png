@@ -283,10 +283,10 @@
           console.log(data.ordering_days)
           var ordering_days_arr = data.ordering_days.split("|")
           var modules_arr = data.module.split("|")
-          var spoc_first_name_arr = data.spoc_firstname.split("|")
-          var spoc_last_name_arr = data.spoc_lastname.split("|")
-          var spoc_contact_number_arr = data.spoc_contact_number.split("|")
-          var spoc_email_address_arr = data.spoc_email_address.split("|")
+          var spoc_first_name_arr = data.spoc_firstname.split("<br>")
+          var spoc_last_name_arr = data.spoc_lastname.split("<br>")
+          var spoc_contact_number_arr = data.spoc_contact_number.split("<br>")
+          var spoc_email_address_arr = data.spoc_email_address.split("<br>")
           var spoc_length = spoc_first_name_arr.length - 1;
 
           console.log(spoc_length)
