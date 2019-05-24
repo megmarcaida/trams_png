@@ -26,6 +26,7 @@ class AssistantExport implements FromCollection, WithHeadings, ShouldAutoSize
             'LogisticCompany',
             'FirstName',
             'LastName',
+            '-',
             'MobileNumber',
             'CompanyIDNumber',
             'ValidIDPresent',

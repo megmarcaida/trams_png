@@ -295,10 +295,15 @@ class DriverController extends Controller
         return Excel::download(new DriverExport, 'drivers.xlsx');
     }
 
-    public function import() 
+    public function import(Request $request) 
     {
-        Excel::import(new DriverImport,request()->file('file'));
-           
-        return redirect()->back()->with("import_message","Importing of Drivers process successfully."); 
+        
+        if($request->file){
+            $import = Excel::import(new DriverImport,request()->file('file'));
+            return redirect()->back()->with("import_message","Importing of Drivers process successfully."); 
+        }else{
+
+            return redirect()->back()->with("import_message_error","Failed to Process. File is required.");
+        }
     }
 }

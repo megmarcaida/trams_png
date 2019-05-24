@@ -592,6 +592,7 @@
             $('div.occupied_slot_box').addClass("slot_box");
             $('div.slot_box').removeClass("occupied_slot_box");
             $('div.slot_box').removeClass("active_slot_box");
+            $('div.slot_box').removeClass("editable_slot_box");
 
             $('#cont').html('');
             $('document').ready(function(){

@@ -26,6 +26,7 @@ class DriverExport implements FromCollection, WithHeadings, ShouldAutoSize
             'LogisticCompany',
             'FirstName',
             'LastName',
+            '-',
             'MobileNumber',
             'CompanyIDNumber',
             'LicenseNumber',

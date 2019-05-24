@@ -44,6 +44,11 @@
                 {{ session()->get('import_message') }}
             </div>
         @endif
+        @if(session()->has('import_message_error'))
+            <div class="alert alert-danger">
+                {{ session()->get('import_message_error') }}
+            </div>
+        @endif
         </div>
         <div class="table table-responsive">
           <table class="table table-bordered data-table">
