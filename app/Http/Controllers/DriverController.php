@@ -220,11 +220,18 @@ class DriverController extends Controller
      */
     public function store(Request $request)
     {
+        $isExistVendorCode = Driver::where("license_number",$request->license_number)->first();
 
+        $isExist = Supplier::find($request->id);
+
+        if($isExistVendorCode && !$isExist){
+            $ret = ['error'=>'License Number already exists.'];
+        }else{
         Driver::updateOrCreate(['id' => ltrim($request->id,0)],
-                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => $request->company_id_number, 'license_number' => $request->license_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
-   
-        return response()->json(['success'=>'Driver saved successfully.']);
+                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => $request->company_id_number, 'license_number' => $request->license_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);   
+            $ret = ['success'=>'Driver saved successfully.'];     
+        }
+        return response()->json($ret);
     }
 
     /**

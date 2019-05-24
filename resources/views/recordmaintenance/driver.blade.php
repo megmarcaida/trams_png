@@ -457,13 +457,15 @@
             e.preventDefault();
             $(this).html('Sending..');
         
-            console.log($('#driverForm').serialize())
+            //console.log($('#driverForm').serialize())
             $.ajax({
               data: $('#driverForm').serialize(),
               url: "{{ route('ajaxdrivers.store') }}",
               type: "POST",
               dataType: 'json',
               success: function (data) {
+                console.log(data.error)
+                if(data.success != null){
                  $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                   $('#driverForm').trigger("reset");
                   $('#ajaxModel').modal('hide');
@@ -471,6 +473,10 @@
                     $('#response').hide("slow");
                   },2000)
                   table.draw();
+                  }else if(data.error != null){ 
+                    $('.modalresponse').show();
+                    $('.modalresponse').html("<div class='alert alert-danger'>"+data.error+"</div>")
+                  }
                    $('#saveBtn').html('Save Changes');
               },
               error: function (data) {
