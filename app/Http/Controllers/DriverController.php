@@ -185,17 +185,17 @@ class DriverController extends Controller
                 $nestedData['isApproved'] = $driver->isApproved == 0 ? "<b class='text-danger'>NO</b>" : "<b class='text-success'>YES</b>";
                 $nestedData['dateOfSafetyOrientation'] = $driver->dateOfSafetyOrientation;
 
-                if($driver->status == 1){
+                // if($driver->status == 1){
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$driver->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$driver->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$driver->id."' data-status='".$driver->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateDriver'>Deactivate</a>";
-                }else{
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$driver->id."' data-status='".$driver->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateDriver'>Deactivate</a>";
+                // }else{
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$driver->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$driver->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$driver->id."' data-status='".$driver->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateDriver'>Activate</a>";
-                }
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$driver->id."' data-status='".$driver->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateDriver'>Activate</a>";
+                // }
                 $nestedData['status'] = $driver->status == 1 ? "<b class='text-success'>Active</b>" : "<b class='text-danger'>Inactive</b>";
                 $data[] = $nestedData;
                 $drivers_suppliers = '';
@@ -305,5 +305,12 @@ class DriverController extends Controller
 
             return redirect()->back()->with("import_message_error","Failed to Process. File is required.");
         }
+    }
+
+    public function getDriver(Request $request){
+        $id = ltrim($request->id, '0');
+        $driver = Driver::where("id",$id)->first();
+
+        return json_encode($driver);
     }
 }

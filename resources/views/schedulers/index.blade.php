@@ -32,8 +32,10 @@
         var id = $(this).data('id');
         if(id == "recurrent"){
           $(".r_ordering_days").css('display','block');
+          $(".r_recurrent_dateend").css('display','block');
         }else{
           $(".r_ordering_days").css('display','none');
+          $(".r_recurrent_dateend").css('display','none');
         }
     });
 
@@ -121,6 +123,7 @@
               $('#dock_id').val(data.dock_id);
 
               $('#dateOfDelivery').val(data.date_of_delivery);
+              $('#recurrent_dateend').val(data.recurrent_dateend);
 
               $('#truck_id').val(data.truck_id);
 
@@ -279,6 +282,8 @@
               $('#dock_id').val(data.dock_id);
 
               $('#dateOfDelivery').val(data.date_of_delivery);
+
+              $('#recurrent_dateend').val(data.recurrent_dateend);
 
               $('#truck_id').val(data.truck_id);
 
@@ -585,6 +590,7 @@
             $('#supplier_id').removeClass('disableSelect');
 
             $(".r_ordering_days").css('display','none')
+            $(".r_recurrent_dateend").css('display','none')
 
             $('.slot_box').removeClass('active_slot_box');
             $('#modelHeading').html("Register Schedule");
@@ -687,6 +693,8 @@
               $('#dock_id').val(data.dock_id);
 
               $('#dateOfDelivery').val(data.date_of_delivery);
+
+              $('#recurrent_dateend').val(data.recurrent_dateend);
 
               $('#truck_id').val(data.truck_id);
 
@@ -1587,6 +1595,15 @@
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" type="checkbox" name="ordering_days[]" class="ordering_days" id="ordering_days_sun" value="Sun">
                           <label class="form-check-label" for="inlineCheckbox2">Sun</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group r_recurrent_dateend">
+                      <label class="col-sm-12 control-label">*Recurrent Date Valid Until</label>
+                      <div class="col-sm-12">
+                        <div class="col-sm-12">
+                        <input type="date" class="form-control datepicker" name="recurrent_dateend" id="recurrent_dateend">
                         </div>
                       </div>
                     </div>

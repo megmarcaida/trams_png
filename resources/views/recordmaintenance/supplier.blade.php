@@ -47,12 +47,8 @@
                       <th>Delivery Type</th>
                       <th>Ordering Days</th>
                       <th>Module</th>
-                      <th>SPOC Full Name</th>
-                      <th>SPOC Contact Number</th>
-                      <th>SPOC Email Address</th>
                       <th>Created At</th>
                       <th>Status</th>
-                      <th>Options</th>
                   </tr>
               </thead>
               <tbody>
@@ -197,6 +193,38 @@
     </div>
 </div>
     
+<div class="modal fade" id="ajaxModelView" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">View Supplier</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div class="modal-body">
+                
+                <div class="row">
+                  <div class="col-md-12 spoc text-center">
+                    SPOC
+                    <table class="table table-responsive table-condensed view_spoc"></table>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-xl-4 col-sm-12">
+                    <button id="btn-edit" class="btn btn-primary btn-xs btn-block editProduct" type="button">Edit</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12">
+                    <button id="btn-deactivate" class="btn btn-secondary btn-xs btn-danger btn-block deactivateOrActivateSupplier" type="button">Deactivate</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12">  
+                    <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
+                  </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     
 <script type="text/javascript">
   $(function () {
@@ -223,12 +251,12 @@
             {"data": 'delivery_type'},
             {"data": 'ordering_days'},
             {"data": 'module'},
-            {"data": 'spoc_fullname'},
-            {"data": 'spoc_contact_number'},
-            {"data": 'spoc_email_address'},
+            // {"data": 'spoc_fullname'},
+            // {"data": 'spoc_contact_number'},
+            // {"data": 'spoc_email_address'},
             { "data": "created_at" },
             { "data": "status"},
-            { "data": "options" },
+            // { "data": "options" },
         ]  
 
     });
@@ -265,10 +293,10 @@
     });
     
     $('body').on('click', '.editProduct', function () {
-
+      $("#ajaxModelView").modal("hide")
       $('#spoc').empty();
       $('#supplierForm').trigger("reset");      
-      var supplier_id = $(this).data('id');
+      var supplier_id = $("#btn-deactivate").attr('data-id');
       $.get("{{ route('ajaxsuppliers.index') }}" +'/' + supplier_id +'/edit', function (data) {
           $('#modelHeading').html("Edit Product");
           $('#saveBtn').val("edit-user");
@@ -412,10 +440,9 @@
     
     $('body').on('click', '.deactivateOrActivateSupplier', function () {
      
-        var supplier_id = $(this).data("id");
-        var status = $(this).data("status");
+        var supplier_id = $("#btn-deactivate").attr("data-id");
+        var status = $("#btn-deactivate").attr("data-status");
         console.log(status)
-        console.log(supplier_id)
         if (confirm("Are you want to proceed?")){
             $.ajax({
                 url: "{{ url('deactivateOrActivateSupplier') }}",
@@ -424,6 +451,8 @@
                 success: function (data) {
                     $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                     table.draw();
+
+                    $("#ajaxModelView").modal("hide")
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -452,7 +481,55 @@
     });
 
 
+    $('.data-table tbody').on( 'click', 'tr', function () {
+            var vendor_code = $(this).find("td:nth-child(1)").first().text().trim()
+            $.ajax({
+              data: {vendor_code:vendor_code},
+              url: "{{ url('getSupplier') }}",
+              type: "POST",
+              dataType: 'json',
+              success: function (data) {
+                  console.log(data)
+                  var spoc_full_name = data.spoc_full_name.split("<br>") 
+                  var spoc_email_address = data.spoc_email_address.split("<br>")
+                  var spoc_contact_number = data.spoc_contact_number.split("<br>")    
+                  var table = $('.view_spoc');
+                  table.html('');
+                  table.append("<thead><tr><th>Full Name</th><th>Email Address</th><th>Contact Number</th></tr></thead>")
+                  table.append("<tbody>")
+                  $.each(spoc_full_name, function( key, value ) {
+                    table.append("<tr><td>" + value.replace("<br>","") + "</td><td>"+ spoc_email_address[key].replace("<br>","") +"</td><td>"+ spoc_contact_number[key].replace("<br>","") +"</td></tr>")
+                  });    
+                  table.append("</tbody>")
 
+                  $("#btn-edit").attr("data-id",data.id)
+                  $("#btn-deactivate").attr("data-id",data.id)
+                  
+                  if(data.status == "1"){
+                    $("#btn-deactivate").html("Deactivate")
+                  }else{
+                    $("#btn-deactivate").html("Activate")
+                  }
+                  $("#btn-deactivate").attr("data-status",data.status)
+
+                  $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
+                  
+                  $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
+                  
+                  $(this).addClass('selected');
+                  
+                  $('#ajaxModelView').modal({
+                      backdrop:'static',
+                      keyboard: false
+                  })
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+                  $('#saveBtn').html('Save Changes');
+              }
+          });
+    });
     
      
   });

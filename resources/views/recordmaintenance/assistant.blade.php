@@ -60,7 +60,7 @@
                       <th>Date of Safety Orientation</th>
                       <th>Status</th>
                       <th>Is Approved?</th>
-                      <th>Options</th>
+                     <!--  <th>Options</th> -->
                   </tr>
               </thead>
               <tbody>
@@ -217,7 +217,35 @@
             </div>
         </div>
     </div>
-</div>     
+</div>    
+
+<div class="modal fade" id="ajaxModelView" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Actions</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div class="modal-body">
+                
+                <div class="row">
+                  <div class="col-xl-4 col-sm-12">
+                    <button id="btn-edit" class="btn btn-primary btn-xs btn-block editProduct" type="button">Edit</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12">
+                    <button id="btn-deactivate" class="btn btn-secondary btn-xs btn-danger btn-block deactivateOrActivateAssistant" type="button">Deactivate</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12">  
+                    <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
+                  </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script type="text/javascript">
   $(function () {
       
@@ -248,7 +276,7 @@
             {"data": 'dateOfSafetyOrientation'},
             { "data": "status"},
             { "data": "isApproved"},
-            { "data": "options" },
+            //{ "data": "options" },
         ]  
 
     });
@@ -367,6 +395,7 @@
     return str.length < max ? pad("0" + str, max) : str;
   }
     $('body').on('click', '.editProduct', function () {
+      $("#ajaxModelView").modal("hide");
       $('.modalresponse').empty();
       $('#assistantForm').trigger("reset");      
       var id = $(this).data('id');
@@ -501,8 +530,8 @@
     
     $('body').on('click', '.deactivateOrActivateAssistant', function () {
      
-        var id = $(this).data("id");
-        var status = $(this).data("status");
+        var id = $("#btn-deactivate").attr("data-id");
+        var status = $("#btn-deactivate").attr("data-status");
         
         if (confirm("Are you want to proceed?")){
             $.ajax({
@@ -513,6 +542,7 @@
                     $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                     table.draw();
                     loadViewPending();
+                    $("#ajaxModelView").modal("hide")
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -554,6 +584,47 @@
 
       assistant_suppliers = "";
       supplier_ids = "";
+    });
+
+    $('.data-table tbody').on( 'click', 'tr', function () {
+            var id = $(this).find("td:nth-child(1)").first().text().trim()
+            $.ajax({
+              data: {id:id},
+              url: "{{ url('getAssistant') }}",
+              type: "POST",
+              dataType: 'json',
+              success: function (data) {
+                  console.log(data)
+                  
+
+                  $("#btn-edit").attr("data-id",data.id)
+                  $("#btn-deactivate").attr("data-id",data.id)
+                  
+                  if(data.status == "1"){
+                    $("#btn-deactivate").html("Deactivate")
+                  }else{
+                    $("#btn-deactivate").html("Activate")
+                  }
+
+                  $("#btn-deactivate").attr("data-status",data.status)
+
+                  $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
+                  
+                  $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
+                  
+                  $(this).addClass('selected');
+                  
+                  $('#ajaxModelView').modal({
+                      backdrop:'static',
+                      keyboard: false
+                  })
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+                  $('#saveBtn').html('Save Changes');
+              }
+          });
     });
 
   });

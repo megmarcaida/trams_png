@@ -29,6 +29,7 @@ Route::post('deactivateOrActivateSupplier', 'SupplierController@deactivateOrActi
 
 Route::get('exportSupplier', 'SupplierController@export')->name('exportSupplier');
 Route::post('importSupplier', 'SupplierController@import')->name('importSupplier');
+Route::post('getSupplier', 'SupplierController@getSupplier')->name('getSupplier');
 #End Supplier Route
 
 
@@ -42,6 +43,7 @@ Route::post('deactivateOrActivateTruck', 'TruckController@deactivateOrActivateTr
 
 Route::get('exportTruck', 'TruckController@export')->name('exportTruck');
 Route::post('importTruck', 'TruckController@import')->name('importTruck');
+Route::post('getTruck', 'TruckController@getTruck')->name('getTruck');
 #End Truck Route
 
 #Driver  Routes
@@ -57,6 +59,7 @@ Route::post('completeDriverRegistration', 'DriverController@completeDriverRegist
 
 Route::get('exportDriver', 'DriverController@export')->name('exportDriver');
 Route::post('importDriver', 'DriverController@import')->name('importDriver');
+Route::post('getDriver', 'DriverController@getDriver')->name('getDriver');
 #End Driver Route
 
 
@@ -73,6 +76,7 @@ Route::post('completeAssistantRegistration', 'AssistantController@completeAssist
 
 Route::get('exportAssistant', 'AssistantController@export')->name('exportAssistant');
 Route::post('importAssistant', 'AssistantController@import')->name('importAssistant');
+Route::post('getAssistant', 'AssistantController@getAssistant')->name('getAssistant');
 #End importAssistant Route
 
 

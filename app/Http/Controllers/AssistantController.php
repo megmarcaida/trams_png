@@ -152,17 +152,17 @@ class AssistantController extends Controller
                 $nestedData['isApproved'] = $assistant->isApproved == 0 ? "<b class='text-danger'>NO</b>" : "<b class='text-success'>YES</b>";
                 $nestedData['dateOfSafetyOrientation'] = $assistant->dateOfSafetyOrientation;
 
-                if($assistant->status == 1){
+                // if($assistant->status == 1){
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$assistant->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$assistant->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$assistant->id."' data-status='".$assistant->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateAssistant'>Deactivate</a>";
-                }else{
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$assistant->id."' data-status='".$assistant->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateAssistant'>Deactivate</a>";
+                // }else{
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$assistant->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$assistant->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$assistant->id."' data-status='".$assistant->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateAssistant'>Activate</a>";
-                }
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$assistant->id."' data-status='".$assistant->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateAssistant'>Activate</a>";
+                // }
                 $nestedData['status'] = $assistant->status == 1 ? "<b class='text-success'>Active</b>" : "<b class='text-danger'>Inactive</b>";
                 $data[] = $nestedData;
                 $assistants_suppliers = '';
@@ -260,5 +260,12 @@ class AssistantController extends Controller
         Excel::import(new AssistantImport,request()->file('file'));
            
         return redirect()->back()->with("import_message","Importing of Assistants process successfully."); 
+    }
+
+     public function getAssistant(Request $request){
+        $id = ltrim($request->id, '0');
+        $assistant = Assistant::where("id",$id)->first();
+
+        return json_encode($assistant);
     }
 }

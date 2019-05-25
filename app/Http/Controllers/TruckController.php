@@ -169,17 +169,17 @@ class TruckController extends Controller
                 $nestedData['model'] = $truck->model;
                 $nestedData['type'] = $truck->type;
                
-                if($truck->status == 1){
+                // if($truck->status == 1){
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$truck->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$truck->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$truck->id."' data-status='".$truck->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateTruck'>Deactivate</a>";
-                }else{
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$truck->id."' data-status='".$truck->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateTruck'>Deactivate</a>";
+                // }else{
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$truck->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$truck->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$truck->id."' data-status='".$truck->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateTruck'>Activate</a>";
-                }
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$truck->id."' data-status='".$truck->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateTruck'>Activate</a>";
+                // }
                 $nestedData['status'] = $truck->status == 1 ? "Active" : "Inactive";
                 $data[] = $nestedData;
                 $trucks_suppliers = '';
@@ -320,5 +320,12 @@ class TruckController extends Controller
         // return response()->json(['success'=>'Importing of Trucks successfully.']);
         // return view('recordmaintenance/truck')->with("import_message","Importing of Trucks successfully.");  
         return redirect()->back()->with("import_message","Importing of Trucks process successfully."); 
+    }
+
+    public function getTruck(Request $request){
+        $id = ltrim($request->id, '0');
+        $truck = Truck::where("id",$id)->first();
+
+        return json_encode($truck);
     }
 }

@@ -19,6 +19,7 @@ class CreateSchedulesTable extends Migration
             $table->string('dock_id',255)->nullable();
             $table->string('dock_name',255)->nullable();
             $table->date('date_of_delivery')->nullable();
+            $table->date('recurrent_dateend')->nullable();
             $table->string('recurrence',255)->nullable();
             $table->string('ordering_days',255)->nullable();
             $table->string('slotting_time',255)->nullable();

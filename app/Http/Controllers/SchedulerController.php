@@ -136,6 +136,7 @@ class SchedulerController extends Controller
                     $nestedData['delivery_id'] = $number;
                     $nestedData['dock_name'] = $schedule->dock_name;
                     $nestedData['date_of_delivery'] = $schedule->date_of_delivery;
+                    $nestedData['recurrent_dateend'] = $schedule->recurrent_dateend;
                     $nestedData['recurrence'] = $schedule->recurrence;
 
                     $slotting_ = str_replace("|","",$schedule->slotting_time);
@@ -452,7 +453,7 @@ class SchedulerController extends Controller
                 $end = substr($getSlot, -5);
 
                 $startDateTime = $request->dateOfDelivery;
-                $endDateTime = date("Y-m-d", strtotime(date("Y-m-d", strtotime($request->dateOfDelivery)) . " + 100 day"));
+                $endDateTime = $request->recurrent_dateend;
 
                 // $scheds = trim($ordering_days);
                 // $scheds = explode("|", $scheds);
@@ -493,7 +494,7 @@ class SchedulerController extends Controller
                     }
 
                     foreach($dates as $date){
-                        Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);  
+                        Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);  
                     }
 
                 }
@@ -502,7 +503,7 @@ class SchedulerController extends Controller
                 $ret = ['success'=>'Schedule saved successfully.']; 
             }else{
                 $ret = ['success'=>'Schedule saved successfully.'];
-                Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);  
+                Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);  
             }
 
 
@@ -613,6 +614,7 @@ class SchedulerController extends Controller
                 $nestedData['dock_id'] = $schedule->dock_id;
                 $nestedData['dock_name'] = $schedule->dock_name;
                 $nestedData['date_of_delivery'] = date("Y-m-d", strtotime($schedule->date_of_delivery));
+                $nestedData['recurrent_dateend'] = date("Y-m-d", strtotime($schedule->recurrent_dateend));
                 $nestedData['recurrence'] = $schedule->recurrence;
                 $nestedData['ordering_days'] = $schedule->ordering_days;
                 $nestedData['truck_id'] = $schedule->truck_id;

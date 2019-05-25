@@ -128,22 +128,22 @@ class SupplierController extends Controller
                 $nestedData['module'] = $supplier->module;
                 // $nestedData['spoc_fullname'] = str_replace("|", "", $supplier->spoc_firstname) . " " . str_replace("|", "",$supplier->spoc_lastname) . " | ";
                
-                $nestedData['spoc_fullname'] = $supplier->spoc_full_name;
-                // $nestedData['spoc_lastname'] = $supplier->spoc_lastname;
-                $nestedData['spoc_contact_number'] = $supplier->spoc_contact_number;
-                $nestedData['spoc_email_address'] = $supplier->spoc_email_address;
+                // $nestedData['spoc_fullname'] = $supplier->spoc_full_name;
+                // // $nestedData['spoc_lastname'] = $supplier->spoc_lastname;
+                // $nestedData['spoc_contact_number'] = $supplier->spoc_contact_number;
+                // $nestedData['spoc_email_address'] = $supplier->spoc_email_address;
                 $nestedData['created_at'] = date('j M Y h:i a',strtotime($supplier->created_at));
-                if($supplier->status == 1){
+                // if($supplier->status == 1){
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-status='".$supplier->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateSupplier'>Deactivate</a>";
-                }else{
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-status='".$supplier->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateSupplier'>Deactivate</a>";
+                // }else{
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-status='".$supplier->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateSupplier'>Activate</a>";
-                }
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-status='".$supplier->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateSupplier'>Activate</a>";
+                // }
                 $nestedData['status'] = $supplier->status == 1 ? "Active" : "Inactive";
                 $data[] = $nestedData;
 
@@ -279,6 +279,12 @@ class SupplierController extends Controller
         Excel::import(new SupplierImport,request()->file('file'));
        
         return redirect()->back()->with("import_message","Importing of Suppliers process successfully."); 
+    }
+
+    public function getSupplier(Request $request){
+        $supplier = Supplier::where("vendor_code",$request->vendor_code)->first();
+
+        return json_encode($supplier);
     }
    
 }
