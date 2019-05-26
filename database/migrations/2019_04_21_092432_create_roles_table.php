@@ -17,7 +17,7 @@ class CreateRolesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name',255);
             $table->string('description',255);
-            $table->string('submodules')->nullable();
+            $table->string('submodules',100)->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();
         });
