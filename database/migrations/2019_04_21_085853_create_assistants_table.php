@@ -28,6 +28,7 @@ class CreateAssistantsTable extends Migration
             $table->datetime('dateOfSafetyOrientation')->nullable();
             $table->integer('isApproved')->default(0)->nullable();
             $table->integer('status')->default(1);
+            $table->datetime('expirationDate')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

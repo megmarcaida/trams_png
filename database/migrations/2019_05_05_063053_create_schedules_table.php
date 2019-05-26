@@ -41,6 +41,8 @@ class CreateSchedulesTable extends Migration
             $table->integer('egress_timestamp')->nullable();
             $table->datetime('gate_out_timestamp')->nullable();
             $table->integer('truck_turnaround_timestamp')->nullable();
+            $table->string('recurrent_id')->nullable();
+            $table->string('conflict_id')->nullable();
             $table->timestamps();
         });
     }

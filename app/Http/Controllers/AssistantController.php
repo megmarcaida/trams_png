@@ -7,6 +7,7 @@ use App\Supplier;
 use Illuminate\Http\Request;
 use DataTables;
 use Auth;
+use Carbon\Carbon;
 use App\Exports\AssistantExport;
 use App\Imports\AssistantImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -124,7 +125,10 @@ class AssistantController extends Controller
         {
             foreach ($assistants as $assistant)
             {
-              
+                if(time() > strtotime($assistant->expirationDate)){
+                    Assistant::find($assistant->id)->update(["dateOfSafetyOrientation"=>null,"expirationDate"=>null,"isApproved"=>0]);
+                }
+
                 $supplier_ids = explode('|',$assistant->supplier_ids);
                 
                 foreach($supplier_ids as $supplier_id){
@@ -187,9 +191,24 @@ class AssistantController extends Controller
      */
     public function store(Request $request)
     {
+        $assistant = Assistant::find(ltrim($request->id,0));
+       
+        if($request->dateOfSafetyOrientation != null){
+            
+            $date = $request->dateOfSafetyOrientation;
+            $date = strtotime($date);
+            $expirationDate = strtotime("+7 day", $date);
+            $expirationDate = date("Y-m-d H:i:s",$expirationDate);
+            $dateOfSafetyOrientation = $request->dateOfSafetyOrientation;
+            $isApproved = 1;
+        }else{
+            $expirationDate = $assistant->expirationDate;
+            $dateOfSafetyOrientation = $assistant->dateOfSafetyOrientation;
+            $isApproved = $assistant->isApproved;
+        }
 
         Assistant::updateOrCreate(['id' => ltrim($request->id,0)],
-                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => $request->company_id_number, 'valid_id_present' => $request->valid_id_present,'valid_id_number' => $request->valid_id_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);        
+                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => $request->company_id_number, 'valid_id_present' => $request->valid_id_present,'valid_id_number' => $request->valid_id_number, 'dateOfSafetyOrientation' => $dateOfSafetyOrientation, 'isApproved' => $isApproved,'expirationDate'=>$expirationDate]);        
    
         return response()->json(['success'=>'Assistant saved successfully.']);
     }
@@ -244,8 +263,12 @@ class AssistantController extends Controller
     public function completeAssistantRegistration(Request $request)
     {
         $id = $request->id;
+        $date = $request->dateOfSafetyOrientation;
+        $date = strtotime($date);
+        $expirationDate = strtotime("+7 day", $date);
+        $expirationDate = date("Y-m-d H:i:s",$expirationDate);
 
-        Assistant::find($id)->update(['dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => 1]);        
+        Assistant::find($id)->update(['dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => 1,"expirationDate"=> $expirationDate]);        
    
         return response()->json(['success'=>$request->dateOfSafetyOrientation . ' Assistant saved successfully.']);
     }

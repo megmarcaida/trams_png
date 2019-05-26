@@ -7,6 +7,7 @@ use App\Supplier;
 use Illuminate\Http\Request;
 use DataTables;
 use Auth;
+use Carbon\Carbon;
 use App\Exports\DriverExport;
 use App\Imports\DriverImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -73,6 +74,7 @@ class DriverController extends Controller
 
                 $nestedData['isApproved'] = $driver->isApproved == 0 ? "<b class='text-danger'>NO</b>" : "<b class='text-success'>YES</b>";
                 $nestedData['dateOfSafetyOrientation'] = $driver->dateOfSafetyOrientation;
+                $nestedData['expirationDate'] = $driver->expirationDate;
 
                 $nestedData['status'] = $driver->status == 1 ? "<b class='text-success'>Active</b>" : "<b class='text-danger'>Inactive</b>";
                 $data[] = $nestedData;
@@ -157,7 +159,11 @@ class DriverController extends Controller
         {
             foreach ($drivers as $driver)
             {
-              
+
+                if(time() > strtotime($driver->expirationDate)){
+                    Driver::find($driver->id)->update(["dateOfSafetyOrientation"=>null,"expirationDate"=>null,"isApproved"=>0]);
+                }
+
                 $supplier_ids = explode('|',$driver->supplier_ids);
                 
                 foreach($supplier_ids as $supplier_id){
@@ -184,6 +190,7 @@ class DriverController extends Controller
                 // $nestedData['license_number'] = $driver->license_number;
                 $nestedData['isApproved'] = $driver->isApproved == 0 ? "<b class='text-danger'>NO</b>" : "<b class='text-success'>YES</b>";
                 $nestedData['dateOfSafetyOrientation'] = $driver->dateOfSafetyOrientation;
+                $nestedData['expirationDate'] = $driver->expirationDate;
 
                 // if($driver->status == 1){
 
@@ -220,6 +227,22 @@ class DriverController extends Controller
      */
     public function store(Request $request)
     {
+        $driver = Driver::find(ltrim($request->id,0));
+       
+        if($request->dateOfSafetyOrientation != null){
+            
+            $date = $request->dateOfSafetyOrientation;
+            $date = strtotime($date);
+            $expirationDate = strtotime("+7 day", $date);
+            $expirationDate = date("Y-m-d H:i:s",$expirationDate);
+            $dateOfSafetyOrientation = $request->dateOfSafetyOrientation;
+            $isApproved = 1;
+        }else{
+            $expirationDate = $driver->expirationDate;
+            $dateOfSafetyOrientation = $driver->dateOfSafetyOrientation;
+            $isApproved = $driver->isApproved;
+        }
+
         $isExistVendorCode = Driver::where("license_number",$request->license_number)->first();
 
         $isExist = Supplier::find($request->id);
@@ -228,7 +251,7 @@ class DriverController extends Controller
             $ret = ['error'=>'License Number already exists.'];
         }else{
         Driver::updateOrCreate(['id' => ltrim($request->id,0)],
-                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => $request->company_id_number, 'license_number' => $request->license_number, 'dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => $request->isApproved]);   
+                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => $request->company_id_number, 'license_number' => $request->license_number, 'dateOfSafetyOrientation' => $dateOfSafetyOrientation, 'isApproved' => $isApproved, "expirationDate"=>$expirationDate]);   
             $ret = ['success'=>'Driver saved successfully.'];     
         }
         return response()->json($ret);
@@ -284,8 +307,11 @@ class DriverController extends Controller
     public function completeDriverRegistration(Request $request)
     {
         $id = $request->id;
-
-        Driver::find($id)->update(['dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => 1]);        
+        $date = $request->dateOfSafetyOrientation;
+        $date = strtotime($date);
+        $expirationDate = strtotime("+7 day", $date);
+        $expirationDate = date("Y-m-d H:i:s",$expirationDate);
+        Driver::find($id)->update(['dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => 1,"expirationDate"=> $expirationDate]);        
    
         return response()->json(['success'=>$request->dateOfSafetyOrientation . ' Driver saved successfully.']);
     }

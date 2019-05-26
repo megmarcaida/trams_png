@@ -74,11 +74,13 @@
                         </div>
                     </div>
 
-                     <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Role</label>
-                        <div class="col-sm-12">
-                          <input type="hidden" id="role_id" name="role_id">
-                            <input type="text" class="form-control" id="role_name" name="role_name" value="" maxlength="100" required="">
+                    <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Modules</label>
+                       <div class="col-sm-12">
+                          <select class="form-control" id="role_id" name="role_id">
+                               <option value="0">Please select Role</option>
+
+                          </select>
                         </div>
                     </div>
 
@@ -220,7 +222,21 @@
         }
     });
 
-
+     $.ajax({
+            url: "{{ url('getUserType') }}",
+            type: "POST",
+            data: {},
+            success: function (data) {
+                console.log(data)
+                $.each(JSON.parse(data), function(index, item) {
+                  console.log(item)
+                   $('#role_id').append("<option  value="+ item.id +">"+ item.name+"</option>")
+                });
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+    });
   
   });
 </script>

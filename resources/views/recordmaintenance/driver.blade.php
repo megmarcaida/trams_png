@@ -62,6 +62,7 @@
                       <th>Company ID Number</th>
                       <th>License Number</th>
                       <th>Date of Safety Orientation</th>
+                      <th>Expiration Date</th>
                       <th>Status</th>
                       <th>Is Approved?</th>
                       <!-- <th>Options</th> -->
@@ -269,6 +270,7 @@
             {"data": 'company_id_number'},
             {"data": 'license_number'},
             {"data": 'dateOfSafetyOrientation'},
+            {"data": 'expirationDate'},
             { "data": "status"},
             { "data": "isApproved"},
             // { "data": "options" },

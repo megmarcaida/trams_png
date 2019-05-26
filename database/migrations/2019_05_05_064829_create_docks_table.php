@@ -17,6 +17,7 @@ class CreateDocksTable extends Migration
             $table->bigIncrements('id');
             $table->string('dock_name',255)->nullable();
             $table->string('module',255)->nullable();
+            $table->string('user_type',255)->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();
         });

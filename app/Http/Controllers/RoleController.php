@@ -84,18 +84,18 @@ class RoleController extends Controller
                 $nestedData['id'] = $role->id;
                 $nestedData['description'] = $role->description;
                 $nestedData['name'] = $role->name;
+                $nestedData['submodules'] = $role->submodules;
+                // if($role->status == 1){
 
-                if($role->status == 1){
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$role->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$role->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$role->id."' data-status='".$role->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateRole'>Deactivate</a>";
+                // }else{
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$role->id."' data-status='".$role->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateRole'>Deactivate</a>";
-                }else{
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$role->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$role->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
-
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$role->id."' data-status='".$role->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateRole'>Activate</a>";
-                }
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$role->id."' data-status='".$role->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateRole'>Activate</a>";
+                // }
                 $nestedData['status'] = $role->status == 1 ? "Active" : "Inactive";
                 $data[] = $nestedData;
             }
@@ -118,10 +118,16 @@ class RoleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {      
+        $submodules = "";
+        if($request->submodules != null){
+            foreach($request->submodules as $value){
+                    $submodules .= $value . "|";
+            }
+        }
 
         Role::updateOrCreate(['id' => $request->id],
-                ['name' => $request->name, 'description' => $request->description]);        
+                ['name' => $request->name, 'description' => $request->description, 'submodules'=> $submodules]);        
    
         return response()->json(['success'=>'Role saved successfully.']);
     }
@@ -165,5 +171,12 @@ class RoleController extends Controller
             Role::find($id)->update(['status' => 1]);
             return response()->json(['success'=>'Role activated successfully.']);
         }
+    }
+
+    public function getRole(Request $request){
+        $id = ltrim($request->id, '0');
+        $role = Role::where("id",$id)->first();
+
+        return json_encode($role);
     }
 }

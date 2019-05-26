@@ -18,11 +18,6 @@
     
     //end make qr code
 </script>
-<style type="text/css">
-  .fc-time-grid-event{
-    cursor: pointer;
-  }
-</style>
 <script>
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -48,8 +43,8 @@
     $('body').on('click', '#edit_single_event', function (e) {
         $('#ajaxModelEditRecurrent').modal('hide')
         $('.isEditingRecurrent').val("0")
-        //console.log($('#selected_schedule').val())  
-        //console.log($('#recurrence_hidden').val())
+        console.log($('#selected_schedule').val())  
+        console.log($('#recurrence_hidden').val())
 
 
 
@@ -68,7 +63,7 @@
           $('#truck_id').html('');
           $('#driver_id').html('');
           $('#assistant_id').html('');
-          //$('#dock_id').html('');
+          $('#dock_id').html('');
           $('#alt_supplier_id').val('');
           //$('#supplier_id').attr("disabled","disabled");
           $('#po_number').attr("readonly","true");
@@ -85,7 +80,7 @@
               type: "POST",
               data: {id:selected},
               success: function (data) {
-                ////console.log(JSON.parse(data))  
+                //console.log(JSON.parse(data))  
                 $.each(JSON.parse(data), function(index, item) {
                   // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
                   if(index == 'truckdata'){
@@ -116,7 +111,7 @@
 
               },
               error: function (data) {
-                  //console.log('Error:', data);
+                  console.log('Error:', data);
               }
           });
 
@@ -130,7 +125,7 @@
                 backdrop:'static',
                 keyboard: false
               })
-              //console.log(data.date_of_delivery)
+              console.log(data.date_of_delivery)
               $('#schedule_id').val(data.id);
               $('#po_number').val(data.po_number);
               $('#supplier_id').val(data.supplier_id);
@@ -159,7 +154,7 @@
 
               $('#cont').html('');
               createTable();
-              //console.log(data.material_list  + "Test")
+              console.log(data.material_list  + "Test")
               if(data.material_list == 0){
                   addRow('','','')
               }
@@ -194,14 +189,14 @@
                       });
                   },
                   error: function (data) {
-                      //console.log('Error:', data);
+                      console.log('Error:', data);
                   }
               });
               //refresh slot box
 
 
               $.each(data.slotting_time, function(index, slot) {
-                  //console.log(slot)
+                  console.log(slot)
                     if(slot != ""){
                       $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
                       $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
@@ -219,9 +214,9 @@
     $('body').on('click', '#edit_recurrence', function (e) {
         $('#ajaxModelEditRecurrent').modal('hide')
         $('#isEditingRecurrent').val("1");
-        //console.log($('#selected_schedule').val()) 
+        console.log($('#selected_schedule').val()) 
 
-        //console.log($('#recurrence_hidden').val())   
+        console.log($('#recurrence_hidden').val())   
 
         //$('div.slot_box').removeClass("slot_box");
           $('div.editable_slot_box').addClass('slot_box').removeClass("editable_slot_box");
@@ -251,7 +246,7 @@
               type: "POST",
               data: {id:selected},
               success: function (data) {
-                ////console.log(JSON.parse(data))  
+                //console.log(JSON.parse(data))  
                 $.each(JSON.parse(data), function(index, item) {
                   // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
                   if(index == 'truckdata'){
@@ -283,7 +278,7 @@
 
               },
               error: function (data) {
-                  //console.log('Error:', data);
+                  console.log('Error:', data);
               }
           });
 
@@ -297,7 +292,7 @@
                 backdrop:'static',
                 keyboard: false
               })
-              //console.log(data.date_of_delivery)
+              console.log(data.date_of_delivery)
               $('#schedule_id').val(data.id);
               $('#po_number').val(data.po_number);
               $('#supplier_id').val(data.supplier_id);
@@ -327,7 +322,7 @@
 
               $('#cont').html('');
               createTable();
-              //console.log(data.material_list  + "Test")
+              console.log(data.material_list  + "Test")
               if(data.material_list == 0){
                   addRow('','','')
               }
@@ -362,14 +357,14 @@
                       });
                   },
                   error: function (data) {
-                      //console.log('Error:', data);
+                      console.log('Error:', data);
                   }
               });
               //refresh slot box
 
 
               $.each(data.slotting_time, function(index, slot) {
-                  //console.log(slot)
+                  console.log(slot)
                     if(slot != ""){
                       $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
                       $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
@@ -430,7 +425,7 @@
 
 
     //ONCHANGE DATEOFDELIVERY
-    $('body').on('change', '#dateOfDelivery, #dock_id', function () {
+    $('body').on('change', '#dateOfDelivery', function () {
         $('div.occupied_slot_box').addClass("slot_box");
         $('div.slot_box').removeClass("occupied_slot_box");
         $('div.slot_box').removeClass("active_slot_box");
@@ -438,7 +433,6 @@
         $('#slotting_time').val('');
         var dock_id = $("#dock_id option:selected").val();
         var date_of_delivery = $('#dateOfDelivery').val();
-        //console.log(dock_id)
         $.ajax({
             url: "{{ url('getSlottingTime') }}",
             type: "POST",
@@ -446,7 +440,7 @@
             success: function (data) {
                 $.each(JSON.parse(data), function(index, item) {
                   $.each(item.slotting_time, function(i, slot) {
-                  //console.log(slot)
+                  console.log(slot)
                     if(slot != ""){
                       $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
                       $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
@@ -455,7 +449,7 @@
                 });
             },
             error: function (data) {
-                //console.log('Error:', data);
+                console.log('Error:', data);
             }
         });
       });
@@ -475,7 +469,7 @@
             success: function (data) {
                 $.each(JSON.parse(data), function(index, item) {
                   $.each(item.slotting_time, function(i, slot) {
-                  //console.log(slot)
+                  console.log(slot)
                     if(slot != ""){
                       $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
                       $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
@@ -484,7 +478,7 @@
                 });
             },
             error: function (data) {
-                //console.log('Error:', data);
+                console.log('Error:', data);
             }
         });
       });
@@ -493,7 +487,7 @@
      $('body').on('change', '#supplier_id', function () {
          
          var selected = $("#supplier_id option:selected").val();
-         ////console.log(selected)
+         //console.log(selected)
          $('#truck_id').html('');
          $('#driver_id').html('');
          $('#assistant_id').html('');
@@ -505,7 +499,7 @@
               type: "POST",
               data: {id:selected},
               success: function (data) {
-                ////console.log(JSON.parse(data))  
+                //console.log(JSON.parse(data))  
                 $.each(JSON.parse(data), function(index, item) {
                   // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
                   if(index == 'truckdata'){
@@ -537,7 +531,7 @@
 
               },
               error: function (data) {
-                  //console.log('Error:', data);
+                  console.log('Error:', data);
               }
           });
       }
@@ -562,12 +556,12 @@
       plugins: [ 'interaction', 'resourceDayGrid', 'resourceTimeGrid', 'list' ],
       defaultView: 'timeGridWeek',
       defaultDate: Date.now(),
-      editable: false,
+      editable: true,
       selectable: true,
       eventLimit: true, // allow "more" link when too many events
       header: {
         left: 'title',
-        center: 'CreateSchedule ScheduleDockUnavailability',
+        center: 'CreateSchedule EditSchedule DeleteSchedule ScheduleDockUnavailability',
         right: 'timeGridWeek listMonth today prev,next'
       },
       customButtons: {
@@ -581,18 +575,12 @@
             $('#truck_id').html('');
             $('#driver_id').html('');
             $('#assistant_id').html('');
-            $('#dock_id').html('');
-            $('#dock_id').removeAttr("disabled");
             $('#supplier_id').removeAttr("disabled");
             $('#po_number').removeAttr("readonly");
-            $('.btncancelSchedule').hide();
-            $('#btnPrintVoucher').hide();
 
             $('#supplier_id').not(this).find('option').removeAttr('disabled')
             $('#alt_supplier_id').val('');
             $('#supplier_id').removeClass('disableSelect');
-            $('#dock_id').not(this).find('option').removeAttr('disabled')
-            $('#dock_id').removeClass('disableSelect');
 
             $(".r_ordering_days").css('display','none')
             $(".r_recurrent_dateend").css('display','none')
@@ -616,22 +604,230 @@
             })
           }
         },
+        EditSchedule: {
+          text: 'Edit Schedule',
+          click: function() {
+
+          if($('#recurrence_hidden').val() != 'Recurrent'){
+
+
+          //$('div.slot_box').removeClass("slot_box");
+          $('div.editable_slot_box').addClass('slot_box').removeClass("editable_slot_box");
+          $('div.occupied_slot_box').addClass('slot_box').removeClass("occupied_slot_box");
+
+          $('#saveBtn').html('Save Changes');
+          $('#response').html(''); 
+          var id = $('#selected_schedule').val();
+          var selected = $('#selected_supplierid').val();
+
+          if(id == "" && selected == ""){
+            $('#response').append('<div class="alert alert-warning">Please select schedule to edit.</div>  ')
+          }
+          $('#truck_id').html('');
+          $('#driver_id').html('');
+          $('#assistant_id').html('');
+          $('#alt_supplier_id').val('');
+          //$('#supplier_id').attr("disabled","disabled");
+          $('#po_number').attr("readonly","true");
+
+          $('#supplier_id').not(this).find('option').prop('disabled', 'true');
+
+          $('#supplier_id').addClass('disableSelect');
+
+          $('#dock_id').not(this).find('option').prop('disabled', 'true');
+
+          $('#dock_id').addClass('disableSelect');
+
+
+          $.ajax({
+              url: "{{ url('getSupplierData') }}",
+              type: "POST",
+              data: {id:selected},
+              success: function (data) {
+                //console.log(JSON.parse(data))  
+                $.each(JSON.parse(data), function(index, item) {
+                  // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
+                  if(index == 'truckdata'){
+                    $.each(item, function(index, truck) {
+
+                      $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
+                    });
+                  }
+
+                  if(index == 'driverdata'){
+                    $.each(item, function(index, driver) {
+                      $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
+                    });
+                  }
+
+                  if(index == 'assistantdata'){
+                    $.each(item, function(index, assistant) {
+                      $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
+                    });
+                  }
+
+                  if(index == 'dockdata'){
+
+                    $.each(item, function(index, dock) {
+                      $('#dock_id').append("<option value="+dock.id +">" + dock.dock_name + "</option>")
+                    });
+                  }
+                });
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+              }
+          });
+
+
+          $('#scheduleForm').trigger("reset");      
+          
+          $.get("{{ route('ajaxschedules.index') }}" +'/' + id +'/edit', function (data) {
+              $('#modelHeading').html("Edit Schedule");
+              $('#saveBtn').val("edit-user");
+              $('#ajaxModel').modal({
+                backdrop:'static',
+                keyboard: false
+              })
+              console.log(data.date_of_delivery)
+              $('#schedule_id').val(data.id);
+              $('#po_number').val(data.po_number);
+              $('#supplier_id').val(data.supplier_id);
+              $('#alt_supplier_id').val(data.supplier_id);
+              $('#dock_id').val(data.dock_id);
+
+              $('#dateOfDelivery').val(data.date_of_delivery);
+
+              $('#recurrent_dateend').val(data.recurrent_dateend);
+
+              $('#truck_id').val(data.truck_id);
+
+              $('#driver_id').val(data.driver_id);
+
+              $('#assistant_id').val(data.assistant_id);
+
+              $('#container_number').val(data.container_number);
+
+              $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+              if(data.recurrence == "Recurrent"){
+                $(".r_ordering_days").css('display','block')
+              }
+              var ordering_days_arr = data.ordering_days.split("|")
+              $.each( ordering_days_arr, function( key, value ) {
+                $("input[value='" + $.trim(value) + "']").prop('checked', true);
+              });
+
+              $('#cont').html('');
+              createTable();
+              console.log(data.material_list  + "Test")
+              if(data.material_list == 0){
+                  addRow('','','')
+              }
+              $.each(data.material_list.gcas, function(index, item) {
+                  if(item != ""){
+
+                    addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                  }
+              });
+
+              $("#slotting_time").val(data.slotting_time_text);
+
+               $('div.occupied_slot_box').addClass("slot_box");
+
+
+              //refresh slot box
+              $('div.slot_box').removeClass("occupied_slot_box");
+              $('div.slot_box').removeClass("active_slot_box");
+              var date_of_delivery = $('#dateOfDelivery').val();
+              $.ajax({
+                  url: "{{ url('getSlottingTime') }}",
+                  type: "POST",
+                  data: {date_of_delivery:date_of_delivery},
+                  success: function (data) {
+                      console.log(data)
+                      $.each(JSON.parse(data), function(index, item) {
+                        $.each(item.slotting_time, function(i, slot) {
+                          if(slot != ""){
+                            $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                            $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                          }
+                        });
+                      });
+                  },
+                  error: function (data) {
+                      console.log('Error:', data);
+                  }
+              });
+              //refresh slot box
+
+
+              $.each(data.slotting_time, function(index, slot) {
+                  console.log(slot)
+                    if(slot != ""){
+                      $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
+                      $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
+                      $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                    }
+                });
+          })
+
+          // change the border color just for fun
+          //info.el.style.borderColor = 'red';
+
+          }else{
+            $('#ajaxModelEditRecurrent').modal({
+                backdrop:'static',
+                keyboard: false
+              })
+          }
+          }
+        },
+        DeleteSchedule: {
+          text: 'Cancel Schedule',
+          click: function(event) {
+            console.log(event)
+            $('#response').html(''); 
+
+            var id = $('#selected_schedule').val();
+            var selected = $('#selected_supplierid').val();
+            $('#response').show()
+            $('#single_event_modal').hide();
+            $('#recurrence_modal').hide();
+            $('#reason_modal').hide();
+            var current_recurrence = $('#recurrence_hidden').val()
+            console.log(current_recurrence == "Single Event")
+            if(current_recurrence == "Single Event"){
+               $('#reason_modal').show();
+               $('#single_event_modal').hide();
+              $('#recurrence_modal').hide();
+            }else if(current_recurrence == "Recurrent"){
+                $('#single_event_modal').hide();
+                $('#recurrence_modal').show();
+                $('#reason_modal').hide();
+              
+            }
+            
+
+            $('#modelHeadingDelete').html(current_recurrence);
+            if(id == "" && selected == ""){
+              $('#response').append('<div class="alert alert-warning">Please select schedule to delete.</div>  ')
+            }else{
+              $('#ajaxModelDelete').modal({
+                backdrop:'static',
+                keyboard: false
+              })
+            }
+          }
+        },
         ScheduleDockUnavailability: {
           text: 'Schedule Dock Unavailability',
           click: function() {
-            $('#unavailability_id').val('');
-            $('div.occupied_slot_box').addClass("slot_box");
-            $('div.slot_box').removeClass("occupied_slot_box");
-            $('div.slot_box').removeClass("active_slot_box");
-            $('div.slot_box').removeClass("editable_slot_box");
-            $('#dock_id_unavailability').val(0)
-            $('#dateOfUnavailability').val('')
-            $('#unavailabilityForm').trigger("reset");
             $('#ajaxModelUnavailability').modal({
               backdrop:'static',
               keyboard: false
             })
-            $('#modelHeadingUnavailability').html('')
+
             $('#modelHeadingUnavailability').append('Schedule Dock Unavailability')
             
           }
@@ -677,7 +873,7 @@
           module: module_name
         },
         success: function(event){
-          //console.log(event)
+          console.log(event)
         },
         failure: function() {
           //alert('there was an error while fetching events!');
@@ -703,284 +899,67 @@
         );
       },
        eventClick: function(info) {
+        // Clear View
+            $('#view_delivery_id').html('');
+            $('#view_po_number').html('');
+            $('#view_supplier_name').html('');
+            $('#view_dock_name').html('');
+            $('#view_date_of_delivery').html('');
+            $('#view_reccurence').html('');
+            $('#view_slotting_time').html('');
+            $('#view_truck').html('');
+            $('#view_container_no').html('');
+            $('#view_driver_name').html('');
+            $('#view_assistant').html('');
+            $('#view_plate_number').html('');
+            $('#view_material_list').html('');
+        // END CLEAR VIEW
 
 
-          $('#scheduleForm').trigger("reset");      
 
-          // view hide element
-          $('.btncancelSchedule').show();
-          $('#btnPrintVoucher').show();
 
-          $('#btnPrintVoucher').attr("data-id",info.event.id)
-          //set data
           $('#recurrence_hidden').val('');
           $('#selected_schedule').val(info.event.id);
           $('#selected_supplierid').val(info.event.extendedProps.supplier_id);
-          if(info.event.extendedProps.isForUnavailability != 1){
-            $('#recurrence_hidden').val(info.event.extendedProps.recurrence)
-          }
-          
-          if($('#recurrence_hidden').val() != 'Recurrent'){
+          console.log(info)
+          $('#response').html('');
+          $('#response').show();
+          $('#response').append('<div class="alert alert-warning"><b>Click Edit Schedule or Delete Schedule</b></div>')
 
+          $('#recurrence_hidden').val(info.event.extendedProps.recurrence)
+        
+          //set all days to initial 
+          $('.fc-time-grid-event').css('border-color','transparent');
+          info.el.style.borderColor = 'blue';
+          info.el.style.borderWidth = '2px';
 
-          $('.r_recurrent_dateend').hide();
-          $('div.editable_slot_box').addClass('slot_box').removeClass("editable_slot_box");
-          $('div.occupied_slot_box').addClass('slot_box').removeClass("occupied_slot_box");
+            console.log(info.event.extendedProps)
+            $('#view_delivery_id').append(info.event.extendedProps.delivery_id);
+            $('#view_po_number').append(info.event.extendedProps.po_number);
+            $('#view_supplier_name').append(info.event.extendedProps.supplier_name);
+            $('#view_dock_name').append(info.event.extendedProps.dock_name);
+            $('#view_date_of_delivery').append(info.event.extendedProps.date_of_delivery);
+            $('#view_reccurence').append(info.event.extendedProps.recurrence);
+            $('#view_slotting_time').append(formatAMPM(info.event.start) + " - " + formatAMPM(info.event.end));
+            $('#view_truck').append(info.event.extendedProps.truck_details);
+            $('#view_container_no').append(info.event.extendedProps.container_no);
+            $('#view_driver_name').append(info.event.extendedProps.driver_name);
+            $('#view_assistant').append(info.event.extendedProps.assistant_name);
+            $('#view_plate_number').append(info.event.extendedProps.plate_number);
+            $('#view_material_list').append(info.event.extendedProps.material_list);
+            $('#modal_view').html(''); 
+            $('#modal_view').show()
 
-          $('#saveBtn').html('Save Changes');
-          $('#response').html(''); 
-          var id = $('#selected_schedule').val();
-          var selected = $('#selected_supplierid').val();
+            $('#ajaxModelView .modal-dialog').css("margin-left","40em")
+           
+            makeCode();
 
-          if(id == "" && selected == ""){
-            $('#response').append('<div class="alert alert-warning">Please select schedule to edit.</div>  ')
-          }
-          $('#truck_id').html('');
-          $('#driver_id').html('');
-          $('#assistant_id').html('');
-          //$('#dock_id').html(''); 
-          $('#alt_supplier_id').val('');
-          //$('#supplier_id').attr("disabled","disabled");
-          $('#po_number').attr("readonly","true");
-          $('#dock_id').not(this).find('option').prop('disabled', 'true');
-          $('#supplier_id').not(this).find('option').prop('disabled', 'true');
-
-          $('#supplier_id').addClass('disableSelect');
-          $('#dock_id').addClass('disableSelect');
-
-
-          //console.log(info.event.extendedProps)
-          $.ajax({
-              url: "{{ url('getSupplierData') }}",
-              type: "POST",
-              data: {id:selected},
-              success: function (data) {
-                //console.log("test:" + data)
-                $.each(JSON.parse(data), function(index, item) {
-                  if(index == 'truckdata'){
-                    $.each(item, function(index, truck) {
-
-                      $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
-                    });
-                  }
-
-                  if(index == 'driverdata'){
-                    $.each(item, function(index, driver) {
-                      $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
-                    });
-                  }
-
-                  if(index == 'assistantdata'){
-                    $.each(item, function(index, assistant) {
-                      $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
-                    });
-                  }
-
-                  if(index == 'dockdata'){
-
-                    $.each(item, function(index, dock) {
-                      $('#dock_id').append("<option value="+dock.id +">" + dock.dock_name + "</option>")
-                    });
-                  }
-                });
-
-              },
-              error: function (data) {
-                  //console.log('Error:', data);
-              }
-          });
-
-          //unavailability
-          //console.log(info.event.extendedProps)
-          if(info.event.extendedProps.isForUnavailability == 1){
-              $.ajax({
-              url: "{{ url('getEditDockUnavailability') }}",
-              type: "POST",
-              data: {id:id},
-              success: function (data) {
-                     $('#ajaxModelUnavailability').modal({
-                        backdrop:'static',
-                        keyboard: false
-                      })
-                      $('#modelHeadingUnavailability').html('')
-                      $('#modelHeadingUnavailability').append('Edit Schedule Dock Unavailability')
-                      //console.log(data.date_of_delivery)
-                      $('#unavailability_id').val(data.id);
-                      $('#dock_id_unavailability').val(data.dock_id);
-
-                      $('#dateOfUnavailability').val(data.date_of_delivery);
-                      //console.log(data.date_of_delivery)
-
-
-                      $("input[name=recurrence_unavailability][value='" + data.recurrence + "']").prop('checked', 'checked');
-                      if(data.recurrence == "Recurrent"){
-                        $(".r_ordering_days").css('display','block')
-                      }
-                      var ordering_days_arr = data.ordering_days.split("|")
-                      $.each( ordering_days_arr, function( key, value ) {
-                        $("input[value='" + $.trim(value) + "']").prop('checked', true);
-                      });
-                      //console.log(data)
-                      $("#slotting_time_unavailability").val(data.slotting_time_text);
-
-                      $('div.occupied_slot_box').addClass("slot_box");
-                      //refresh slot box
-                      $('div.slot_box').removeClass("occupied_slot_box");
-                      $('div.slot_box').removeClass("active_slot_box");
-                      var date_of_delivery = $('#dateOfUnavailability').val();
-
-                      $.ajax({
-                          url: "{{ url('getSlottingTime') }}",
-                          type: "POST",
-                          data: {date_of_delivery:date_of_delivery,isForUnavailability:info.event.extendedProps.isForUnavailability},
-                          success: function (data) {
-                              //console.log(data)
-                              $.each(JSON.parse(data), function(index, item) {
-                                $.each(item.slotting_time, function(i, slot) {
-                                  if(slot != ""){
-                                    $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
-                                    $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
-                                  }
-                                });
-                              });
-                          },
-                          error: function (data) {
-                              //console.log('Error:', data);
-                          }
-                      });
-                      //refresh slot box
-
-
-                      $.each(data.slotting_time, function(index, slot) {
-                          //console.log(slot)
-                            if(slot != ""){
-                              $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
-                              $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
-                              $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
-                            }
-                        });
-
-              },
-              error: function (data) {
-                  //console.log('Error:', data);
-              }
-          });
-
-              
-          }else{
-            $.get("{{ route('ajaxschedules.index') }}" +'/' + id +'/edit', function (data) {
-                $('#modelHeading').html("Edit Schedule");
-                $('#saveBtn').val("edit-user");
-                $('#ajaxModel').modal({
-                  backdrop:'static',
-                  keyboard: false
-                })
-                //console.log(data.date_of_delivery)
-                $('#schedule_id').val(data.id);
-                $('#po_number').val(data.po_number);
-                $('#supplier_id').val(data.supplier_id);
-                $('#alt_supplier_id').val(data.supplier_id);
-                $('#dock_id').val(data.dock_id);
-
-                $('#dateOfDelivery').val(data.date_of_delivery);
-
-                $('#recurrent_dateend').val(data.recurrent_dateend);
-
-                $('#truck_id').val(data.truck_id);
-
-                $('#driver_id').val(data.driver_id);
-
-                $('#assistant_id').val(data.assistant_id);
-
-                $('#container_number').val(data.container_number);
-
-                $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
-                if(data.recurrence == "Recurrent"){
-                  $(".r_ordering_days").css('display','block')
-                }
-                var ordering_days_arr = data.ordering_days.split("|")
-                $.each( ordering_days_arr, function( key, value ) {
-                  $("input[value='" + $.trim(value) + "']").prop('checked', true);
-                });
-
-                $('#cont').html('');
-                createTable();
-                //console.log(data.material_list  + "Test")
-                if(data.material_list == 0){
-                    addRow('','','')
-                }
-                $.each(data.material_list.gcas, function(index, item) {
-                    if(item != ""){
-
-                      addRow(item,data.material_list.description[index],data.material_list.quantity[index])
-                    }
-                });
-
-                $("#slotting_time").val(data.slotting_time_text);
-
-                 $('div.occupied_slot_box').addClass("slot_box");
-
-
-                //refresh slot box
-                $('div.slot_box').removeClass("occupied_slot_box");
-                $('div.slot_box').removeClass("active_slot_box");
-                var date_of_delivery = $('#dateOfDelivery').val();
-                $.ajax({
-                    url: "{{ url('getSlottingTime') }}",
-                    type: "POST",
-                    data: {date_of_delivery:date_of_delivery},
-                    success: function (data) {
-                        //console.log(data)
-                        $.each(JSON.parse(data), function(index, item) {
-                          $.each(item.slotting_time, function(i, slot) {
-                            if(slot != ""){
-                              $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
-                              $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
-                            }
-                          });
-                        });
-                    },
-                    error: function (data) {
-                        //console.log('Error:', data);
-                    }
-                });
-                //refresh slot box
-
-
-                $.each(data.slotting_time, function(index, slot) {
-                    //console.log(slot)
-                      if(slot != ""){
-                        $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
-                        $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
-                        $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
-                      }
-                  });
+            $('#ajaxModelView').modal({
+              backdrop:'static',
+              keyboard: false
             })
-          }
-
-          // change the border color just for fun
-          //info.el.style.borderColor = 'red';
-
-          }else{
-            $('#ajaxModelEditRecurrent').modal({
-                backdrop:'static',
-                keyboard: false
-              })
-          }
-
-
-
-         
       }
     });
-
-  $("body").on("click",".btn-block-sched",function(e){
-
-      e.preventDefault();
-
-      $("#ajaxModelDelete").modal('hide');
-      $("#modelViewErrorRecurrent").modal('show');
-  })
 
     function formatAMPM(date) {
       var hours = date.getHours();
@@ -1066,11 +1045,11 @@
         var today = new Date();
         var time = today.getHours();
        
-        // if(time > 16)
-        // {
-        //   $('#schedule_id').val('');
-        //   //console.log( $('#schedule_id').val())
-        // }
+        if(time > 16)
+        {
+          $('#schedule_id').val('');
+          console.log( $('#schedule_id').val())
+        }
 
         if($("#po_number").val() == "" || $("#supplier_id").val() == "0" || $("#dock_id").val() ==  "" || $("#truck_id").val() == "" || $("#driver_id").val() == "" || $("#assistant_id").val() == "" || recurrence.length == 0 || $("#dateOfDelivery").val() == "" || $("#slotting_time").val() == "" ){
           $("#modalresponse").show();
@@ -1146,43 +1125,27 @@
             e.preventDefault();
             $(this).html('Sending..');
         
-            //console.log($('#scheduleForm').serialize())
+            console.log($('#scheduleForm').serialize())
             $.ajax({
               data: $('#scheduleForm').serialize(),
               url: "{{ route('ajaxschedules.store') }}",
               type: "POST",
               dataType: 'json',
               success: function (data) {
-
-                 if(data.conflict){
-                  console.log(data)
-                  $('#modelViewErrorRecurrent').modal({
-                    backdrop:'static',
-                    keyboard: false
-                  })
+                 $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                  $('#scheduleForm').trigger("reset");
                   $('#ajaxModel').modal('hide');
-                  $.each(data.conflict, function(index, sched) {
-                      $(".error_recurrent").append("<div class='row'><div class='col-md-6'><p>"+sched.date_of_delivery+"</p><p>"+sched.slotting_time+"</p><p>"+sched.supplier_name+"</p><p>CONFLICT WITH: Delivery ID: "+sched.conflict_id+"</p></div><div class='col-md-6'><button class='btn btn-primary btn-block'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div></div>")
-                  });
-                 }else{
+                  setTimeout(function(){
+                    $('#response').hide("slow");
+                  },2000)
+                  
 
-                   $('#response').show();
-                   $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
-                    $('#scheduleForm').trigger("reset");
-                    $('#ajaxModel').modal('hide');
-                    setTimeout(function(){
-                      $('#response').hide("slow");
-                    },2000)
-                    
-
-                     window.open("printVoucher/"+data.id,"_blank")
-                     var current_module = $("#current_module").val()
-                     testCalendar(current_module)
-                     $('#saveBtn').html('Save Changes');
-                 }
+                  var current_module = $("#current_module").val()
+                   testCalendar(current_module)
+                   $('#saveBtn').html('Save Changes');
               },
               error: function (data) {
-                  //console.log('Error:', data);
+                  console.log('Error:', data);
                   $('#saveBtn').html('Save Changes');
               }
             });
@@ -1194,8 +1157,8 @@
         $('#reason_modal').show();
         $("#isRecurrent").val("0")
         $('#reason').val('')
-        //console.log($('#selected_schedule').val())  
-        //console.log($('#recurrence_hidden').val())  
+        console.log($('#selected_schedule').val())  
+        console.log($('#recurrence_hidden').val())  
     });
 
     $('body').on('click', '#delete_recurrence', function (e) {
@@ -1203,9 +1166,9 @@
         $('#reason_modal').show();
         $("#isRecurrent").val("1")
         $('#reason').val('')
-        //console.log($('#selected_schedule').val()) 
+        console.log($('#selected_schedule').val()) 
 
-        //console.log($('#recurrence_hidden').val())   
+        console.log($('#recurrence_hidden').val())   
     });
 
     $('body').on('click', '#delete_schedule', function (e) {
@@ -1225,7 +1188,7 @@
                     $('#ajaxModelDelete').modal('hide');
                 },
                 error: function (data) {
-                    //console.log('Error:', data);
+                    console.log('Error:', data);
                 }
             });
 
@@ -1258,7 +1221,7 @@
         if(time > 16)
         {
           $('#schedule_id').val('');
-          //console.log( $('#schedule_id').val())
+          console.log( $('#schedule_id').val())
         }
 
         if($("#dock_id_unavailability").val() ==  "" || recurrence.length == 0 || type.length == 0 || $("#dateOfUnavailability").val() == "" || $("#slotting_time").val() == "" ){
@@ -1307,7 +1270,7 @@
             e.preventDefault();
             $(this).html('Sending..');
         
-            //console.log($('#unavailabilityForm').serialize())
+            console.log($('#unavailabilityForm').serialize())
             $.ajax({
               data: $('#unavailabilityForm').serialize(),
               url: "{{ route('ajaxschedules.store') }}",
@@ -1327,7 +1290,7 @@
                    $('#saveBtn').html('Save Changes');
               },
               error: function (data) {
-                  //console.log('Error:', data);
+                  console.log('Error:', data);
                   $('#saveBtn').html('Save Changes');
               }
             });
@@ -1339,10 +1302,10 @@
   $('body').on('mousedown','.fc-time-grid-event',function(event) { 
             switch (event.which) { 
                 case 1: 
-                    //console.log('left mouse button');
+                    console.log('left mouse button');
                     break; 
                 case 2: 
-                    //console.log('middle mouse button');
+                    console.log('middle mouse button');
                     break; 
                 case 3: 
 
@@ -1353,7 +1316,7 @@
                     $('.fc-time-grid-event').css('border-color','transparent');
                     $(this).css('border-color','red');
                     $(this).css('border-width','2');
-                    //console.log($('#selected_schedule').val());
+                    console.log($('#selected_schedule').val());
                     return false;
                     break; 
                 default: 
@@ -1389,36 +1352,33 @@
         var div = document.getElementById('cont');
         div.appendChild(materialTable);    // ADD THE TABLE TO YOUR WEB PAGE.
     }
+
     // ADD A NEW ROW TO THE TABLE.s
-    var count_row = 0
     function addRow(gcas,description,qty) {
         var materialTab = document.getElementById('materialTable');
 
         var rowCnt = materialTab.rows.length;        // GET TABLE ROW COUNT.
         var tr = materialTab.insertRow(rowCnt);      // TABLE ROW.
         tr = materialTab.insertRow(rowCnt);
-        
+
         for (var c = 0; c < arrHead.length; c++) {
             var td = document.createElement('td');          // TABLE DEFINITION.
             td = tr.insertCell(c);
 
             if (c == 0) {           // FIRST COLUMN.
                 // ADD A BUTTON.
-                if(count_row != 0){
-                  var button = document.createElement('input');
-                  
-                  // SET INPUT ATTRIBUTE.
-                  button.setAttribute('type', 'button');
-                  button.setAttribute('class', 'btn btn-danger btn-block');
-                  button.setAttribute('value', '-');
+                var button = document.createElement('input');
+
+                // SET INPUT ATTRIBUTE.
+                button.setAttribute('type', 'button');
+                button.setAttribute('class', 'btn btn-danger btn-block');
+                button.setAttribute('value', '-');
 
                 // ADD THE BUTTON's 'onclick' EVENT.
-                
-                  button.setAttribute('onclick', 'removeRow(this)');
-                  td.appendChild(button);
-                }
+                button.setAttribute('onclick', 'removeRow(this)');
 
 
+                td.appendChild(button);
             }if (c == 1) {           // FIRST COLUMN.
                 // ADD A BUTTON.
                 var button2 = document.createElement('input');
@@ -1464,9 +1424,6 @@
                 td.appendChild(ele);
             }
         }
-
-        count_row++
-                
     }
 
     // DELETE TABLE ROW.
@@ -1490,7 +1447,7 @@
                 }
             }
         }
-        //console.log(values);
+        console.log(values);
     }
 
       // material list end
@@ -1510,77 +1467,6 @@
 
     // end for print
 
-
-    //CANCEL SCHEDULE BUTTON
-
-    $('body').on("click",".btncancelSchedule",function(e){
-          e.preventDefault();
-          $('#response').html(''); 
-
-          var id = $('#selected_schedule').val();
-          var selected = $('#selected_supplierid').val();
-          $('#response').show()
-          $('#single_event_modal').hide();
-          $('#recurrence_modal').hide();
-          $('#reason_modal').hide();
-          $('#ajaxModel').modal('hide');
-          var current_recurrence = $('#recurrence_hidden').val()
-          //console.log(current_recurrence == "Single Event")
-          if(current_recurrence == "Single Event"){
-             $('#reason_modal').show();
-             $('#single_event_modal').hide();
-            $('#recurrence_modal').hide();
-          }else if(current_recurrence == "Recurrent"){
-              $('#single_event_modal').hide();
-              $('#recurrence_modal').show();
-              $('#reason_modal').hide();
-            
-          }
-          
-
-        $   ("#isRecurrent").val("0")
-          $('#modelHeadingDelete').html(current_recurrence);
-          
-          $('#ajaxModelDelete').modal({
-            backdrop:'static',
-            keyboard: false
-          })
-    });
-
-     $('body').on("click",".btncancelSchedule_reccurent",function(e){
-
-          e.preventDefault();
-          $('#response').html(''); 
-          $('#selected_schedule').val($(this).attr('data-id'))
-          $('#selected_supplierid').val($(this).attr('data-supplier_id'))
-          var id = $('#selected_schedule').val();
-          var selected = $('#selected_supplierid').val();
-          $('#response').show()
-          $('#single_event_modal').hide();
-          $('#recurrence_modal').hide();
-          $('#reason_modal').hide();
-          $('#modelViewErrorRecurrent').modal('hide');
-          $('#reason_modal').show();
-          $('#single_event_modal').hide();
-          $('#recurrence_modal').hide();
-
-          $("#isRecurrent").val("0")
-          
-          $('#ajaxModelDelete').modal({
-            backdrop:'static',
-            keyboard: false
-          })
-    });
-    //END CANCEL SCHEDULE BUTTON
-
-    //new window
-    $('body').on('click','#btnPrintVoucher',function(){
-
-      var id = $(this).attr("data-id");
-      window.open("printVoucher/"+id,"_blank")
-    });
-
-    //end new window
    
 
 </script>
@@ -1669,7 +1555,7 @@
                     <div class="form-group">
                        <label for="name" class="col-sm-12 control-label">*Dock</label>
                        <div class="col-sm-12">
-                          <select required class="form-control" id="dock_id" name="dock_id">
+                          <select  class="form-control" id="dock_id" name="dock_id">
                              <option value="0">Please select Dock</option>
                           </select>
                         </div>
@@ -1843,21 +1729,10 @@
                     </div>
 
                     <div id="modalresponse"></div> 
-                    <div class="row">
-                      <div class="offset-3 col-md-3">
-                         <button type="submit" class="btn btn-success btn-block" id="btnPrintVoucher" value="create">Print
-                         </button>
-                      </div>
-                      <div class="col-md-3">
-                         <button type="submit" class="btn btn-danger btn-block" class="btncancelSchedule" value="create">Cancel Schedule
-                         </button>
-                      </div>
-                      <div class="col-md-3">
-                         <button type="submit" class="btn btn-primary btn-block" id="saveBtn" value="create">Save changes
-                         </button>
-                      </div>
-                      
-                    </div>  
+                    <div class="col-sm-offset-2 col-sm-10">
+                       <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
+                       </button>
+                    </div>
 
                 </form>
 
@@ -1899,7 +1774,7 @@
                     <input type="hidden" id="isRecurrent">
                     <br>
                     <button id="delete_schedule" class="btn btn-primary btn-block">Cancel Schedule</button>
-                    <button class="btn btn-secondary btn-block btn-block-sched">Cancel</button>
+                    <button class="btn btn-secondary btn-block" data-dismiss="modal">Cancel</button>
                   </div>
                 </div>
             </div>
@@ -2258,25 +2133,6 @@
                 </div>
             </div>
             
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modelViewErrorRecurrent" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Create Schedule - Error Recurrent Schedule</h4>
-
-                <button type="button" class="close" data-dismiss="modal">&times;</button> 
-            </div>
-            <div class="modal-body">
-                <div class="text-center"><p>The following schedules part of this recurrent schedule cannot be posted due to conflicts with other posted schedules.</p></div>
-                <div class="error_recurrent"></div>
-                
-                <br>
-                <button class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button> 
-            </div>
         </div>
     </div>
 </div>

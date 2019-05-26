@@ -9,6 +9,8 @@ use App\Truck;
 use App\Driver;
 use App\Assistant;
 use App\Dock_Unavailability;
+use App\Role;
+use Auth;
 use Illuminate\Http\Request;
 
 class SchedulerController extends Controller
@@ -49,164 +51,178 @@ class SchedulerController extends Controller
 
      public function allSchedules(Request $request){
 
-     
-    
-        $schedules =  Schedule::where("status","<>","0")->get();        
-        $unavailabilities = Dock_Unavailability::where('status','<>','0')->get();    
+        
+            
 
         $search = $request->input('module');
         $status = "";
         $slotting = array();
         $data = array();
         $dow = array();
+        
+        $role_id = Auth::user()->role_id;
+        $roles =  Role::where('id',$role_id)->first();
+        $sub_m = explode("|", $roles['submodules']);
+        $dock_names = array();
+        $dock_ids = array();
+        foreach($sub_m as $submodules){
+            if($submodules != ""){
+                array_push($dock_names, $submodules);
+            }
+        }
+        $dock = Dock::whereIn("dock_name",$dock_names)->where("user_type",$role_id)->get();
+        foreach($dock as $d){
+            array_push($dock_ids, $d->id);
+        }
+
+        $schedules = Schedule::whereIn('dock_id',$dock_ids)->where("status","<>","0")->get();
+
+        $unavailabilities = Dock_Unavailability::whereIn('dock_id',$dock_ids)->where('status','<>','0')->get();
+        $get_docks = Dock::where("dock_name",$search)->first();
+           
         if(!empty($schedules))
         {
             foreach ($schedules as $schedule)
             {
-
-                $docks =    Dock::where('module','LIKE',"%{$search}%")->first();
-
-                $hasScheduleModule = Schedule::where('dock_id',$docks['id'])->count();
-
+                if($schedule->dock_id != $get_docks['id']){
+                    continue;
+                }
                 $supplier = Supplier::where('id',$schedule->supplier_id)->first();
                 $truck = Truck::where('id',$schedule->truck_id)->first();
                 $driver = Driver::where('id',$schedule->driver_id)->first();
                 $assistant = Assistant::where('id',$schedule->assistant_id)->first();
-                if($hasScheduleModule == 0 || $docks['id'] != $schedule->dock_id){
-                    continue;
-                }else{
-                    $scheds = trim($schedule->ordering_days);
-                    $scheds = explode("|", $scheds);
-                    
-                    foreach($scheds as $sched){
-                        $sched = trim($sched);
-                        if($sched == ""){
-                            continue;
-                        }
-                        switch ($sched) {
-                            case 'Mon':
-                                array_push($dow , 1);
-                                break;
-                            case 'Tue':
-                                array_push($dow, 2);
-                                break;
-                            case 'Wed':
-                                array_push($dow, 3);
-                                break;
-                            case 'Thu':
-                                array_push($dow, 4);
-                                break;
-                            case 'Fri':
-                                array_push($dow, 5);
-                                break;
-                            case 'Sat':
-                                array_push($dow, 6);
-                                break;
-                            case 'Sun':
-                                array_push($dow, 0);
-                                break;
-                            
-                            default:
-                                
-                                break;
-                        }
+
+                $scheds = trim($schedule->ordering_days);
+                $scheds = explode("|", $scheds);
+                
+                foreach($scheds as $sched){
+                    $sched = trim($sched);
+                    if($sched == ""){
+                        continue;
                     }
-
-                    $supplier_name = $supplier->supplier_name;
-                    $po_number = $schedule->po_number;
-                    $driver_name = $driver->first_name . " " . $driver->last_name;
-                    $assistant_name = $assistant->first_name . " " . $assistant->last_name;
-                    $truck_details = "\n" . $schedule->container_number . "\n" . $truck->plate_number;
-
-
-                    $nestedData['id'] = $schedule->id;
-                    $nestedData['title'] =  $supplier_name . "\n Trucks" . $truck_details . "\n" . $driver_name . "\n" . $assistant_name;
-
-
-                    $nestedData['po_number'] = $schedule->po_number;
-                    $nestedData['supplier_name'] = $supplier->supplier_name;
-                    $nestedData['slotting_time'] = $schedule->slotting_time;
-                    $nestedData['container_no'] = $schedule->container_number;
-                    $nestedData['driver_name'] = $driver_name;
-                    $nestedData['truck_details'] =  $truck->model . " " . $truck->brand;
-                    $nestedData['assistant_name'] = $assistant_name;
-                    $nestedData['plate_number'] = $truck->plate_number;
-                    $num = $schedule->id;
-                    $number = str_pad($num, 8, "0", STR_PAD_LEFT);
-                    $nestedData['delivery_id'] = $number;
-                    $nestedData['dock_name'] = $schedule->dock_name;
-                    $nestedData['date_of_delivery'] = $schedule->date_of_delivery;
-                    $nestedData['recurrent_dateend'] = $schedule->recurrent_dateend;
-                    $nestedData['recurrence'] = $schedule->recurrence;
-
-                    $slotting_ = str_replace("|","",$schedule->slotting_time);
-                    $start = substr($slotting_, 0, 5);
-                    $end = substr($slotting_, -5);
-
-                    $slotting = explode("|", $schedule->slotting_time);
-
-
-                    $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
-                            $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
-                  
-                    $mat_list = explode("-;-", $schedule->material_list);
-               
-
-                    $gcas = explode("|", $mat_list[0]);
-                    $description = explode("|", $mat_list[1]);
-                    $quantity = explode("|", $mat_list[2]);
-
-                    $material_list = "<table class='table table-bordered' style='width:100%'>";
-                    $material_list .= "<tr>";
-                    $material_list .= "<th>GCAS</th> <th>Description</th> <th>Quantity</th>";
-                    $material_list .= "<tr>";
-                    foreach($gcas as $key => $value){
-
-                        $material_list .= "<tr>";
-                        $material_list .= "<td>". $value ."</td>";
-                        $material_list .= "<td>". $description[$key] . "</td>";
-                        $material_list .= "<td>". $quantity[$key] . "</td>";
-                        $material_list .= "<tr>";
-
-                    }
-                    $material_list .= "</table>";
-
-                    $nestedData['material_list'] = $material_list;
-
-                    $nestedData['created_at'] = date('j M Y h:i a',strtotime($schedule->created_at));
-                    switch ($schedule->status) {
-                        case 1:
-                            $status = "Active";
+                    switch ($sched) {
+                        case 'Mon':
+                            array_push($dow , 1);
                             break;
-                        case 2:
-                            $status = "Edited";
+                        case 'Tue':
+                            array_push($dow, 2);
                             break;
-                        case 3:
-                            $status = "Archived";
+                        case 'Wed':
+                            array_push($dow, 3);
                             break;
-                        case 4:
-                            $status = "Edited Finalized";
+                        case 'Thu':
+                            array_push($dow, 4);
                             break;
-                        case 5:
-                            $status = "No-Show";
+                        case 'Fri':
+                            array_push($dow, 5);
                             break;
-                        case 6:
-                            $status = "Emergency Reschedule";
+                        case 'Sat':
+                            array_push($dow, 6);
+                            break;
+                        case 'Sun':
+                            array_push($dow, 0);
                             break;
                         
                         default:
-                            # code...
+                            
                             break;
                     }
-                    $nestedData['status'] = $status;
-
-
-                    $data[] = $nestedData;
-                    $dow = array();
-
                 }
 
+                $supplier_name = $supplier->supplier_name;
+                $po_number = $schedule->po_number;
+                $driver_name = $driver->first_name . " " . $driver->last_name;
+                $assistant_name = $assistant->first_name . " " . $assistant->last_name;
+                $truck_details = "\n" . $schedule->container_number . "\n" . $truck->plate_number;
+
+
+                $nestedData['id'] = $schedule->id;
+                $nestedData['title'] =  $supplier_name . "\n Trucks" . $truck_details . "\n" . $driver_name . "\n" . $assistant_name;
+
+                $nestedData['supplier_id'] = $schedule->supplier_id;
+                $nestedData['po_number'] = $schedule->po_number;
+                $nestedData['supplier_name'] = $supplier->supplier_name;
+                $nestedData['slotting_time'] = $schedule->slotting_time;
+                $nestedData['container_no'] = $schedule->container_number;
+                $nestedData['driver_name'] = $driver_name;
+                $nestedData['truck_details'] =  $truck->model . " " . $truck->brand;
+                $nestedData['assistant_name'] = $assistant_name;
+                $nestedData['plate_number'] = $truck->plate_number;
+                $num = $schedule->id;
+                $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+                $nestedData['delivery_id'] = $number;
+                $nestedData['dock_name'] = $schedule->dock_name;
+                $nestedData['date_of_delivery'] = $schedule->date_of_delivery;
+                $nestedData['recurrent_dateend'] = $schedule->recurrent_dateend;
+                $nestedData['recurrence'] = $schedule->recurrence;
+
+                $slotting_ = str_replace("|","",$schedule->slotting_time);
+                $start = substr($slotting_, 0, 5);
+                $end = substr($slotting_, -5);
+
+                $slotting = explode("|", $schedule->slotting_time);
+
+
+                $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
+                        $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
+              
+                $mat_list = explode("-;-", $schedule->material_list);
+           
+
+                $gcas = explode("|", $mat_list[0]);
+                $description = explode("|", $mat_list[1]);
+                $quantity = explode("|", $mat_list[2]);
+
+                $material_list = "<table class='table table-bordered' style='width:100%'>";
+                $material_list .= "<tr>";
+                $material_list .= "<th>GCAS</th> <th>Description</th> <th>Quantity</th>";
+                $material_list .= "<tr>";
+                foreach($gcas as $key => $value){
+
+                    $material_list .= "<tr>";
+                    $material_list .= "<td>". $value ."</td>";
+                    $material_list .= "<td>". $description[$key] . "</td>";
+                    $material_list .= "<td>". $quantity[$key] . "</td>";
+                    $material_list .= "<tr>";
+
+                }
+                $material_list .= "</table>";
+
+                $nestedData['material_list'] = $material_list;
+
+                $nestedData['created_at'] = date('j M Y h:i a',strtotime($schedule->created_at));
+                switch ($schedule->status) {
+                    case 1:
+                        $status = "Active";
+                        break;
+                    case 2:
+                        $status = "Edited";
+                        break;
+                    case 3:
+                        $status = "Archived";
+                        break;
+                    case 4:
+                        $status = "Edited Finalized";
+                        break;
+                    case 5:
+                        $status = "No-Show";
+                        break;
+                    case 6:
+                        $status = "Emergency Reschedule";
+                        break;
+                    
+                    default:
+                        # code...
+                        break;
+                }
+                $nestedData['status'] = $status;
+
+
+                $data[] = $nestedData;
+                $dow = array();
+
             }
+
         }
 
         if(!empty($unavailabilities))
@@ -214,13 +230,9 @@ class SchedulerController extends Controller
             foreach ($unavailabilities as $unavailability)
             {
 
-                $docks = Dock::where('module','LIKE',"%{$search}%")->first();
-
-                $hasScheduleModule = Dock_Unavailability::where('dock_id',$docks['id'])->count();
-
-                if($hasScheduleModule == 0 || $docks['id'] != $unavailability->dock_id){
+                if($unavailability->dock_id != $get_docks['id']){
                     continue;
-                }else{
+                }
 
                     $_Data['id'] = $unavailability->id;
                     $_Data['title'] =  $unavailability->reason;
@@ -235,8 +247,8 @@ class SchedulerController extends Controller
 
                     $slotting = explode("|", $unavailability->time);
 
-                    $_Data['start'] = $unavailability->date_of_unavailability . "T" .$start .":00";
-                    $_Data['end'] = $unavailability->date_of_unavailability . "T" .$end .":00";
+                    $_Data['start'] = date('Y-m-d',strtotime($unavailability->date_of_unavailability)) . "T" .$start .":00";
+                    $_Data['end'] = date('Y-m-d',strtotime($unavailability->date_of_unavailability)) . "T" .$end .":00";
                     $_Data['created_at'] = date('j M Y h:i a',strtotime($unavailability->created_at));
                     switch ($schedule->status) {
                         case 1:
@@ -263,10 +275,11 @@ class SchedulerController extends Controller
                             break;
                     }
                     $_Data['status'] = $status;
+                    $_Data['isForUnavailability'] = 1;
                     $_Data['backgroundColor'] = "#ff7f7f";
 
                     array_push($data, $_Data);
-                }
+                
 
             }
         }
@@ -276,9 +289,13 @@ class SchedulerController extends Controller
 
     public function getSupplierData(Request $request){
 
+
         $trucks = Truck::where("status","1")->get();
+        
+
         $drivers = Driver::where("status","1")->where('isApproved','1')->get();
         $assistants = Assistant::where("status","1")->where('isApproved','1')->get();
+        $docks = Dock::where("status","1")->get();
         
         $trucks_suppliers = '';
         $drivers_suppliers = '';
@@ -287,6 +304,7 @@ class SchedulerController extends Controller
         $truckdata = array();
         $driverdata = array();
         $assistantdata = array();
+        $dockdata = array();
         
 
         if(!empty($trucks))
@@ -300,23 +318,32 @@ class SchedulerController extends Controller
                     if($supplier_id == null){
                         continue;
                     }
-                    $suppliers = Supplier::where('id',$supplier_id)->where('status', 1)->first();
-                    if($suppliers == null){
-                        continue;
+
+                    if($supplier_id == $request->id){
+
+                        $suppliers = Supplier::where('id',$supplier_id)->where('status', 1)->first();
+
+                        if($suppliers == null){
+                            continue;
+                        }
+
+
+                        $trucks_suppliers .= $suppliers->supplier_name . " | ";
+
+                        $nestedData['id'] = $truck->id;
+                        $nestedData['supplier_ids'] =  $trucks_suppliers;
+                        $nestedData['plate_number'] = $truck->plate_number;
+                        $nestedData['brand'] = $truck->brand;
+                        $nestedData['model'] = $truck->model;
+                        $nestedData['type'] = $truck->type;
+                       
+                        $nestedData['status'] = $truck->status == 1 ? "Active" : "Inactive";
+                        $truckdata[] = $nestedData;
                     }
-                    $trucks_suppliers .= $suppliers->supplier_name . " | ";
                 }
 
-                $nestedData['id'] = $truck->id;
-                $nestedData['supplier_ids'] =  $trucks_suppliers;
-                $nestedData['plate_number'] = $truck->plate_number;
-                $nestedData['brand'] = $truck->brand;
-                $nestedData['model'] = $truck->model;
-                $nestedData['type'] = $truck->type;
-               
-                $nestedData['status'] = $truck->status == 1 ? "Active" : "Inactive";
-                $truckdata[] = $nestedData;
-                $trucks_suppliers = '';
+                
+                //$trucks_suppliers = '';
             }
         }
 
@@ -324,31 +351,92 @@ class SchedulerController extends Controller
         {
             foreach ($drivers as $driver)
             {
-                $nestedData['id'] = $driver->id;
-                $nestedData['first_name'] = $driver->first_name;
-                $nestedData['last_name'] = $driver->last_name;
-                $nestedData['status'] = $driver->status == 1 ? "Active" : "Inactive";
-                $driverdata[] = $nestedData;
+                $supplier_ids = explode('|',$driver->supplier_ids);
+                foreach($supplier_ids as $supplier_id){
+                    if($supplier_id == null){
+                        continue;
+                    }
+
+                    if($supplier_id == $request->id){
+
+                        $suppliers = Supplier::where('id',$supplier_id)->where('status', 1)->first();
+
+                        if($suppliers == null){
+                            continue;
+                        }
+
+
+                        $nestedData['id'] = $driver->id;
+                        $nestedData['first_name'] = $driver->first_name;
+                        $nestedData['last_name'] = $driver->last_name;
+                        $nestedData['status'] = $driver->status == 1 ? "Active" : "Inactive";
+                        $driverdata[] = $nestedData;
+                    }
+                }
+                
             }
+
+            $supplier_ids = explode('|',$truck->supplier_ids);
+                
+            
         }
 
         if(!empty($assistants))
         {
             foreach ($assistants as $assistant)
             {
-                $nestedData['id'] = $assistant->id;
-                $nestedData['first_name'] = $assistant->first_name;
-                $nestedData['last_name'] = $assistant->last_name;
-                $nestedData['status'] = $assistant->status == 1 ? "Active" : "Inactive";
-                $assistantdata[] = $nestedData;
+                $supplier_ids = explode('|',$assistant->supplier_ids);
+                foreach($supplier_ids as $supplier_id){
+                    if($supplier_id == null){
+                        continue;
+                    }
+
+                    if($supplier_id == $request->id){
+
+                        $suppliers = Supplier::where('id',$supplier_id)->where('status', 1)->first();
+
+                        if($suppliers == null){
+                            continue;
+                        }
+
+                        $nestedData['id'] = $assistant->id;
+                        $nestedData['first_name'] = $assistant->first_name;
+                        $nestedData['last_name'] = $assistant->last_name;
+                        $nestedData['status'] = $assistant->status == 1 ? "Active" : "Inactive";
+                        $assistantdata[] = $nestedData;
+                    }
+                }
             }
+        }
+
+        if(!empty($docks))
+        {
+            $suppliers = Supplier::where('id',$request->id)->where('status', 1)->first();
+            $dock_ids = explode("|", $suppliers['module']);
+            
+            foreach($dock_ids as $value){
+                foreach($docks as $dock){
+                    if(trim($value) == ""){
+                        continue;
+                    }
+                    if(trim($value) == trim($dock->module)){
+                        $nestedData['id'] = $dock->id;
+                        $nestedData['dock_name'] = $dock->dock_name;
+                        $nestedData['status'] = $dock->status == 1 ? "Active" : "Inactive";
+                        $dockdata[] = $nestedData;
+                    } 
+                }
+                
+            }
+            
         }
 
 
         $json_data = array(
                     "assistantdata"    => $assistantdata,  
                     "driverdata"       => $driverdata, 
-                    "truckdata"        => $truckdata   
+                    "truckdata"        => $truckdata,
+                    "dockdata"         => $dockdata
                     );
 
         echo json_encode($json_data); 
@@ -357,7 +445,13 @@ class SchedulerController extends Controller
     public function getSlottingTime(Request $request){
 
         if($request->isForUnavailability == "0"){
-            $slotting = Schedule::where("date_of_delivery",$request->date_of_delivery)->where('status','<>','0')->get();
+            if($request->dock_id == null){
+
+                $slotting = Schedule::where("date_of_delivery",$request->date_of_delivery)->where('status','<>','0')->get();
+            }else{
+
+                $slotting = Schedule::where("date_of_delivery",$request->date_of_delivery)->where('dock_id',$request->dock_id)->where('status','<>','0')->get();
+            }
         }elseif($request->isForUnavailability == "1") {
             $slotting = Dock_Unavailability::where("date_of_unavailability",$request->date_of_unavailability)->where('status','1')->get();
         }
@@ -399,15 +493,15 @@ class SchedulerController extends Controller
      */
     public function store(Request $request)
     {
-
+       
 
         if($request->isForUnavailability == "0"){
 
 
-            if($request->isEditingRecurrent == "1"){
-                $del = Schedule::where('po_number', $request->po_number);
-                $del->delete();
-            }
+            // if($request->isEditingRecurrent == "1"){
+            //     $del = Schedule::where('po_number', $request->po_number);
+            //     $del->delete();
+            // }
 
             $gcas = '';
             $description = '';
@@ -448,6 +542,8 @@ class SchedulerController extends Controller
 
             if($request->recurrence == 'Recurrent'){
 
+                
+
                 $getSlot = str_replace("|","",$request->slotting_time);
                 $start = substr($getSlot, 0, 5);
                 $end = substr($getSlot, -5);
@@ -459,7 +555,7 @@ class SchedulerController extends Controller
                 // $scheds = explode("|", $scheds);
                 
                 $dates = array();
-
+                $recurrent_id = time().'-'.mt_rand();
                 foreach($request->ordering_days as $sched){
                     $sched = trim($sched);
                     if($sched == ""){
@@ -494,16 +590,72 @@ class SchedulerController extends Controller
                     }
 
                     foreach($dates as $date){
-                        Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);  
+
+                        $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time);
+
+                        if($hasConflict > 0){
+                            
+
+                            $sched = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => 10, 'material_list' => $material_list,'recurrent_id' => $recurrent_id,'conflict_id'=>$hasConflict]); 
+
+
+
+                        }else{
+
+
+                            Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list,'recurrent_id' => $recurrent_id]);  
+
+                        }
                     }
 
                 }
                 
+                $return_schedule = Schedule::where("recurrent_id",$recurrent_id)->where("status",10)->get();
 
-                $ret = ['success'=>'Schedule saved successfully.']; 
+                $data=array();
+                foreach ($return_schedule as $schedule)
+                {
+                    
+                    $supplier = Supplier::where('id',$schedule->supplier_id)->first();
+                    $scheds = trim($schedule->ordering_days);
+                    $scheds = explode("|", $scheds);
+                    
+                    $slotting_ = str_replace("|","",$schedule->slotting_time);
+                    $start = substr($slotting_, 0, 5);
+                    $end = substr($slotting_, -5);
+
+                    $supplier_name = $supplier->supplier_name;
+                    $po_number = $schedule->po_number;
+                   
+
+                    $nestedData['id'] = $schedule->id;
+                    $nestedData['supplier_id'] = $schedule->supplier_id;
+                    $nestedData['conflict_id'] = $schedule->conflict_id;
+                    $nestedData['po_number'] = $schedule->po_number;
+                    $nestedData['supplier_name'] = $supplier->supplier_name;
+                    $nestedData['slotting_time'] = $start . " - " . $end;
+                    $num = $schedule->id;
+                    $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+                    $nestedData['delivery_id'] = $number;
+                    $nestedData['dock_name'] = $schedule->dock_name;
+                    $nestedData['date_of_delivery'] = $schedule->date_of_delivery;
+
+                    $nestedData['status'] = $status;
+
+
+                    $data[] = $nestedData;
+
+                }
+                if($return_schedule){
+                    $ret = ["conflict"=>$data];
+                }else{
+
+                    $ret = ['success'=>"Schedule saved successfull"]; 
+                }
             }else{
-                $ret = ['success'=>'Schedule saved successfully.'];
-                Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);  
+                $last_insert = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);  
+
+                $ret = ['success'=>'Schedule saved successfully.',"id"=>$last_insert->id];
             }
 
 
@@ -598,9 +750,10 @@ class SchedulerController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id,$isForUnavailability = 0)
     {
         $schedule = Schedule::find($id);
+        $dock_unavailability = Dock_Unavailability::find($id);
         $gcas = array();
         $description = array();
         $quantity = array();
@@ -649,7 +802,7 @@ class SchedulerController extends Controller
 
         return response()->json($scheduleData);
     }
-  
+
     /**
      * Remove the specified resource from storage.
      *
@@ -664,8 +817,14 @@ class SchedulerController extends Controller
 
     public function deactivateOrActivateSchedule(Request $request)
     {
-        Schedule::find($request->id)->update(['reason'=> $request->reason,'status' => 0]);
-        return response()->json(['success'=>'Supplier deactivated successfully.']);
+        $schedule = Schedule::find($request->id);
+        if($request->isRecurrent == "0"){
+            $schedule->update(['reason'=> $request->reason,'status' => 0]);
+        }else{
+            Schedule::where("recurrent_id",$schedule->recurrent_id)->update(['reason'=> $request->reason,'status' => 0]);
+        }
+        
+        return response()->json(['success'=>'Schedule deactivated successfully.']);
     }
 
     public function fetchIncompleteMaterials()    {
@@ -673,12 +832,194 @@ class SchedulerController extends Controller
         return response()->json($incompleteMaterialList);
     }
 
-    public function getDateForSpecificDayBetweenDates($startDate,$endDate,$day_number){
-    $endDate = strtotime($endDate);
-    $days=array('1'=>'Monday','2' => 'Tuesday','3' => 'Wednesday','4'=>'Thursday','5' =>'Friday','6' => 'Saturday','7'=>'Sunday');
-    for($i = strtotime($days[$day_number], strtotime($startDate)); $i <= $endDate; $i = strtotime('+1 week', $i))
-        $date_array[]=date('Y-m-d',$i);
+    // public function getDateForSpecificDayBetweenDates($startDate,$endDate,$day_number){
+    // $endDate = strtotime($endDate);
+    // $days=array('1'=>'Monday','2' => 'Tuesday','3' => 'Wednesday','4'=>'Thursday','5' =>'Friday','6' => 'Saturday','7'=>'Sunday');
+    // for($i = strtotime($days[$day_number], strtotime($startDate)); $i <= $endDate; $i = strtotime('+1 week', $i))
+    //     $date_array[]=date('Y-m-d',$i);
 
-        return $date_array;
-     }
+    //     return $date_array;
+    // }
+
+    public function getDateForSpecificDayBetweenDates($startDate, $endDate, $weekdayNumber)
+    {
+        $startDate = strtotime($startDate);
+        $endDate = strtotime($endDate);
+        $dateArr = array();
+        do {
+            if (date("w", $startDate) != $weekdayNumber) {
+                $startDate += 24 * 3600;
+                // add 1 day
+            }
+        } while (date("w", $startDate) != $weekdayNumber);
+        while ($startDate <= $endDate) {
+            $dateArr[] = date('Y-m-d', $startDate);
+            $startDate += 7 * 24 * 3600;
+            // add 7 days
+        }
+        return $dateArr;
+    }
+
+    public function getEditDockUnavailability(Request $request)
+    {
+        $dock_unavailability = Dock_Unavailability::find($request->id);
+        $scheduleData = array();        
+        if(!empty($dock_unavailability))
+        {
+            $nestedData['id'] = $dock_unavailability->id;
+            $nestedData['po_number'] = $dock_unavailability->po_number;
+                $nestedData['supplier_id'] = $dock_unavailability->supplier_id;
+                $nestedData['dock_id'] = $dock_unavailability->dock_id;
+                $nestedData['dock_name'] = $dock_unavailability->dock_name;
+                $nestedData['date_of_delivery'] = date("Y-m-d", strtotime($dock_unavailability->date_of_unavailability));
+                $nestedData['recurrent_dateend'] = date("Y-m-d", strtotime($dock_unavailability->recurrent_dateend));
+                $nestedData['recurrence'] = $dock_unavailability->recurrence;
+                $nestedData['ordering_days'] = $dock_unavailability->ordering_days;
+
+               
+                $nestedData['status'] = $dock_unavailability->status == 1 ? "Active" : "Inactive";
+
+                $nestedData['slotting_time_text'] =$dock_unavailability->time;
+                $nestedData['slotting_time'] = explode("|",$dock_unavailability->time);    
+            $scheduleData = $nestedData;
+
+        }
+
+        return response()->json($scheduleData);
+    }
+
+    public function checkIfConflictsDate($dateOfDelivery,$slotting_time){
+        $schedules = Schedule::where("date_of_delivery",$dateOfDelivery)->get();
+        $slotting_time = explode("|", $slotting_time);
+        $ret = 0;
+        foreach($schedules as $schedule){
+            
+            $get_time = explode("|",$schedule->slotting_time);
+            foreach($slotting_time as $time){
+                if($time == ""){
+                    continue;
+                }
+                foreach($get_time as $val){
+                    if($val == ""){
+                        continue;
+                    }
+                    if($time == $val){
+                        $ret = $schedule->id;
+                        
+                    }
+                }
+            }
+        }
+
+        return $ret;
+    }
+
+    public function getVoucher($id){
+
+        $schedule = Schedule::find($id);
+
+        $data = array();
+        $supplier = Supplier::where('id',$schedule->supplier_id)->first();
+        $truck = Truck::where('id',$schedule->truck_id)->first();
+        $driver = Driver::where('id',$schedule->driver_id)->first();
+        $assistant = Assistant::where('id',$schedule->assistant_id)->first();
+
+        $scheds = trim($schedule->ordering_days);
+        $scheds = explode("|", $scheds);
+       
+
+        $supplier_name = $supplier->supplier_name;
+        $po_number = $schedule->po_number;
+        $driver_name = $driver->first_name . " " . $driver->last_name;
+        $assistant_name = $assistant->first_name . " " . $assistant->last_name;
+        $truck_details = "\n" . $schedule->container_number . "\n" . $truck->plate_number;
+
+        $num = $schedule->id;
+        $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+        $nestedData['id'] = $number;
+        $nestedData['title'] =  $supplier_name . "\n Trucks" . $truck_details . "\n" . $driver_name . "\n" . $assistant_name;
+
+        $nestedData['supplier_id'] = $schedule->supplier_id;
+        $nestedData['po_number'] = $schedule->po_number;
+        $nestedData['supplier_name'] = $supplier->supplier_name;
+        $nestedData['slotting_time'] = $schedule->slotting_time;
+        $nestedData['container_no'] = $schedule->container_number;
+        $nestedData['driver_name'] = $driver_name;
+        $nestedData['truck_details'] =  $truck->model . " " . $truck->brand;
+        $nestedData['assistant_name'] = $assistant_name;
+        $nestedData['plate_number'] = $truck->plate_number;
+        $num = $schedule->id;
+        $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+        $nestedData['delivery_id'] = $number;
+        $nestedData['dock_name'] = $schedule->dock_name;
+        $nestedData['date_of_delivery'] = $schedule->date_of_delivery;
+        $nestedData['recurrent_dateend'] = $schedule->recurrent_dateend;
+        $nestedData['recurrence'] = $schedule->recurrence;
+
+        $slotting_ = str_replace("|","",$schedule->slotting_time);
+        $start = substr($slotting_, 0, 5);
+        $end = substr($slotting_, -5);
+
+        $slotting = explode("|", $schedule->slotting_time);
+
+
+        $nestedData['start'] = $schedule->date_of_delivery . "T" .$start .":00";
+                $nestedData['end'] = $schedule->date_of_delivery . "T" .$end .":00";
+      
+        $mat_list = explode("-;-", $schedule->material_list);
+   
+
+        $gcas = explode("|", $mat_list[0]);
+        $description = explode("|", $mat_list[1]);
+        $quantity = explode("|", $mat_list[2]);
+
+        $material_list = "<table class='table table-bordered' style='width:100%'>";
+        $material_list .= "<tr>";
+        $material_list .= "<th>GCAS</th> <th>Description</th> <th>Quantity</th>";
+        $material_list .= "<tr>";
+        foreach($gcas as $key => $value){
+
+            $material_list .= "<tr>";
+            $material_list .= "<td>". $value ."</td>";
+            $material_list .= "<td>". $description[$key] . "</td>";
+            $material_list .= "<td>". $quantity[$key] . "</td>";
+            $material_list .= "<tr>";
+
+        }
+        $material_list .= "</table>";
+
+        $nestedData['material_list'] = $material_list;
+
+        $nestedData['created_at'] = date('j M Y h:i a',strtotime($schedule->created_at));
+        switch ($schedule->status) {
+            case 1:
+                $status = "Active";
+                break;
+            case 2:
+                $status = "Edited";
+                break;
+            case 3:
+                $status = "Archived";
+                break;
+            case 4:
+                $status = "Edited Finalized";
+                break;
+            case 5:
+                $status = "No-Show";
+                break;
+            case 6:
+                $status = "Emergency Reschedule";
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        $nestedData['status'] = $status;
+
+
+        $data[] = $nestedData;
+
+        return view('schedulers/printvoucher')->with("json_data",$nestedData);
+    }
 }

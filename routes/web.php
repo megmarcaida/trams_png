@@ -89,6 +89,9 @@ Route::post('getSupplierData', 'SchedulerController@getSupplierData' )->name('ge
 Route::resource('ajaxschedules','SchedulerController');
 Route::post('deactivateOrActivateSchedule', 'SchedulerController@deactivateOrActivateSchedule')->name('deactivateOrActivateSchedule');
 Route::post('fetchIncompleteMaterials', 'SchedulerController@fetchIncompleteMaterials' )->name('fetchIncompleteMaterials');
+
+Route::post('getEditDockUnavailability', 'SchedulerController@getEditDockUnavailability' )->name('getEditDockUnavailability');
+Route::get('scheduler/printVoucher/{id}','SchedulerController@getVoucher');
 #END SCHEDULER
 
 #Docker
@@ -100,6 +103,8 @@ Route::post('deactivateOrActivateDocker', 'DockController@deactivateOrActivateDo
 
 Route::get('exportDocker', 'DockController@export')->name('exportDocker');
 Route::post('importDocker', 'DockController@import')->name('importDocker');
+Route::post('getDock', 'DockController@getDock')->name('getDock');
+Route::post('getUserType', 'DockController@getUserType')->name('getUserType');
 #END Docker
 
 
@@ -112,6 +117,8 @@ Route::get('/masterfile/roles', ['middleware' => 'auth', 'uses' => 'RoleControll
 Route::resource('ajaxroles','RoleController');
 Route::post('allroles', 'RoleController@allroles' )->name('allroles');
 Route::post('deactivateOrActivateRole', 'RoleController@deactivateOrActivateRole')->name('deactivateOrActivateRole');
+Route::post('getRole', 'RoleController@getRole')->name('getRole');
+
 #End Role Routes
 
 #UserRole Routes

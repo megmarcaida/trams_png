@@ -41,11 +41,13 @@
           <table class="table table-bordered data-table">
               <thead>
                   <tr>
+                      <th>Dock ID</th>
                       <th>Dock Name</th>
                       <th>Module</th>
+                      <th>User Type</th>
                       <th>Created At</th>
                       <th>Status</th>
-                      <th>Options</th>
+                      <!-- <th>Options</th> -->
                   </tr>
               </thead>
               <tbody>
@@ -79,63 +81,30 @@
                         </div>
                     </div>
                     
-
-                   
+                    <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Dock</label>
+                       <div class="col-sm-12">
+                          <select  class="form-control" id="module" name="module">
+                             <option value="0">Please select Dock</option>
+                              <option value="PCC">PCC</option>
+                              <option value="Baby Care">Baby Care</option>
+                              <option value="Laundry">Laundry</option>
+                              <option value="Liquids">Liquids</option>
+                              <option value="Fem Care">Fem Care</option>
+                          </select>
+                        </div>
+                    </div>
 
                     <div class="form-group">
-                      <label class="col-sm-12 control-label module">*Module</label>
-                      <div class="col-sm-12">
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_baby_care_1" value="Baby Care 1">
-                          <label class="form-check-label" for="inlineCheckbox1">Baby Care 1</label>
+                       <label for="name" class="col-sm-12 control-label">*User Type</label>
+                       <div class="col-sm-12">
+                          <select  class="form-control" id="user_type" name="user_type">
+                             <option value="0">Please select User Type</option>
+                          </select>
                         </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_baby_care_2" value="Baby Care 2">
-                          <label class="form-check-label" for="inlineCheckbox1">Baby Care 2</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_baby_care_3" value="Baby Care 3">
-                          <label class="form-check-label" for="inlineCheckbox1">Baby Care 3</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_baby_care_scrap" value="Baby Care Scrap">
-                          <label class="form-check-label" for="inlineCheckbox1">Baby Care Scrap</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_laundry" value="Laundry">
-                          <label class="form-check-label" for="inlineCheckbox2">Laundry</label>
-                        </div>
-                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_laundry_sb" value="Laundry SB">
-                          <label class="form-check-label" for="inlineCheckbox2">Laundry SB</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_laundry_scrap" value="Laundry Scrap">
-                          <label class="form-check-label" for="inlineCheckbox2">Laundry Scrap</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_fem_care" value="Fem Care">
-                          <label class="form-check-label" for="inlineCheckbox2">Fem Care</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_liquids" value="Liquids">
-                          <label class="form-check-label" for="inlineCheckbox2">Liquids</label>
-                        </div>
-                        <br>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_liquids_out_canopy" value="Liquids Out Canopy">
-                          <label class="form-check-label" for="inlineCheckbox2">Liquids Out Canopy</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_pcc_1" value="PCC 1">
-                          <label class="form-check-label" for="inlineCheckbox2">PCC 1</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="module[]" class="module" id="module_pcc_2" value="PCC 2">
-                          <label class="form-check-label" for="inlineCheckbox2">PCC 2</label>
-                        </div>
-                        </div>
-                      </div>
+                    </div>
+                   
+
 
                     <br>
 
@@ -151,6 +120,31 @@
     </div>
 </div>
     
+<div class="modal fade" id="ajaxModelView" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Actions</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div class="modal-body">
+                
+                <div class="row">
+                  <div class="col-xl-4 col-sm-12">
+                    <button id="btn-edit" class="btn btn-primary btn-xs btn-block editProduct" type="button">Edit</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12">
+                    <button id="btn-deactivate" class="btn btn-secondary btn-xs btn-danger btn-block deactivateOrActivateDocker" type="button">Deactivate</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12">  
+                    <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
+                  </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     
 <script type="text/javascript">
   $(function () {
@@ -171,12 +165,13 @@
                  "data":{ _token: "{{csrf_token()}}"}
                },
         "columns": [
-            // { "data": "id" },
+            { "data": "id" },
             {"data": 'dock_name'},
             {"data": 'module'},
+            {"data": 'user_type'},
             { "data": "created_at" },
             { "data": "status"},
-            { "data": "options" },
+            //{ "data": "options" },
         ]  
 
     });
@@ -194,10 +189,10 @@
     });
     
     $('body').on('click', '.editProduct', function () {
-
+      $("#ajaxModelView").modal("hide")
       $('#spoc').empty();
       $('#dockForm').trigger("reset");      
-      var dock_id = $(this).data('id');
+      var dock_id = $(this).attr('data-id');
       $.get("{{ route('ajaxdockers.index') }}" +'/' + dock_id +'/edit', function (data) {
           $('#modelHeading').html("Edit Dock");
           $('#saveBtn').val("edit-user");
@@ -208,19 +203,15 @@
           $('#dock_id').val(data.id);
           $('#dock_name').val(data.dock_name);
          
-          var modules_arr = data.module.split("|")
-         
-          $.each( modules_arr, function( key, value ) {
-            $("input[value='" + $.trim(value) + "']").prop('checked', true);
-          });
+          $('#module').val(data.module)
+          $('#user_type').val(data.user_type)
 
       })
    });
     
     $('#saveBtn').click(function (e) {
         
-        var modules = $(':checkbox[name^=module]:checked').length;
-        if($("#dock_name").val() == "" || modules == 0){
+        if($("#dock_name").val() == "" || $("#module").val() =="0" || $("#user_type").val() =="0"){
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
             if($("#dock_name").val() == "")
@@ -228,10 +219,15 @@
             else
               $("#dock_name").css('outline','1px black solid')
           
-            if(modules == 0)
-              $(".module").css('color','red')
+            if($("#module").val() == "0" || $("#dock_id").val() == null)
+              $("#module").css('outline','1px red solid')
             else
-              $(".module").css('color','black')
+              $("#module").css('outline','1px black solid')
+
+            if($("#user_type").val() == "0" || $("#user_type").val() == null)
+              $("#user_type").css('outline','1px red solid')
+            else
+              $("#user_type").css('outline','1px black solid')
 
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){
@@ -273,8 +269,8 @@
     
     $('body').on('click', '.deactivateOrActivateDocker', function () {
      
-        var dock_id = $(this).data("id");
-        var status = $(this).data("status");
+        var dock_id = $("#btn-deactivate").attr("data-id");
+        var status = $("#btn-deactivate").attr("data-status");
         console.log(status)
         console.log(dock_id)
         if (confirm("Are you want to proceed?")){
@@ -285,6 +281,8 @@
                 success: function (data) {
                     $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                     table.draw();
+
+                    $("#ajaxModelView").modal("hide")
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -292,6 +290,62 @@
             });
 
         }
+    });
+
+    $('.data-table tbody').on( 'click', 'tr', function () {
+            var id = $(this).find("td:nth-child(1)").first().text().trim()
+            console.log(id)
+            $.ajax({
+              data: {id:id},
+              url: "{{ url('getDock') }}",
+              type: "POST",
+              dataType: 'json',
+              success: function (data) {
+                  console.log(data)
+                  $("#btn-edit").attr("data-id",data.id)
+                  $("#btn-deactivate").attr("data-id",data.id)
+                  
+                  if(data.status == "1"){
+                    $("#btn-deactivate").html("Deactivate")
+                  }else{
+                    $("#btn-deactivate").html("Activate")
+                  }
+                  
+                  $("#btn-deactivate").attr("data-status",data.status)
+
+                  $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
+                  
+                  $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
+                  
+                  $(this).addClass('selected');
+                  
+                  $('#ajaxModelView').modal({
+                      backdrop:'static',
+                      keyboard: false
+                  })
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+                  $('#saveBtn').html('Save Changes');
+              }
+          });
+    });
+
+    $.ajax({
+            url: "{{ url('getUserType') }}",
+            type: "POST",
+            data: {},
+            success: function (data) {
+                console.log(data)
+                $.each(JSON.parse(data), function(index, item) {
+                  console.log(item)
+                   $('#user_type').append("<option  value="+ item.id +">"+ item.name+"</option>")
+                });
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
     });
  
   });

@@ -22,10 +22,12 @@
         <table class="table table-bordered data-table">
             <thead>
                 <tr>
+                    <th>Role ID</th>
                     <th>Name</th>
                     <th>Description</th>
+                    <th>Sub Modules</th>
                     <th>Status</th>
-                    <th>Options</th>
+                    <!-- <th>Options</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -65,6 +67,26 @@
                         </div>
                     </div>
 
+                     <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Modules</label>
+                       <div class="col-sm-12">
+                          <select multiple="true" class="form-control" id="submodules" name="submodules[]">
+                               <option value="PCC 1">PCC 1</option>
+                               <option value="PCC 2">PCC 2</option>
+                               <option value="Baby Care 1">Baby Care 1</option>
+                               <option value="Baby Care 2">Baby Care 2</option>
+                               <option value="Baby Care 3">Baby Care 3</option>
+                               <option value="Baby Care Scrap">Baby Care Scrap</option>
+                               <option value="Laundry">Laundry</option>
+                               <option value="Laundry SB">Laundry SB</option>
+                               <option value="Laundry Scrap">Laundry Scrap</option>
+                               <option value="Liquids">Liquids</option>
+                               <option value="Liquids Out Canopy">Liquids Out Canopy</option>
+                               <option value="Fem Care">Fem Care</option>
+                          </select>
+                        </div>
+                    </div>
+
                     <br>
 
                     <div class="col-sm-offset-2 col-sm-10">
@@ -78,7 +100,32 @@
         </div>
     </div>
 </div>
-    
+
+<div class="modal fade" id="ajaxModelView" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Actions</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div class="modal-body">
+                
+                <div class="row">
+                  <div class="col-xl-4 col-sm-12">
+                    <button id="btn-edit" class="btn btn-primary btn-xs btn-block editProduct" type="button">Edit</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12">
+                    <button id="btn-deactivate" class="btn btn-secondary btn-xs btn-danger btn-block deactivateOrActivateRole" type="button">Deactivate</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12">  
+                    <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
+                  </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     
 <script type="text/javascript">
   $(function () {
@@ -99,10 +146,12 @@
                  "data":{ _token: "{{csrf_token()}}"}
                },
         "columns": [
+            {"data": 'id'},
             {"data": 'name'},
             {"data": 'description'},
+            {"data": 'submodules'},
             { "data": "status"},
-            { "data": "options" },
+            //{ "data": "options" },
         ]  
 
     });
@@ -119,9 +168,9 @@
     });
     
     $('body').on('click', '.editProduct', function () {
-
+      $("#ajaxModelView").modal("hide")
       $('#roleForm').trigger("reset");      
-      var id = $(this).data('id');
+      var id = $(this).attr('data-id');
       $.get("{{ route('ajaxroles.index') }}" +'/' + id +'/edit', function (data) {
           $('#modelHeading').html("Edit Role");
           $('#saveBtn').val("edit-user");
@@ -132,13 +181,30 @@
           $('#id').val(data.id);
           $('#description').val(data.description);
           $('#name').val(data.name);
+
+          var data_ = data.submodules
+          var newdata = data_.split("|")
+           
+          
+          console.log(newdata)
+          $.each(newdata, function(i,e){
+              $("#submodules option[value='" + e + "']").prop("selected", true);
+          });
+        
       })
    });
     
     $('#saveBtn').click(function (e) {
         
-     
-        if($("#description").val() == "" || $("#name").val() == ""){
+        var submodules = [];
+        $.each($("#submodules option:selected"), function(){            
+            submodules.push($(this).val());
+        });
+        
+
+        var submod = JSON.stringify(submodules)
+        console.log(submod)
+        if($("#description").val() == "" || $("#name").val() == "" || submodules.length == 0){
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){
@@ -175,8 +241,8 @@
     
     $('body').on('click', '.deactivateOrActivateRole', function () {
      
-        var id = $(this).data("id");
-        var status = $(this).data("status");
+        var id = $("#btn-deactivate").attr("data-id");
+        var status = $("#btn-deactivate").attr("data-status");
         
         if (confirm("Are You sure want to delete !")){
             $.ajax({
@@ -186,6 +252,7 @@
                 success: function (data) {
                     $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                     table.draw();
+                    $("#ajaxModelView").modal("hide")
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -195,6 +262,44 @@
         }
     });
 
+    $('.data-table tbody').on( 'click', 'tr', function () {
+            var id = $(this).find("td:nth-child(1)").first().text().trim()
+            $.ajax({
+              data: {id:id},
+              url: "{{ url('getRole') }}",
+              type: "POST",
+              dataType: 'json',
+              success: function (data) {
+                  console.log(data)
+                  $("#btn-edit").attr("data-id",data.id)
+                  $("#btn-deactivate").attr("data-id",data.id)
+                  
+                  if(data.status == "1"){
+                    $("#btn-deactivate").html("Deactivate")
+                  }else{
+                    $("#btn-deactivate").html("Activate")
+                  }
+                  
+                  $("#btn-deactivate").attr("data-status",data.status)
+
+                  $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
+                  
+                  $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
+                  
+                  $(this).addClass('selected');
+                  
+                  $('#ajaxModelView').modal({
+                      backdrop:'static',
+                      keyboard: false
+                  })
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+                  $('#saveBtn').html('Save Changes');
+              }
+          });
+    });
 
   
   });
