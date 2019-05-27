@@ -186,10 +186,10 @@
    
 <br>
 <div class="row">
-  <div class="col-md-6">
+  <div class="offset-4 col-md-2">
     <button class="btn btn-success btn-xs btn-block" type="button" id="print-schedule">Print</button> 
   </div>
-  <div class="col-md-6">
+  <div class="col-md-2">
     <button class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button> 
   </div>
 </div>   
