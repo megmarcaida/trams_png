@@ -277,6 +277,10 @@
         ]  
 
     });
+
+    setTimeout(function(){
+      table.draw();
+    },10000)
      
     $('#createNewProduct').click(function () {
         $(".driver_id").hide();

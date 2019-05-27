@@ -281,6 +281,9 @@
 
     });
 
+    setTimeout(function(){
+      table.draw();
+    },10000)
 
     var role_id = {{ Auth::user()->role_id }}
      
