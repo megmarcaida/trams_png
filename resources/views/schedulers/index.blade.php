@@ -1849,7 +1849,7 @@
                          </button>
                       </div>
                       <div class="col-md-3">
-                         <button type="submit" class="btn btn-danger btn-block" class="btncancelSchedule" value="create">Cancel Schedule
+                         <button type="submit" class="btn btn-danger btn-block btncancelSchedule" value="create">Cancel Schedule
                          </button>
                       </div>
                       <div class="col-md-3">
