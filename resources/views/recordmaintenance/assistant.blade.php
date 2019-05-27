@@ -19,7 +19,7 @@
 
         <div class="row">
           <div class="col-xl-6">
-            @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2)         
+            @if(Auth::user()->role_id != 3)      
                <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Assistant</a>
             @elseif(Auth::user()->role_id == 3)
                <a class="btn btn-success" href="javascript:void(0)" id="viewPendingRegistration"> View Pending Registrations</a>       
