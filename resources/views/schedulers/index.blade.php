@@ -974,6 +974,8 @@
       }
     });
 
+  
+
   $("body").on("click",".btn-block-sched",function(e){
 
       e.preventDefault();
@@ -1063,14 +1065,7 @@
             }
         }
 
-        var today = new Date();
-        var time = today.getHours();
-       
-        // if(time > 16)
-        // {
-        //   $('#schedule_id').val('');
-        //   //console.log( $('#schedule_id').val())
-        // }
+        
 
         if($("#po_number").val() == "" || $("#supplier_id").val() == "0" || $("#dock_id").val() ==  "" || $("#truck_id").val() == "" || $("#driver_id").val() == "" || $("#assistant_id").val() == "" || recurrence.length == 0 || $("#dateOfDelivery").val() == "" || $("#slotting_time").val() == "" ){
           $("#modalresponse").show();
@@ -1252,14 +1247,14 @@
           }
         }
 
-        var today = new Date();
-        var time = today.getHours();
+        // var today = new Date();
+        // var time = today.getHours();
        
-        if(time > 16)
-        {
-          $('#schedule_id').val('');
-          //console.log( $('#schedule_id').val())
-        }
+        // if(time > 16)
+        // {
+        //   $('#schedule_id').val('');
+        //   //console.log( $('#schedule_id').val())
+        // }
 
         if($("#dock_id_unavailability").val() ==  "" || recurrence.length == 0 || type.length == 0 || $("#dateOfUnavailability").val() == "" || $("#slotting_time").val() == "" ){
 
@@ -1582,7 +1577,7 @@
 
     //end new window
    
-
+    
 </script>
 <div class="container-fluid">
 

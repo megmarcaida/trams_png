@@ -92,6 +92,7 @@ Route::post('fetchIncompleteMaterials', 'SchedulerController@fetchIncompleteMate
 
 Route::post('getEditDockUnavailability', 'SchedulerController@getEditDockUnavailability' )->name('getEditDockUnavailability');
 Route::get('scheduler/printVoucher/{id}','SchedulerController@getVoucher');
+Route::post('changeToFinalized', 'SchedulerController@changeToFinalized' )->name('changeToFinalized');
 #END SCHEDULER
 
 #Docker

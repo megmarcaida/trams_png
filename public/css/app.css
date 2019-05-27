@@ -10851,3 +10851,7 @@ a.text-dark:focus {
   border: 1px solid #000;
   padding: 10px;
 }
+
+tr.even,tr.odd{
+  cursor: pointer;
+}

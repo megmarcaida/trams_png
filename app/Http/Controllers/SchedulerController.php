@@ -10,6 +10,7 @@ use App\Driver;
 use App\Assistant;
 use App\Dock_Unavailability;
 use App\Role;
+use DateTime;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -137,7 +138,6 @@ class SchedulerController extends Controller
 
 
                 $nestedData['id'] = $schedule->id;
-                $nestedData['title'] =  $supplier_name . "\n Trucks" . $truck_details . "\n" . $driver_name . "\n" . $assistant_name;
 
                 $nestedData['supplier_id'] = $schedule->supplier_id;
                 $nestedData['po_number'] = $schedule->po_number;
@@ -199,7 +199,7 @@ class SchedulerController extends Controller
                         $status = "Edited";
                         break;
                     case 3:
-                        $status = "Archived";
+                        $status = "Finalized";
                         break;
                     case 4:
                         $status = "Edited Finalized";
@@ -216,7 +216,7 @@ class SchedulerController extends Controller
                         break;
                 }
                 $nestedData['status'] = $status;
-
+                $nestedData['title'] =  $supplier_name . "\n Trucks" . $truck_details . "\n" . $driver_name . "\n" . $assistant_name . "\n" . $status;
 
                 $data[] = $nestedData;
                 $dow = array();
@@ -258,7 +258,7 @@ class SchedulerController extends Controller
                             $status = "Edited";
                             break;
                         case 3:
-                            $status = "Archived";
+                            $status = "Finalized";
                             break;
                         case 4:
                             $status = "Edited Finalized";
@@ -595,14 +595,54 @@ class SchedulerController extends Controller
 
                         if($hasConflict > 0){
                             
-
+                            // CONFLICTS ENTRY
                             $sched = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => 10, 'material_list' => $material_list,'recurrent_id' => $recurrent_id,'conflict_id'=>$hasConflict]); 
 
 
 
                         }else{
+                            //CONTINUE NORMAL ENTRY
+                            if($request->schedule_id != null){
 
+                                $checkIfFinalized = Schedule::find($request->schedule_id);
+                                
+                                $timestamp = $checkIfFinalized->update_at;
 
+                                $today = new DateTime(); // This object represents current date/time
+                                $today->setTime( 0, 0, 0 ); // reset time part, to prevent partial comparison
+
+                                $match_date = DateTime::createFromFormat( "Y.m.d\\TH:i", $timestamp );
+                                $match_date->setTime( 0, 0, 0 ); // reset time part, to prevent partial comparison
+
+                                $diff = $today->diff( $match_date );
+                                $diffDays = (integer)$diff->format( "%R%a" ); // Extract days count in interval
+                                switch ($diffDays) {
+                                    case 0:
+                                        $status = 2;
+                                        break;
+                                    case -1:
+                                        if($checkIfFinalized->status == 3){
+                                            $checkIfFinalized->update(["status", 0]);
+                                            $status = 4;
+                                            $request->schedule_id = null;
+                                        }else{
+                                            $status = 2;
+                                        }
+                                    break;      
+                                    default:
+                                        if($checkIfFinalized->status == 3){
+                                            $checkIfFinalized->update(["status", 0]);
+                                            $status = 4;
+                                            $request->schedule_id = null;
+                                        }else{
+                                            $status = 2;
+                                        }
+                                        $status = 1;
+                                        break;
+                                }
+                                //$date_created = $schedule_finalized['created_date'];
+                            }
+                            
                             Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list,'recurrent_id' => $recurrent_id]);  
 
                         }
@@ -653,6 +693,29 @@ class SchedulerController extends Controller
                     $ret = ['success'=>"Schedule saved successfull"]; 
                 }
             }else{
+
+
+                //CONTINUE NORMAL ENTRY
+                if($request->schedule_id != null){
+
+                    $checkIfFinalized = Schedule::find($request->schedule_id);
+                    $date_yesterday = date('d.m.Y',strtotime("-1 days"));
+                    $timestamp = $checkIfFinalized->updated_at;
+                    $timestamp = date('d.m.Y',strtotime($timestamp));
+                    
+                    if($timestamp == $date_yesterday){
+                        if($checkIfFinalized->status == 3){
+                            $checkIfFinalized->update(["status" => 0]);
+                            $status = 4;
+                            $request->schedule_id = null;
+                        }else{
+                            $status = 2;
+                        }
+                    }else{
+                        $status = 2;
+                    }
+                    //$date_created = $schedule_finalized['created_date'];
+                }
                 $last_insert = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $request->dateOfDelivery,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list]);  
 
                 $ret = ['success'=>'Schedule saved successfully.',"id"=>$last_insert->id];
@@ -999,7 +1062,7 @@ class SchedulerController extends Controller
                 $status = "Edited";
                 break;
             case 3:
-                $status = "Archived";
+                $status = "Finalized";
                 break;
             case 4:
                 $status = "Edited Finalized";
@@ -1021,5 +1084,16 @@ class SchedulerController extends Controller
         $data[] = $nestedData;
 
         return view('schedulers/printvoucher')->with("json_data",$nestedData);
+    }
+
+    public function changeToFinalized(Request $request){
+            $schedule = Schedule::whereIn("status", [1,2])->get();
+
+            foreach($schedule as $row){
+                    $sched = Schedule::find($row->id);
+                    $sched->update(["status" => "3"]);
+            }
+
+            return json_encode($schedule);
     }
 }
