@@ -738,7 +738,7 @@
           $('#truck_id').html('');
           $('#driver_id').html('');
           $('#assistant_id').html('');
-          //$('#dock_id').html(''); 
+          $('#dock_id').html(''); 
           $('#alt_supplier_id').val('');
           //$('#supplier_id').attr("disabled","disabled");
           $('#po_number').attr("readonly","true");
