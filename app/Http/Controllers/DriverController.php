@@ -238,9 +238,16 @@ class DriverController extends Controller
             $dateOfSafetyOrientation = $request->dateOfSafetyOrientation;
             $isApproved = 1;
         }else{
-            $expirationDate = $driver->expirationDate;
-            $dateOfSafetyOrientation = $driver->dateOfSafetyOrientation;
-            $isApproved = $driver->isApproved;
+            if($request->id != null){
+
+                $expirationDate =$driver->expirationDate;
+                $dateOfSafetyOrientation = $driver->dateOfSafetyOrientation;
+                $isApproved = $driver->isApproved;
+            }else{
+                $expirationDate = null;
+                $dateOfSafetyOrientation = null;
+                $isApproved = 0;
+            }
         }
 
         $isExistVendorCode = Driver::where("license_number",$request->license_number)->first();

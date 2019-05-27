@@ -201,10 +201,16 @@ class AssistantController extends Controller
             $expirationDate = date("Y-m-d H:i:s",$expirationDate);
             $dateOfSafetyOrientation = $request->dateOfSafetyOrientation;
             $isApproved = 1;
-        }else{
-            $expirationDate = $assistant->expirationDate;
-            $dateOfSafetyOrientation = $assistant->dateOfSafetyOrientation;
-            $isApproved = $assistant->isApproved;
+        }else{if($request->id != null){
+
+                $expirationDate =$assistant->expirationDate;
+                $dateOfSafetyOrientation = $assistant->dateOfSafetyOrientation;
+                $isApproved = $assistant->isApproved;
+            }else{
+                $expirationDate = null;
+                $dateOfSafetyOrientation = null;
+                $isApproved = 0;
+            }
         }
 
         Assistant::updateOrCreate(['id' => ltrim($request->id,0)],
