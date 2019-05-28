@@ -38,6 +38,68 @@
             </div>
         @endif
         </div>
+        <div class="row">
+          <div class="col-md-3">
+              
+            <div class="form-group">
+               <label for="name" class="col-sm-12 control-label">*Filter Delivery Type</label>
+               <div class="col-sm-12">
+                  <select multiple="true" class="form-control delivery_type_filter" id="delivery_type_filter" name="delivery_type_filter[]">
+                       <option value="">All</option>
+                       <option value="Local">Local</option>
+                       <option value="Imported">Imported</option>
+                  </select>
+                </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+              <div class="form-group">
+               <label for="name" class="col-sm-12 control-label">*Filter Ordering Days</label>
+               <div class="col-sm-12">
+                  <select multiple="true" class="form-control ordering_days_filter" id="ordering_days_filter">
+                       <option value="">All</option>
+                       <option value="Mon">Mon</option>
+                       <option value="Tue">Tue</option>
+                       <option value="Wed">Wed</option>
+                       <option value="Thu">Thu</option>
+                       <option value="Fri">Fri</option>
+                       <option value="Sat">Sat</option>
+                       <option value="Sun">Sun</option>
+                  </select>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+              <div class="form-group">
+               <label for="name" class="col-sm-12 control-label">*Filter Ordering Days</label>
+               <div class="col-sm-12">
+                  <select multiple="true" class="form-control module_filter" id="module_filter" name="module_filter[]">
+                       <option value="PCC">PCC</option>
+                       <option value="Baby Care">Baby Care</option>
+                       <option value="Laundry">Laundry</option>
+                       <option value="Liquids">Liquids</option>
+                       <option value="Fem Care">Fem Care</option>
+                  </select>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+              
+            <div class="form-group">
+               <label for="name" class="col-sm-12 control-label">*Filter Status</label>
+               <div class="col-sm-12">
+                  <select multiple="true" class="form-control status_filter" id="status_filter" name="status_filter[]">
+                       <option value="">All</option>
+                       <option value="Active">Active</option>
+                       <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+            </div>
+          </div>
+        </div>
+        
+
         <div class="table table-responsive">
           <table class="table table-bordered data-table">
               <thead>
@@ -295,10 +357,35 @@
             { "data": "created_at" },
             { "data": "status"},
             // { "data": "options" },
-        ]  
+        ],
+
 
     });
 
+    $('#delivery_type_filter').on('change', function(){
+       table.search(this.value).draw();   
+    });
+    $('#ordering_days_filter').on('change', function(){
+        var ordering_days = "ordering_days|";
+        $.each($(".ordering_days_filter option:selected"), function(){            
+            ordering_days += this.value + " | "
+        }); 
+
+       console.log(ordering_days)
+       table.search(ordering_days).draw();   
+    });
+    $('#module_filter').on('change', function(){
+        var module_ = "module|";
+        $.each($(".module_filter option:selected"), function(){            
+            module_ += this.value + " | "
+        }); 
+
+       console.log(module_)
+       table.search(module_).draw();   
+    });
+    $('#status_filter').on('change', function(){
+       table.search(this.value).draw();   
+    });
     // var table = $('.data-table').DataTable({
     //     processing: true,
     //     serverSide: true,

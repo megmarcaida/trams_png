@@ -83,32 +83,95 @@ class SupplierController extends Controller
         else {
             $search = $request->input('search.value'); 
             
-            $suppliers =  Supplier::where('id','LIKE',"%{$search}%")
-                            ->orWhere('vendor_code','LIKE',"%{$search}%")
-                            ->orWhere('supplier_name','LIKE',"%{$search}%")
-                            ->orWhere('spoc_full_name','LIKE',"%{$search}%")
-                            ->orWhere('spoc_email_address','LIKE',"%{$search}%")
-                            ->orWhere('spoc_contact_number','LIKE',"%{$search}%")
-                            ->orWhere('ordering_days','LIKE',"%{$search}%")
-                            ->orWhere('delivery_type','LIKE',"%{$search}%")
-                            ->orWhere('module','LIKE',"%{$search}%")
-                            ->offset($start)
-                            ->limit($limit)
-                            ->orderBy($order,$dir)
-                            ->get();
+            if(strpos($search, "|") !== false ){
+                $keywords = explode("|", $search);
+                $filter = "";
+                $suppliers = Supplier::where(function($query) use($keywords){
+                    foreach ($keywords as $key => $value) {
+                        if($key == 0){
+                            $filter = $value;
+                        }else{
 
+                            $query->Where($filter, 'like',  '%' . $value .'%');
+                        }
+                    }
+                })->get();
 
+            }else{
 
-            $totalFiltered = Supplier::where('id','LIKE',"%{$search}%")
-                            ->orWhere('vendor_code','LIKE',"%{$search}%")
-                            ->orWhere('supplier_name','LIKE',"%{$search}%")
-                            ->orWhere('spoc_full_name','LIKE',"%{$search}%")
-                            ->orWhere('spoc_email_address','LIKE',"%{$search}%")
-                            ->orWhere('spoc_contact_number','LIKE',"%{$search}%")
-                            ->orWhere('ordering_days','LIKE',"%{$search}%")
-                            ->orWhere('delivery_type','LIKE',"%{$search}%")
-                            ->orWhere('module','LIKE',"%{$search}%")
-                            ->count();
+            $status = 0;
+            switch ($search) {
+                case 'Active':
+                    $status = 1;
+                    break;
+                case 'Inactive':
+                    $status = 0;
+                    break;
+                
+                default:
+                    $status = 0;
+                    break;
+            }
+
+                if($search == "Active" || $search == "Inactive"){
+
+                    $suppliers =  Supplier::where('id','LIKE',"%{$search}%")
+                                ->orWhere('vendor_code','LIKE',"%{$search}%")
+                                ->orWhere('supplier_name','LIKE',"%{$search}%")
+                                ->orWhere('spoc_full_name','LIKE',"%{$search}%")
+                                ->orWhere('spoc_email_address','LIKE',"%{$search}%")
+                                ->orWhere('spoc_contact_number','LIKE',"%{$search}%")
+                                ->orWhere('ordering_days','LIKE',"%{$search}%")
+                                ->orWhere('delivery_type','LIKE',"%{$search}%")
+                                ->orWhere('module','LIKE',"%{$search}%")
+                                ->orWhere('status',$status)
+                                ->offset($start)
+                                ->limit($limit)
+                                ->orderBy($order,$dir)
+                                ->get();
+
+                                $totalFiltered = Supplier::where('id','LIKE',"%{$search}%")
+                                ->orWhere('vendor_code','LIKE',"%{$search}%")
+                                ->orWhere('supplier_name','LIKE',"%{$search}%")
+                                ->orWhere('spoc_full_name','LIKE',"%{$search}%")
+                                ->orWhere('spoc_email_address','LIKE',"%{$search}%")
+                                ->orWhere('spoc_contact_number','LIKE',"%{$search}%")
+                                ->orWhere('ordering_days','LIKE',"%{$search}%")
+                                ->orWhere('delivery_type','LIKE',"%{$search}%")
+                                ->orWhere('module','LIKE',"%{$search}%")
+                                ->orWhere('status',$status)
+                                ->count();
+                }else{
+
+                    $suppliers =  Supplier::where('id','LIKE',"%{$search}%")
+                                ->orWhere('vendor_code','LIKE',"%{$search}%")
+                                ->orWhere('supplier_name','LIKE',"%{$search}%")
+                                ->orWhere('spoc_full_name','LIKE',"%{$search}%")
+                                ->orWhere('spoc_email_address','LIKE',"%{$search}%")
+                                ->orWhere('spoc_contact_number','LIKE',"%{$search}%")
+                                ->orWhere('ordering_days','LIKE',"%{$search}%")
+                                ->orWhere('delivery_type','LIKE',"%{$search}%")
+                                ->orWhere('module','LIKE',"%{$search}%")
+                                ->orWhere('status','LIKE',"%{$search}%")
+                                ->offset($start)
+                                ->limit($limit)
+                                ->orderBy($order,$dir)
+                                ->get();
+
+                    $totalFiltered = Supplier::where('id','LIKE',"%{$search}%")
+                                ->orWhere('vendor_code','LIKE',"%{$search}%")
+                                ->orWhere('supplier_name','LIKE',"%{$search}%")
+                                ->orWhere('spoc_full_name','LIKE',"%{$search}%")
+                                ->orWhere('spoc_email_address','LIKE',"%{$search}%")
+                                ->orWhere('spoc_contact_number','LIKE',"%{$search}%")
+                                ->orWhere('ordering_days','LIKE',"%{$search}%")
+                                ->orWhere('delivery_type','LIKE',"%{$search}%")
+                                ->orWhere('module','LIKE',"%{$search}%")
+                                ->orWhere('status','LIKE',"%{$search}%")
+                                ->count();
+                }
+
+            }   
         }
 
         $data = array();
