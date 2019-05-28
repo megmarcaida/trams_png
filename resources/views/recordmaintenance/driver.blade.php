@@ -22,7 +22,7 @@
             @if(Auth::user()->role_id != 3)         
                <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Driver</a>
             @elseif(Auth::user()->role_id == 3)
-               <a class="btn btn-success btn-block" href="javascript:void(0)" id="viewPendingRegistration"> View Pending Registrations</a>       
+               <a class="btn btn-success" href="javascript:void(0)" id="viewPendingRegistration"> View Pending Registrations</a>       
             @endif
 
             <a class="btn btn-warning" href="{{ route('exportDriver') }}">Export Drivers Data</a>

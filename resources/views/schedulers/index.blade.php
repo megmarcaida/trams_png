@@ -58,8 +58,8 @@
     //Edit single event
     $('body').on('click', '#edit_single_event', function (e) {
         $('#ajaxModelEditRecurrent').modal('hide')
-        $('.isEditingRecurrent').val("0")
-        $('.isEditingSingle').val("1")
+        $('#isEditingRecurrent').val("0")
+        $('#isEditingSingle').val("1")
         //console.log($('#selected_schedule').val())  
         //console.log($('#recurrence_hidden').val())
         
@@ -647,7 +647,7 @@
           }
         },
         ScheduleDockUnavailability: {
-          text: 'Dock Unavailability',
+          text: 'Schedule Dock Unavailability',
           click: function() {
             $('#unavailability_id').val('');
             $('div.occupied_slot_box').addClass("slot_box");
@@ -1206,26 +1206,46 @@
             $(this).html('Sending..');
         
             //console.log($('#scheduleForm').serialize())
+            var isEditingRecurrent = $("#isEditingRecurrent").val()
+            var isEditingSingle = $("#isEditingSingle").val()
+
+            var url_ = ""
+            console.log("isEditedFinalized:" +isEditingRecurrent)
+            console.log("isEditingSingle:" + isEditingSingle )
+            if(recurrence.val() == "Recurrent"){
+              if(isEditingRecurrent == "0" && isEditingSingle == "0") {
+                url_ = "{{ url('recurrentEventInsertInitial') }}"
+              }
+              else if(isEditingRecurrent == "1"){
+                url_ = "{{ url('recurrentEventInsert') }}"
+              }
+              else if(isEditingSingle == "1") {
+                url_ = "{{ url('singleEventInsert') }}"
+              }
+            }
+            else {
+              url_ = "{{ route('ajaxschedules.store') }}"
+            }
             $.ajax({
               data: $('#scheduleForm').serialize(),
-              url: "{{ route('ajaxschedules.store') }}",
+              url: url_,
               type: "POST",
               dataType: 'json',
               success: function (data) {
-                console.log(data)
-                 if(data.conflict != null){
+                 if(data.conflict != undefined){
                   console.log(data)
                   $('#modelViewErrorRecurrent').modal({
                     backdrop:'static',
                     keyboard: false
                   })
                   $('#ajaxModel').modal('hide');
-                  $.each(data.conflict, function(index, sched) {
-                      $(".error_recurrent").append("<div class='row'><div class='col-md-6'><p>"+sched.date_of_delivery+"</p><p>"+sched.slotting_time+"</p><p>"+sched.supplier_name+"</p><p>CONFLICT WITH: Delivery ID: "+sched.conflict_id+"</p></div><div class='col-md-6'><button class='btn btn-primary btn-block'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div></div>")
-                  });
+                  if(data.conflict.length > 0 ){
+                      $.each(data.conflict, function(index, sched) {
+                        $(".error_recurrent").append("<div class='row'><div class='col-md-6'><p>"+sched.date_of_delivery+"</p><p>"+sched.slotting_time+"</p><p>"+sched.supplier_name+"</p><p>CONFLICT WITH: Delivery ID: "+sched.conflict_id+"</p></div><div class='col-md-6'><button class='btn btn-primary btn-block'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div></div>")
+                    });
+                  }
+                  
                  }else{
-
-                   console.log(data.data)
                    $('#response').show();
                    $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                     $('#scheduleForm').trigger("reset");
@@ -1236,7 +1256,7 @@
                     
                     if(data.data != null){
 
-                      $.each(data.data, function(key,value){            
+                      $.each(data.data, function(key,value){   console.log9
                           window.open("printVoucher/"+value.id,"_blank")
                       });
                     }else{
@@ -1249,7 +1269,7 @@
                  }
               },
               error: function (data) {
-                  //console.log('Error:', data);
+                  console.log('Error:', data);
                   $('#saveBtn').html('Save Changes');
               }
             });
@@ -1668,16 +1688,16 @@
             <input type="hidden" name="current_module" id="current_module">
             <input type="hidden" name="recurrence_hidden" id="recurrence_hidden">
           </div>
-           <div class="col-xl-6 col-sm-6 offset-6 group-module">
-            <div class="btn-group btn-group-sm float-right" role="group">
-              <button data-value="Baby Care 1" type="button" class="btn btn-secondary btn-modules btn-modules">Baby Care 1</button>
+           <div class="col-xl-6 group-module">
+            <div class="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
+              <button data-value="Baby Care 1" type="button" class="btn btn-secondary btn-modules">Baby Care 1</button>
               <button data-value="Baby Care 2" type="button" class="btn btn-secondary btn-modules">Baby Care 2</button>
               <button data-value="Baby Care 3" type="button" class="btn btn-secondary btn-modules">Baby Care 3</button>
               <button data-value="Baby Care Scrap" type="button" class="btn btn-secondary btn-modules">Baby Care Scrap</button>
               <button data-value="Laundry" type="button" class="btn btn-secondary btn-modules">Laundry</button>
               <button data-value="Laundry SB" type="button" class="btn btn-secondary btn-modules">Laundry SB</button>
             </div>
-            <div class="btn-group btn-group-sm float-right" role="group">
+            <div class="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
               <button data-value="Laundry Scrap" type="button" class="btn btn-secondary btn-modules">Laundry Scrap</button>
               <button data-value="PCC 1" type="button" class="btn btn-secondary btn-modules">PCC 1</button>
               <button data-value="PCC 2" type="button" class="btn btn-secondary btn-modules">PCC 2</button>

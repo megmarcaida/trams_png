@@ -8,9 +8,9 @@
           type: "POST",
           dataType: 'json',
           success: function (data) {
-            console.log(data)
+            //console.log(data)
             var current_module = $("#current_module").val()
-            //testCalendar(current_module)
+            testCalendar(current_module)
             $('#saveBtn').html('Save Changes');
           },
           error: function (data) {
@@ -23,7 +23,7 @@
     setInterval(function(){
         var today = new Date();
         var time = today.getHours();
-       console.log(time);
+       //console.log(time);
         if(time > 16)
         {
           changeToFinalized();

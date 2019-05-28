@@ -93,6 +93,10 @@ Route::post('fetchIncompleteMaterials', 'SchedulerController@fetchIncompleteMate
 Route::post('getEditDockUnavailability', 'SchedulerController@getEditDockUnavailability' )->name('getEditDockUnavailability');
 Route::get('scheduler/printVoucher/{id}','SchedulerController@getVoucher');
 Route::post('changeToFinalized', 'SchedulerController@changeToFinalized' )->name('changeToFinalized');
+Route::post('singleEventInsert', 'SchedulerController@singleEventInsert' )->name('singleEventInsert');
+Route::post('recurrentEventInsert', 'SchedulerController@recurrentEventInsert' )->name('recurrentEventInsert');
+Route::post('recurrentEventInsertInitial', 'SchedulerController@recurrentEventInsertInitial' )->name('recurrentEventInsertInitial');
+
 #END SCHEDULER
 
 #Docker
