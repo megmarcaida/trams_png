@@ -39,6 +39,35 @@
             </div>
         @endif
         </div>
+          <div class="row">
+          <div class="col-md-4">
+              
+            <div class="form-group">
+               <label for="name" class="col-sm-12 control-label">*Filter Supplier</label>
+               <div class="col-sm-12">
+                  <select multiple="true" class="form-control supplier_filter" id="supplier_filter" name="supplier_filter[]">
+                       <option value="">All</option>
+                       @foreach($supplierData['data'] as $supplier)
+                         <option value='{{ $supplier->supplier_name }}'>{{ $supplier->supplier_name }}</option>
+                       @endforeach
+                  </select>
+                </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+              <div class="form-group">
+               <label for="name" class="col-sm-12 control-label">*Filter Truck Type</label>
+               <div class="col-sm-12">
+                  <select multiple="true" class="form-control container_type_filter" id="container_type_filter">
+                       <option value="">All</option>
+                       <option value="Containerized">Containerized</option>
+                       <option value="Non-containerized">Non-containerized</option>
+                  </select>
+                </div>
+            </div>
+          </div>  
+        </div>
         <div class="table table-responsive">
           <table class="table table-bordered data-table">
               <thead>
@@ -235,6 +264,14 @@
             //{ "data": "options" },
         ]  
 
+    });
+
+    $('#container_type_filter').on('change', function(){
+       table.search(this.value).draw();   
+    });
+
+    $('#supplier_filter').on('change', function(){
+       table.search(this.value).draw();   
     });
 
     // var table = $('.data-table').DataTable({

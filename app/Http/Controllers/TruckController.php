@@ -87,57 +87,66 @@ class TruckController extends Controller
         else {
             $search = $request->input('search.value'); 
 
-            $suppliers = Supplier::where('supplier_name','LIKE',"%{$search}%")->get();
-            foreach ($suppliers as $key => $value) {
-                $trucks_s .= $value->id ."|";
-            }
+            // $suppliers = Supplier::where('supplier_name','LIKE',"%{$search}%")->get();
+            // foreach ($suppliers as $key => $value) {
+            //     $trucks_s .= $value->id ." |";
+            // }
 
 
-            if($search == "Containerized" || $search == "C" || $search == "Co" || $search == "Con" || $search == "Cont" || $search == "Conta" || $search == "Contai" || $search == "Contain" || $search == "Containe" || $search == "Container" || $search == "Containeri" || $search == "Containeriz" || $search == "Containerize"){
-                $trucks =  Truck::where('type','=',"Containerized")
-                                ->offset($start)
-                                ->limit($limit)
-                                ->orderBy($order,$dir)
-                                ->get();
+            // if($search == "Containerized" || $search == "C" || $search == "Co" || $search == "Con" || $search == "Cont" || $search == "Conta" || $search == "Contai" || $search == "Contain" || $search == "Containe" || $search == "Container" || $search == "Containeri" || $search == "Containeriz" || $search == "Containerize"){
+            //     $trucks =  Truck::where('type','=',"Containerized")
+            //                     ->offset($start)
+            //                     ->limit($limit)
+            //                     ->orderBy($order,$dir)
+            //                     ->get();
 
-                $totalFiltered = Truck::where('type','=',$search)
-                                ->count();
-            }elseif($search == "Non-containerized" || $search == "No" || $search == "Non" || $search == "Non-" || $search == "Non-c" || $search == "Non-co" || $search == "Non-con" || $search == "Non-cont" || $search == "Non-conta" || $search == "Non-contai" || $search == "Non-contain" || $search == "Non-containe" || $search == "Non-container" || $search == "Non-containeri" || $search == "Non-Containeriz" || $search == "Non-containerize"){
-                $trucks =  Truck::where('type','=',"Non-containerized")
-                                ->offset($start)
-                                ->limit($limit)
-                                ->orderBy($order,$dir)
-                                ->get();
+            //     $totalFiltered = Truck::where('type','=',$search)
+            //                     ->count();
+            // }elseif($search == "Non-containerized" || $search == "No" || $search == "Non" || $search == "Non-" || $search == "Non-c" || $search == "Non-co" || $search == "Non-con" || $search == "Non-cont" || $search == "Non-conta" || $search == "Non-contai" || $search == "Non-contain" || $search == "Non-containe" || $search == "Non-container" || $search == "Non-containeri" || $search == "Non-Containeriz" || $search == "Non-containerize"){
+            //     $trucks =  Truck::where('type','=',"Non-containerized")
+            //                     ->offset($start)
+            //                     ->limit($limit)
+            //                     ->orderBy($order,$dir)
+            //                     ->get();
 
-                $totalFiltered = Truck::where('type','=',$search)
-                                ->count();
-            }elseif($trucks_s != ""){
+            //     $totalFiltered = Truck::where('type','=',$search)
+            //                     ->count();
+            // }
+            // if($trucks_s != ""){
 
-                $trucks =  Truck::where('supplier_ids','LIKE',"%{$trucks_s}%")
-                                ->offset($start)
-                                ->limit($limit)
-                                ->orderBy($order,$dir)
-                                ->get();
+            //     $trucks =  Truck::where('supplier_ids','LIKE',"%{$trucks_s}%")
+            //                     ->offset($start)
+            //                     ->limit($limit)
+            //                     ->orderBy($order,$dir)
+            //                     ->get();
 
-                $totalFiltered = Truck::where('supplier_ids','LIKE',"%{$trucks_s}%")
-                                ->count();
+            //     $totalFiltered = Truck::where('supplier_ids','LIKE',"%{$trucks_s}%")
+            //                     ->count();
 
-            }else{
+            // }else{
 
                 $trucks =  Truck::where('id','LIKE',"%{$search}%")
+                                ->orWhere('supplier_names','LIKE',"%{$search}%")
                                 ->orWhere('trucking_company','LIKE',"%{$search}%")
                                 ->orWhere('plate_number','LIKE',"%{$search}%")
+                                ->orWhere('brand','LIKE',"%{$search}%")
+                                ->orWhere('model','LIKE',"%{$search}%")
+                                ->orWhere('type',$search)
                                 ->offset($start)
                                 ->limit($limit)
                                 ->orderBy($order,$dir)
                                 ->get();
 
                 $totalFiltered = Truck::where('id','LIKE',"%{$search}%")
+                                ->orWhere('supplier_names','LIKE',"%{$search}%")
                                  ->orWhere('trucking_company','LIKE',"%{$search}%")
                                 ->orWhere('plate_number','LIKE',"%{$search}%")
+                                ->orWhere('brand','LIKE',"%{$search}%")
+                                ->orWhere('model','LIKE',"%{$search}%")
+                                ->orWhere('type',$search)
                                 ->count();
 
-            }
+            //}
         }
 
         $data = array();
