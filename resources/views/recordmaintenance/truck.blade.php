@@ -138,7 +138,7 @@
                     </div>
 
                   
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                       <label class="col-sm-12 control-label types">*Type</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
@@ -150,6 +150,17 @@
                           <label class="form-check-label" for="inlineRadio1">Non-containerized</label>
                         </div>
                       </div>
+                    </div> -->
+
+                    <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Type</label>
+                       <div class="col-sm-12">
+                          <select class="form-control delivery_type" id="types" name="types">
+                               <option value="">Please select Type</option>
+                               <option value="Containerized">Containerized</option>
+                               <option value="Non-containerized">Non-containerized</option>
+                          </select>
+                        </div>
                     </div>
 
                     <br>
@@ -251,7 +262,10 @@
         $('#id').val('');
         $("#truck_suppliers").val("");
         $("#supplier_ids").val("");
-        console.log($("#supplier_ids").val());
+
+        $("#types").css('outline','1px solid transparent')   
+        $("#modalresponse").hide() 
+        //console.log($("#supplier_ids").val());
         $('#truckForm').trigger("reset");
         $('#modelHeading').html("Register Truck");
         $('#ajaxModel').modal({
@@ -263,8 +277,10 @@
     $('body').on('click', '.editProduct', function () {
       $("#ajaxModelView").modal("hide")
       $(".truck_id").show();
-      $('#truckForm').trigger("reset");      
-      var id = $(this).attr('data-id');
+      $('#truckForm').trigger("reset");   
+      $("#types").css('outline','1px solid transparent')   
+      var id = $(this).attr('data-id');   
+      $("#modalresponse").hide() 
       $.get("{{ route('ajaxtrucks.index') }}" +'/' + id +'/edit', function (data) {
           $('#modelHeading').html("Edit Truck");
           $('#saveBtn').val("edit-user");
@@ -297,16 +313,19 @@
 
           $('#truck_suppliers').val(supplier_trucks);
           $('#supplier_ids').val(data[0].supplier_trucks_ids);
-          $("input[name=types][value=" + data[0]  .type + "]").prop('checked', 'checked');
+          // $("input[name=types][value=" + data[0].type + "]").prop('checked', 'checked');
           // $('#delivery_type').val(data.delivery_type);
+          $('#types').val(data[0].type)
       })
    });
     
     $('#saveBtn').click(function (e) {
 
        
-        var types = $(':radio[name^=types]:checked').length;
-        if($("#trucking_company").val() == "" || $("#plate_number").val() == "" || $("#model").val() == "" || $("#brand").val() == "" || types==0 || $("#truck_suppliers").val() == ""){
+        //var types = $(':radio[name^=types]:checked').length;
+         var types = $('#types').children("option:selected").val();
+
+        if($("#trucking_company").val() == "" || $("#plate_number").val() == "" || $("#model").val() == "" || $("#brand").val() == "" || types== "" || $("#truck_suppliers").val() == ""){
           $("#modalresponse").show();
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
           $('#modalresponse').fadeIn(1000);
@@ -317,32 +336,32 @@
           if($("#trucking_company").val() == "")
              $("#trucking_company").css('outline','1px solid red')
            else
-             $("#trucking_company").css('outline','1px solid black')
+             $("#trucking_company").css('outline','1px solid transparent')
 
            if($("#plate_number").val() == "")
              $("#plate_number").css('outline','1px solid red')
            else
-             $("#plate_number").css('outline','1px solid black')
+             $("#plate_number").css('outline','1px solid transparent')
 
            if($("#model").val() == "")
              $("#model").css('outline','1px solid red')
            else
-             $("#model").css('outline','1px solid black')
+             $("#model").css('outline','1px solid transparent')
 
             if($("#brand").val() == "")
              $("#brand").css('outline','1px solid red')
             else
-             $("#brand").css('outline','1px solid black')
+             $("#brand").css('outline','1px solid transparent')
 
             if($("#truck_suppliers").val() == "")
              $("#truck_suppliers").css('outline','1px solid red')
             else
-             $("#truck_suppliers").css('outline','1px solid black')
+             $("#truck_suppliers").css('outline','1px solid transparent')
 
-           if(types == 0)
-             $(".types").css('color','red')
+           if(types == "")
+             $("#types").css('outline','1px solid red')
             else
-             $(".types").css('color','black')
+             $("#types").css('outline','1px solid transparent')
 
            return false;
 

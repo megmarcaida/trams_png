@@ -88,7 +88,7 @@
                         </div>
                     </div>
                     
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                       <label class="col-sm-12 control-label delivery_type">*Delivery Type</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
@@ -100,9 +100,20 @@
                           <label class="form-check-label" for="inlineRadio1">Imported</label>
                         </div>
                       </div>
-                    </div>
+                    </div> -->
 
                     <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Delivery Types</label>
+                       <div class="col-sm-12">
+                          <select class="form-control delivery_type" id="delivery_types" name="delivery_types">
+                               <option value="">Please select Delivery Type</option>
+                               <option value="Local">Local</option>
+                               <option value="Imported">Imported</option>
+                          </select>
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group">
                       <label class="col-sm-12 control-label ordering_days">*Ordering Days</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
@@ -134,9 +145,23 @@
                           <label class="form-check-label" for="inlineCheckbox2">Sun</label>
                         </div>
                       </div>
+                    </div> -->
+                    <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Ordering Days</label>
+                       <div class="col-sm-12">
+                          <select multiple="true" class="form-control ordering_days" id="ordering_days" name="ordering_days[]">
+                               <option value="Mon">Mon</option>
+                               <option value="Tue">Tue</option>
+                               <option value="Wed">Wed</option>
+                               <option value="Thu">Thu</option>
+                               <option value="Fri">Fri</option>
+                               <option value="Sat">Sat</option>
+                               <option value="Sun">Sun</option>
+                          </select>
+                        </div>
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                       <label class="col-sm-12 control-label module">*Module</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
@@ -165,7 +190,20 @@
                           <label class="form-check-label" for="inlineCheckbox2">PCC</label>
                         </div>
                         </div>
-                      </div>
+                      </div> -->
+
+                      <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Module</label>
+                       <div class="col-sm-12">
+                          <select multiple="true" class="form-control module" id="modules" name="module[]">
+                               <option value="PCC">PCC</option>
+                               <option value="Baby Care">Baby Care</option>
+                               <option value="Laundry">Laundry</option>
+                               <option value="Liquids">Liquids</option>
+                               <option value="Fem Care">Fem Care</option>
+                          </select>
+                        </div>
+                    </div>
 
                     <hr><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC First Name</label><div class="col-sm-12"><input type="text" class="form-control" id="spoc_first_name0" name="spoc_first_name[]" placeholder="Enter SPOC First Name" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Last Name</label><div class="col-sm-12"><input type="text" class="form-control" id="spoc_last_name0" name="spoc_last_name[]" placeholder="Enter SPOC Last Name" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Contact Number</label><div class="col-sm-12"><input type="text" class="form-control" id="spoc_contact_number0" name="spoc_contact_number[]" placeholder="Enter SPOC Contact Number" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Email Address</label><div class="col-sm-12"><input type="email" class="form-control" id="spoc_email_address0" name="spoc_email_address[]" placeholder="Enter SPOC Email Address" value="" maxlength="150" required=""></div></div>
 
@@ -318,12 +356,15 @@
           var spoc_length = spoc_first_name_arr.length - 1;
 
           console.log(spoc_length)
-          $.each( ordering_days_arr, function( key, value ) {
-            $("input[value='" + $.trim(value) + "']").prop('checked', true);
+          console.log(ordering_days_arr)
+          $.each( ordering_days_arr, function( key, e ) {
+            e = e.trim()
+            $("#ordering_days option[value='" + e + "']").prop("selected", true);
           });
 
-          $.each( modules_arr, function( key, value ) {
-            $("input[value='" + $.trim(value) + "']").prop('checked', true);
+          $.each( modules_arr, function( key, e ) {
+            e = e.trim()
+            $("#modules option[value='" + e + "']").prop("selected", true);
           });
 
           for (var i = 1; i < spoc_length; i++) {
@@ -350,8 +391,8 @@
             //console.log($.trim(value.replace("<br>","")));
           });
 
-          $("input[name=delivery_types][value=" + data.delivery_type + "]").prop('checked', 'checked');
-          // $('#delivery_type').val(data.delivery_type);
+          // $("input[name=delivery_types][value=" + data.delivery_type + "]").prop('checked', 'checked');
+          $('#delivery_types').val(data.delivery_type)
       })
    });
     
@@ -359,12 +400,28 @@
         
       //console.log($("#delivery_type").prop('checked'));
 
-        var delivery_types = $(':radio[name^=delivery_types]:checked').length;
-          
-        var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
+        //var delivery_types = $(':radio[name^=delivery_types]:checked').length;
 
-        var modules = $(':checkbox[name^=module]:checked').length;
-        if($("#vendor_code").val() == "" || $("#supplier_name").val() == "" || delivery_types==0 || ordering_days == 0 || modules == 0){
+        var delivery_types = [];
+        $.each($("#delivery_types option:selected"), function(){            
+            delivery_types.push($(this).val());
+        });
+          
+        // var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
+
+        var ordering_days = [];
+        $.each($("#ordering_days option:selected"), function(){            
+            ordering_days.push($(this).val());
+        });
+
+        //var modules = $(':checkbox[name^=module]:checked').length;
+        var modules = [];
+        $.each($("#modules option:selected"), function(){            
+            modules.push($(this).val());
+        });
+
+
+        if($("#vendor_code").val() == "" || $("#supplier_name").val() == "" || delivery_types.length==0 || ordering_days.length == 0 || modules.length == 0){
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
             if($("#vendor_code").val() == "")
@@ -386,19 +443,19 @@
 
             
             if(delivery_types == 0)
-              $(".delivery_type").css('color','red')
+              $(".delivery_type").css('outline','1px red solid')
             else
-              $(".delivery_type").css('color','black')
+              $(".delivery_type").css('outline','1px black solid')
 
             if(ordering_days == 0)
-              $(".ordering_days").css('color','red')
+              $(".ordering_days").css('outline','1px red solid')
             else
-              $(".ordering_days").css('color','black')
+              $(".ordering_days").css('outline','1px black solid')
 
             if(modules == 0)
-              $(".module").css('color','red')
+              $(".module").css('outline','1px red solid')
             else
-              $(".module").css('color','black')
+              $(".module").css('outline','1px black solid')
 
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){

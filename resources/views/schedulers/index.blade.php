@@ -33,9 +33,9 @@
           }
     });
   
-    $(':radio').change(function (event) {
-        var id = $(this).data('id');
-        if(id == "recurrent"){
+    $('body').on('change','#recurrence', function (event) {
+        var id = $("#recurrence").val();
+        if(id == "Recurrent"){
           $(".r_ordering_days").css('display','block');
           $(".r_recurrent_dateend").css('display','block');
         }else{
@@ -44,13 +44,25 @@
         }
     });
 
+    $('body').on('change','#recurrence_unavailability', function (event) {
+        var id = $("#recurrence_unavailability").val();
+        if(id == "Recurrent"){
+          $(".r_ordering_days_u").css('display','block');
+          $(".r_recurrent_dateend").css('display','block');
+        }else{
+          $(".r_ordering_days_u").css('display','none');
+          $(".r_recurrent_dateend").css('display','none');
+        }
+    });
+
     //Edit single event
     $('body').on('click', '#edit_single_event', function (e) {
         $('#ajaxModelEditRecurrent').modal('hide')
         $('.isEditingRecurrent').val("0")
+        $('.isEditingSingle').val("1")
         //console.log($('#selected_schedule').val())  
         //console.log($('#recurrence_hidden').val())
-
+        
 
 
           //$('div.slot_box').removeClass("slot_box");
@@ -68,7 +80,7 @@
           $('#truck_id').html('');
           $('#driver_id').html('');
           $('#assistant_id').html('');
-          //$('#dock_id').html('');
+          $('#dock_id').html('');
           $('#alt_supplier_id').val('');
           //$('#supplier_id').attr("disabled","disabled");
           $('#po_number').attr("readonly","true");
@@ -148,13 +160,15 @@
 
               $('#container_number').val(data.container_number);
 
-              $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+              // $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+              console.log(data.recurrence)
+              $("#recurrence").val(data.recurrence)
               if(data.recurrence == "Recurrent"){
                 $(".r_ordering_days").css('display','block')
               }
               var ordering_days_arr = data.ordering_days.split("|")
-              $.each( ordering_days_arr, function( key, value ) {
-                $("input[value='" + $.trim(value) + "']").prop('checked', true);
+              $.each(ordering_days_arr, function(i,e){
+                $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
               });
 
               $('#cont').html('');
@@ -167,6 +181,11 @@
                   if(item != ""){
 
                     addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                  }else{
+                    console.log(data.material_list.gcas.length)
+                    if(data.material_list.gcas.length==2){
+                      addRow("","","")
+                    }
                   }
               });
 
@@ -219,6 +238,7 @@
     $('body').on('click', '#edit_recurrence', function (e) {
         $('#ajaxModelEditRecurrent').modal('hide')
         $('#isEditingRecurrent').val("1");
+        $('#isEditingSingle').val("0")
         //console.log($('#selected_schedule').val()) 
 
         //console.log($('#recurrence_hidden').val())   
@@ -321,8 +341,8 @@
                 $(".r_ordering_days").css('display','block')
               }
               var ordering_days_arr = data.ordering_days.split("|")
-              $.each( ordering_days_arr, function( key, value ) {
-                $("input[value='" + $.trim(value) + "']").prop('checked', true);
+              $.each(ordering_days_arr, function(i,e){
+                $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
               });
 
               $('#cont').html('');
@@ -600,10 +620,20 @@
             $('.slot_box').removeClass('active_slot_box');
             $('#modelHeading').html("Register Schedule");
 
-            $('div.occupied_slot_box').addClass("slot_box");
-            $('div.slot_box').removeClass("occupied_slot_box");
-            $('div.slot_box').removeClass("active_slot_box");
-            $('div.slot_box').removeClass("editable_slot_box");
+              $('div.occupied_slot_box').addClass("slot_box");
+              $('div.slot_box').removeClass("occupied_slot_box");
+              $('div.slot_box').removeClass("active_slot_box");
+              $('div.slot_box').removeClass("editable_slot_box");
+
+            $('#po_number').css("outline","solid 1px transparent")
+            $('#truck_id').css("outline","solid 1px transparent")
+            $('#supplier_id').css("outline","solid 1px transparent")
+            $('#driver_id').css("outline","solid 1px transparent")
+            $('#assistant_id').css("outline","solid 1px transparent")
+            $('#dock_id').css("outline","solid 1px transparent")
+            $('#dateOfDelivery').css("outline","solid 1px transparent")
+            $('#recurrence').css("outline","solid 1px transparent")
+            $('.slotting_time').css("color","black")
 
             $('#cont').html('');
             $('document').ready(function(){
@@ -626,6 +656,8 @@
             $('div.slot_box').removeClass("editable_slot_box");
             $('#dock_id_unavailability').val(0)
             $('#dateOfUnavailability').val('')
+
+            $(".r_ordering_days_u").css('display','none')
             $('#unavailabilityForm').trigger("reset");
             $('#ajaxModelUnavailability').modal({
               backdrop:'static',
@@ -704,7 +736,6 @@
       },
        eventClick: function(info) {
 
-
           $('#scheduleForm').trigger("reset");      
 
           // view hide element
@@ -748,8 +779,19 @@
           $('#supplier_id').addClass('disableSelect');
           $('#dock_id').addClass('disableSelect');
 
-
           //console.log(info.event.extendedProps)
+          $('#recurrence_unavailability').css('outline','1px solid transparent')
+          $('#po_number').css('outline','1px solid transparent')
+          $('#recurrence').css('outline','1px solid transparent')
+          $('#dateOfDelivery').css('outline','1px solid transparent')
+          $('#truck_id').css('outline','1px solid transparent')
+          $('#driver_id').css('outline','1px solid transparent')
+          $('#assistant_id').css('outline','1px solid transparent')
+          $('#supplier_id').css('outline','1px solid transparent')
+          $('.slotting_time').css('color','black')
+          $('#dock_id_unavailability').css('outline','1px solid transparent')
+          $('#dateOfUnavailability').css('outline','1px solid transparent')
+          $('#type_unavailability').css('outline','1px solid transparent')
           $.ajax({
               url: "{{ url('getSupplierData') }}",
               type: "POST",
@@ -894,13 +936,18 @@
 
                 $('#container_number').val(data.container_number);
 
-                $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+                // $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+                console.log(data.recurrence)
+                $("#recurrence").val(data.recurrence)
                 if(data.recurrence == "Recurrent"){
                   $(".r_ordering_days").css('display','block')
                 }
                 var ordering_days_arr = data.ordering_days.split("|")
-                $.each( ordering_days_arr, function( key, value ) {
-                  $("input[value='" + $.trim(value) + "']").prop('checked', true);
+                // $.each( ordering_days_arr, function( key, value ) {
+                //   $("input[value='" + $.trim(value) + "']").prop('checked', true);
+                // });
+                $.each(ordering_days_arr, function(i,e){
+                  $("#submodules option[value='" + $.trim(e) + "']").prop("selected", true);
                 });
 
                 $('#cont').html('');
@@ -1020,54 +1067,66 @@
     $('body').on('click', '#saveBtn', function (e) {
 
        
-        var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
-        var recurrence = $(':radio[name^=recurrence]:checked');
-
-        var trucktype = $("#truck_id > option:selected").data('type');
-        
+        // var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
+        var ordering_days = [];
+        $.each($("#ordering_days option:selected"), function(){            
+            ordering_days.push($(this).val());
+        });
+        //var recurrence = $(':radio[name^=recurrence]:checked');
+        var recurrence = $('#recurrence').children("option:selected");
+        var trucktype = $("#truck_id > option:selected").data('type');  
 
 
         if(recurrence.val() == "Recurrent"){
-          if(ordering_days == 0){
-             $("#modalresponse").show();
-          $(".ordering_days").css('color','red')
-            $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+            $(".gcas").css('border','1px solid black')
+            $(".description").css('border','1px solid black')
+            $(".quantity").css('border','1px solid black')
 
-          $('#modalresponse').fadeIn(1000);
-          setTimeout(function(){
-            $('#modalresponse').fadeOut(1000);
-          },2000)
-            return false;
-          }
-          else{
-            $(".ordering_days").css('color','black')
-          }
-        }else if(recurrence.val() == "Single Event"){
-           
-            if($('.gcas').val() == "" || $('.quantity').val() == "" || $('.description').val() == ""){
+             if($("#recurrent_dateend").val() == "")
+             $("#recurrent_dateend").css('outline','1px solid red')
+            else
+             $("#recurrent_dateend").css('outline','1px solid transparent')
 
-                $("#modalresponse").show();
+            if(ordering_days == 0){
+              $("#modalresponse").show();
+              $(".ordering_days").css('color','red')
                 $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
-                $('#modalresponse').fadeIn(1000);
-                setTimeout(function(){
-                  $('#modalresponse').fadeOut(1000);
-                },2000)
+              $('#modalresponse').fadeIn(1000);
+              setTimeout(function(){
+                $('#modalresponse').fadeOut(1000);
+              },2000)
 
-                $(".gcas").css('border','1px solid red')
-                $(".description").css('border','1px solid red')
-                $(".quantity").css('border','1px solid red')
-                return false;
-            }else{
-                $(".gcas").css('border','1px solid black')
-                $(".description").css('border','1px solid black')
-                $(".quantity").css('border','1px solid black')
+              return false;
             }
-        }
+            else{
+              $(".ordering_days").css('color','black')
+            }
+          }else if(recurrence.val() == "Single Event"){
+             
+              if($('.gcas').val() == "" || $('.quantity').val() == "" || $('.description').val() == ""){
 
+                  $("#modalresponse").show();
+                  $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+
+                  $('#modalresponse').fadeIn(1000);
+                  setTimeout(function(){
+                    $('#modalresponse').fadeOut(1000);
+                  },2000)
+
+                  $(".gcas").css('border','1px solid red')
+                  $(".description").css('border','1px solid red')
+                  $(".quantity").css('border','1px solid red')
+                  return false;
+              }else{
+                  $(".gcas").css('border','1px solid black')
+                  $(".description").css('border','1px solid black')
+                  $(".quantity").css('border','1px solid black')
+              }
+          }
         
 
-        if($("#po_number").val() == "" || $("#supplier_id").val() == "0" || $("#dock_id").val() ==  "" || $("#truck_id").val() == "" || $("#driver_id").val() == "" || $("#assistant_id").val() == "" || recurrence.length == 0 || $("#dateOfDelivery").val() == "" || $("#slotting_time").val() == "" ){
+        if($("#po_number").val() == "" || $("#supplier_id").val() == "0" || $("#dock_id").val() ==  "" || $("#truck_id").val() == "" || $("#driver_id").val() == "" || $("#assistant_id").val() == "" || $("#recurrence").val() == "" || $("#dateOfDelivery").val() == "" || $("#slotting_time").val() == ""){
           $("#modalresponse").show();
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
@@ -1075,6 +1134,12 @@
           setTimeout(function(){
             $('#modalresponse').fadeOut(1000);
           },2000)
+
+          console.log("Recurrent:" + $("#recurrence").val())
+          if($("#recurrence").val() == "")
+            $("#recurrence").css('outline','1px solid red')
+          else
+            $("#recurrence").css('outline','1px solid transparent')
 
            if($("#po_number").val() == "")
              $("#po_number").css('outline','1px solid red')
@@ -1111,6 +1176,8 @@
             else
              $("#dateOfDelivery").css('outline','1px solid transparent')
 
+           
+
 
            if(trucktype == "Containerized"){
 
@@ -1130,12 +1197,9 @@
             $(".slotting_time").css('color','black')
 
 
-            if(recurrence.length == 0)
-              $(".recurrence").css('color','red')
-             else
-              $(".recurrence").css('color','black')
+          
 
-            return false;
+          return false;
         }else{
 
             e.preventDefault();
@@ -1148,8 +1212,8 @@
               type: "POST",
               dataType: 'json',
               success: function (data) {
-
-                 if(data.conflict){
+                console.log(data)
+                 if(data.conflict != null){
                   console.log(data)
                   $('#modelViewErrorRecurrent').modal({
                     backdrop:'static',
@@ -1161,6 +1225,7 @@
                   });
                  }else{
 
+                   console.log(data.data)
                    $('#response').show();
                    $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                     $('#scheduleForm').trigger("reset");
@@ -1169,8 +1234,15 @@
                       $('#response').hide("slow");
                     },2000)
                     
+                    if(data.data != null){
 
-                     window.open("printVoucher/"+data.id,"_blank")
+                      $.each(data.data, function(key,value){            
+                          window.open("printVoucher/"+value.id,"_blank")
+                      });
+                    }else{
+                      window.open("printVoucher/"+data.id,"_blank")
+                    }
+
                      var current_module = $("#current_module").val()
                      testCalendar(current_module)
                      $('#saveBtn').html('Save Changes');
@@ -1230,33 +1302,29 @@
     $('body').on('click', '#saveBtnUnavailability', function (e) {
 
 
-        var ordering_days = $(':checkbox[name^=ordering_days_unavailability]:checked').length;
-        var recurrence = $(':radio[name^=recurrence_unavailability]:checked');
+        var ordering_days = [];
+        $.each($("#ordering_days_u option:selected"), function(){            
+            ordering_days.push($(this).val());
+        });
+        //var recurrence = $(':radio[name^=recurrence]:checked');
+        var recurrence = $('#recurrence_unavailability').children("option:selected");
+        var type = $('#type_unavailability').children("option:selected");
 
-        var type = $(':radio[name^=type_unavailability]:checked');
 
 
         if(recurrence.val() == "Recurrent"){
           if(ordering_days == 0){
 
-          $(".ordering_days").css('color','red')
+          $("#ordering_days_u").css('outline','solid 1px red')
             return false;
           }
           else{
-            $(".ordering_days").css('color','black')
+            $("#ordering_days_u").css('outline','solid 1px transparent')
           }
         }
 
-        // var today = new Date();
-        // var time = today.getHours();
-       
-        // if(time > 16)
-        // {
-        //   $('#schedule_id').val('');
-        //   //console.log( $('#schedule_id').val())
-        // }
 
-        if($("#dock_id_unavailability").val() ==  "" || recurrence.length == 0 || type.length == 0 || $("#dateOfUnavailability").val() == "" || $("#slotting_time").val() == "" ){
+        if($("#dock_id_unavailability").val() ==  "" || recurrence.val() == "" || type.val() == "" || $("#dateOfUnavailability").val() == "" || $("#slotting_time").val() == "" ){
 
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
@@ -1286,15 +1354,15 @@
             $(".slotting_time").css('color','black')
 
 
-            if(recurrence.length == 0)
-              $(".recurrence").css('color','red')
+            if(recurrence.val() == "")
+              $(".recurrence").css('outline','solid 1px red')
              else
-              $(".recurrence").css('color','black')
+              $(".recurrence").css('outline','solid 1px transparent')
 
-            if(type.length == 0)
-              $(".type_unavailability").css('color','red')
+            if(type.val() == "")
+              $("#type_unavailability").css('outline','solid 1px red')
              else
-              $(".type_unavailability").css('color','black')
+              $("#type_unavailability").css('outline','solid 1px transparent')
 
             return false;
         }else{
@@ -1640,6 +1708,7 @@
                      <input type="hidden" name="isEditedFinalized" id="isEditedFinalized">
                      <input type="hidden" value="0" name="isForUnavailability" id="isForUnavailability">
                      <input type="hidden" value="0" name="isEditingRecurrent" id="isEditingRecurrent">
+                     <input type="hidden" value="0" name="isEditingSingle" id="isEditingSingle">
 
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*PO Number</label>
@@ -1679,7 +1748,7 @@
                       </div>
                     </div>
                     
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                       <label class="col-sm-12 control-label recurrence">*Recurrence</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
@@ -1691,9 +1760,20 @@
                           <label class="form-check-label" for="inlineRadio1">Recurrent</label>
                         </div>
                       </div>
+                    </div> -->
+
+                    <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Recurrence</label>
+                       <div class="col-sm-12">
+                          <select class="form-control recurrence" id="recurrence" name="recurrence">
+                               <option value="">Please select Recurrence</option>
+                               <option value="Single Event">Single Event</option>
+                               <option value="Recurrent">Recurrent</option>
+                          </select>
+                        </div>
                     </div>
 
-                    <div class="form-group r_ordering_days">
+                   <!--  <div class="form-group r_ordering_days">
                       <label class="col-sm-12 control-label ordering_days">*Every</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
@@ -1725,6 +1805,20 @@
                           <label class="form-check-label" for="inlineCheckbox2">Sun</label>
                         </div>
                       </div>
+                    </div> -->
+                    <div class="form-group r_ordering_days">
+                       <label for="name" class="col-sm-12 control-label">*Ordering Days</label>
+                       <div class="col-sm-12">
+                          <select multiple="true" class="form-control ordering_days" id="ordering_days" name="ordering_days[]">
+                               <option value="Mon">Mon</option>
+                               <option value="Tue">Tue</option>
+                               <option value="Wed">Wed</option>
+                               <option value="Thu">Thu</option>
+                               <option value="Fri">Fri</option>
+                               <option value="Sat">Sat</option>
+                               <option value="Sun">Sun</option>
+                          </select>
+                        </div>
                     </div>
 
                     <div class="form-group r_recurrent_dateend">
@@ -1882,7 +1976,7 @@
                 <br>
                 <div class="row">
                   <div class="col-xl-12">
-                    <button class="btn btn-secondary btn-block">Close</button>
+                    <button class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
                   </div>
                 </div>
             </div>
@@ -1894,7 +1988,7 @@
                     <input type="hidden" id="isRecurrent">
                     <br>
                     <button id="delete_schedule" class="btn btn-primary btn-block">Cancel Schedule</button>
-                    <button class="btn btn-secondary btn-block btn-block-sched">Cancel</button>
+                    <button class="btn btn-secondary btn-block btn-block-sched" data-dismiss="modal">Cancel</button>
                   </div>
                 </div>
             </div>
@@ -2069,7 +2163,7 @@
                       </div>
                     </div>
                     
-                    <div class="form-group">
+                   <!--  <div class="form-group">
                       <label class="col-sm-12 control-label recurrence">*Recurrence</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
@@ -2081,40 +2175,32 @@
                           <label class="form-check-label" for="inlineRadio1">Recurrent</label>
                         </div>
                       </div>
+                    </div> -->
+
+                    <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Recurrence</label>
+                       <div class="col-sm-12">
+                          <select class="form-control recurrence" id="recurrence_unavailability" name="recurrence_unavailability">
+                               <option value="">Please select Recurrence</option>
+                               <option value="Single Event">Single Event</option>
+                               <option value="Recurrent">Recurrent</option>
+                          </select>
+                        </div>
                     </div>
 
-                    <div class="form-group r_ordering_days">
-                      <label class="col-sm-12 control-label ordering_days">*Every</label>
-                      <div class="col-sm-12">
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_m" value="Mon">
-                          <label class="form-check-label" for="inlineCheckbox1">Mon</label>
+                    <div class="form-group r_ordering_days_u">
+                       <label for="name" class="col-sm-12 control-label">*Ordering Days</label>
+                       <div class="col-sm-12">
+                          <select multiple="true" class="form-control ordering_days_u" id="ordering_days_u" name="ordering_days[]">
+                               <option value="Mon">Mon</option>
+                               <option value="Tue">Tue</option>
+                               <option value="Wed">Wed</option>
+                               <option value="Thu">Thu</option>
+                               <option value="Fri">Fri</option>
+                               <option value="Sat">Sat</option>
+                               <option value="Sun">Sun</option>
+                          </select>
                         </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_t" value="Tue">
-                          <label class="form-check-label" for="inlineCheckbox2">Tue</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_w" value="Wed">
-                          <label class="form-check-label" for="inlineCheckbox2">Wed</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_th" value="Thu">
-                          <label class="form-check-label" for="inlineCheckbox2">Thu</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_f" value="Fri">
-                          <label class="form-check-label" for="inlineCheckbox2">Fri</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_sat" value="Sat">
-                          <label class="form-check-label" for="inlineCheckbox2">Sat</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" name="ordering_days_unavailability[]" class="ordering_days" id="ordering_days_sun" value="Sun">
-                          <label class="form-check-label" for="inlineCheckbox2">Sun</label>
-                        </div>
-                      </div>
                     </div>
 
                     <div class="form-group">
@@ -2176,7 +2262,7 @@
                       </div>
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                       <label class="col-sm-12 control-label recurrence">*Type</label>
                       <div class="col-sm-12">
                         <div class="form-check form-check-inline">
@@ -2188,6 +2274,17 @@
                           <label class="form-check-label" for="inlineRadio1">Unplanned</label>
                         </div>
                       </div>
+                    </div> -->
+
+                    <div class="form-group">
+                       <label for="name" class="col-sm-12 control-label">*Type</label>
+                       <div class="col-sm-12">
+                          <select class="form-control type_unavailability" id="type_unavailability" name="type_unavailability">
+                               <option value="">Please select options</option>
+                               <option value="Planned">Planned</option>
+                               <option value="Unplanned">Unplanned</option>
+                          </select>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -2248,7 +2345,7 @@
                 <br>
                 <div class="row">
                   <div class="col-xl-12">
-                    <button class="btn btn-secondary btn-block">Close</button>
+                    <button class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
                   </div>
                 </div>
             </div>

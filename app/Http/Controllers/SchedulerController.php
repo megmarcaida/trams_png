@@ -250,7 +250,7 @@ class SchedulerController extends Controller
                     $_Data['start'] = date('Y-m-d',strtotime($unavailability->date_of_unavailability)) . "T" .$start .":00";
                     $_Data['end'] = date('Y-m-d',strtotime($unavailability->date_of_unavailability)) . "T" .$end .":00";
                     $_Data['created_at'] = date('j M Y h:i a',strtotime($unavailability->created_at));
-                    switch ($schedule->status) {
+                    switch ($unavailability->status) {
                         case 1:
                             $status = "Active";
                             break;
@@ -494,14 +494,9 @@ class SchedulerController extends Controller
     public function store(Request $request)
     {
        
-
+        //for Scheduling
         if($request->isForUnavailability == "0"){
 
-
-            // if($request->isEditingRecurrent == "1"){
-            //     $del = Schedule::where('po_number', $request->po_number);
-            //     $del->delete();
-            // }
 
             $gcas = '';
             $description = '';
@@ -540,6 +535,7 @@ class SchedulerController extends Controller
             $status = $request->schedule_id != null ? '2' : '1';
 
 
+            //check if Recurrent
             if($request->recurrence == 'Recurrent'){
 
                 
@@ -556,6 +552,7 @@ class SchedulerController extends Controller
                 
                 $dates = array();
                 $recurrent_id = time().'-'.mt_rand();
+                $ids_ = array();
                 foreach($request->ordering_days as $sched){
                     $sched = trim($sched);
                     if($sched == ""){
@@ -590,13 +587,23 @@ class SchedulerController extends Controller
                     }
 
                     foreach($dates as $date){
-
+                        //check if has conflict on date
                         $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time);
 
                         if($hasConflict > 0){
                             
                             // CONFLICTS ENTRY
-                            $sched = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => 10, 'material_list' => $material_list,'recurrent_id' => $recurrent_id,'conflict_id'=>$hasConflict]); 
+                            if($request->isEditingRecurrent == "1"){
+
+                                $allRecurrent = Schedule::find($request->schedule_id);
+                                $recurrent_id = $allRecurrent->recurrence_unavailability;
+
+                                $sched = Schedule::updateOrCreate(['recurrent_id' => $recurrent_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => 10, 'material_list' => $material_list,'recurrent_id' => $recurrent_id,'conflict_id'=>$hasConflict]);
+
+                            }else{
+
+                                $sched = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => 10, 'material_list' => $material_list,'recurrent_id' => $recurrent_id,'conflict_id'=>$hasConflict]); 
+                            }
 
 
 
@@ -605,45 +612,43 @@ class SchedulerController extends Controller
                             if($request->schedule_id != null){
 
                                 $checkIfFinalized = Schedule::find($request->schedule_id);
+                                $date_yesterday = date('d.m.Y',strtotime("-1 days"));
+                                $timestamp = $checkIfFinalized->updated_at;
+                                $timestamp = date('d.m.Y',strtotime($timestamp));
                                 
-                                $timestamp = $checkIfFinalized->update_at;
-
-                                $today = new DateTime(); // This object represents current date/time
-                                $today->setTime( 0, 0, 0 ); // reset time part, to prevent partial comparison
-
-                                $match_date = DateTime::createFromFormat( "Y.m.d\\TH:i", $timestamp );
-                                $match_date->setTime( 0, 0, 0 ); // reset time part, to prevent partial comparison
-
-                                $diff = $today->diff( $match_date );
-                                $diffDays = (integer)$diff->format( "%R%a" ); // Extract days count in interval
-                                switch ($diffDays) {
-                                    case 0:
+                                if($timestamp == $date_yesterday){
+                                    if($checkIfFinalized->status == 3){
+                                        $checkIfFinalized->update(["status" => 0]);
+                                        $status = 4;
+                                        $request->schedule_id = null;
+                                    }else{
                                         $status = 2;
-                                        break;
-                                    case -1:
-                                        if($checkIfFinalized->status == 3){
-                                            $checkIfFinalized->update(["status", 0]);
-                                            $status = 4;
-                                            $request->schedule_id = null;
-                                        }else{
-                                            $status = 2;
-                                        }
-                                    break;      
-                                    default:
-                                        if($checkIfFinalized->status == 3){
-                                            $checkIfFinalized->update(["status", 0]);
-                                            $status = 4;
-                                            $request->schedule_id = null;
-                                        }else{
-                                            $status = 2;
-                                        }
-                                        $status = 1;
-                                        break;
+                                    }
+                                }else{
+                                    $status = 2;
                                 }
                                 //$date_created = $schedule_finalized['created_date'];
                             }
                             
-                            Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list,'recurrent_id' => $recurrent_id]);  
+                            if($request->isEditingRecurrent == "1"){
+
+                                $allRecurrent = Schedule::find($request->schedule_id);
+                                $recurrent_id = $allRecurrent->recurrence_unavailability;
+
+                                Schedule::updateOrCreate(['recurrent_id' => $recurrent_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list,'recurrent_id' => $recurrent_id]);  
+
+                            }else if($request->isEditingSingle =="1")   {
+
+                                $last_inserted_id = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list,'recurrent_id' => $recurrent_id]);
+                                    $ret = ['success'=>'Schedule saved successfully.',"id"=>$last_insert->id];
+                                    return $ret;
+                            }else {
+
+                            $last_inserted_id = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list,'recurrent_id' => $recurrent_id]);
+                            $nestedData['data'] = $last_inserted_id->id;  
+                            $ids_[] = $nestedData;
+                            }
+
 
                         }
                     }
@@ -686,14 +691,14 @@ class SchedulerController extends Controller
                     $data[] = $nestedData;
 
                 }
-                if($return_schedule){
+                if(count($return_schedule) > 0){
                     $ret = ["conflict"=>$data];
                 }else{
 
-                    $ret = ['success'=>"Schedule saved successfull"]; 
+                    $ret = ['success'=>"Schedule saved successfull","data"=>$ids_]; 
                 }
             }else{
-
+            //check if Single Event
 
                 //CONTINUE NORMAL ENTRY
                 if($request->schedule_id != null){
