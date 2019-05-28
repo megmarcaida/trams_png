@@ -139,7 +139,7 @@ class TruckController extends Controller
 
                 $totalFiltered = Truck::where('id','LIKE',"%{$search}%")
                                 ->orWhere('supplier_names','LIKE',"%{$search}%")
-                                 ->orWhere('trucking_company','LIKE',"%{$search}%")
+                                ->orWhere('trucking_company','LIKE',"%{$search}%")
                                 ->orWhere('plate_number','LIKE',"%{$search}%")
                                 ->orWhere('brand','LIKE',"%{$search}%")
                                 ->orWhere('model','LIKE',"%{$search}%")

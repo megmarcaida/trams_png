@@ -17,11 +17,11 @@
     <div class="col-xl-12 col-sm-12 mb-3">
       <h1>Trucks</h1>
         <div class="row">
-          <div class="col-xl-6">
+          <div class="col-xl-6 col-md-6">  
             <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Trucks</a>
             <a class="btn btn-warning" href="{{ route('exportTruck') }}">Export Trucks Data</a>
           </div>
-          <div class="col-xl-3">  
+           <div class="col-xl-6 col-md-6">   
             <form action="{{ route('importTruck') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="file" name="file" class="form-control">
@@ -40,7 +40,7 @@
         @endif
         </div>
           <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-6">
               
             <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Supplier</label>
@@ -55,7 +55,7 @@
             </div>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-6">
               <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Truck Type</label>
                <div class="col-sm-12">

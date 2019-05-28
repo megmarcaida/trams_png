@@ -18,16 +18,16 @@
       <h1>Assistants</h1>
 
         <div class="row">
-          <div class="col-xl-6">
+          <div class="col-xl-6 col-md-6">
             @if(Auth::user()->role_id != 3)      
                <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Assistant</a>
             @elseif(Auth::user()->role_id == 3)
                <a class="btn btn-success" href="javascript:void(0)" id="viewPendingRegistration"> View Pending Registrations</a>       
             @endif
            
-            <a class="btn btn-warning" href="{{ route('exportAssistant') }}">Export Assistants Data</a>
+            <a class="btn btn-warning" href="{{ route('exportAssistant') }}">Export Assistants</a>
           </div>
-          <div class="col-xl-3">
+          <div class="col-xl-6 col-md-6">
               <form action="{{ route('importAssistant') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="file" name="file" class="form-control">

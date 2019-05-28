@@ -18,16 +18,16 @@
       <h1>Drivers</h1>
 
         <div class="row">
-          <div class="col-xl-6">
+          <div class="col-xl-6 col-md-6">
             @if(Auth::user()->role_id != 3)         
                <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Driver</a>
             @elseif(Auth::user()->role_id == 3)
-               <a class="btn btn-success" href="javascript:void(0)" id="viewPendingRegistration"> View Pending Registrations</a>       
+               <a class="btn btn-success btn-block" href="javascript:void(0)" id="viewPendingRegistration"> View Pending Registrations</a>       
             @endif
 
             <a class="btn btn-warning" href="{{ route('exportDriver') }}">Export Drivers Data</a>
           </div>
-          <div class="col-xl-3">
+          <div class="col-xl-6 col-md-6">
               <form action="{{ route('importDriver') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="file" name="file" class="form-control">

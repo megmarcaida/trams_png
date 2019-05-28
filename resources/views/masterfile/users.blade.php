@@ -19,20 +19,22 @@
         <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register User </a>
         <br> <br>
         <div id="response"></div>
-        <table class="table table-bordered data-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Password</th>
-                    <th>Role ID</th>
-                    <th>Status</th>
-                    <th>Options</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-bordered data-table">
+              <thead>
+                  <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Password</th>
+                      <th>Role ID</th>
+                      <th>Status</th>
+                      <th>Options</th>
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>
+        </div>
     </div>
   </div>
 </div>

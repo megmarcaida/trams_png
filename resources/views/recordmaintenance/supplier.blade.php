@@ -17,16 +17,16 @@
     <div class="col-xl-12 col-sm-12 mb-3">
       <h1>Suppliers</h1>
       <div class="row">
-        <div class="col-xl-6">
+        <div class="col-xl-6 col-md-6">
           <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Supplier</a>
-          <a class="btn btn-warning" href="{{ route('exportSupplier') }}">Export Suppliers Data</a>
+          <a class="btn btn-warning" href="{{ route('exportSupplier') }}">Export Suppliers</a>
         </div>
-        <div class="col-xl-3">  
+        <div class="col-xl-6 col-md-6">  
           <form action="{{ route('importSupplier') }}" method="POST" enctype="multipart/form-data">
               @csrf
               <input type="file" name="file" class="form-control">
               <br>
-              <button class="btn btn-success text-right">Import Supplier Data</button>
+              <button class="btn btn-success">Import Supplier Data</button>
                <a class="btn btn-secondary" href="{{ route('exportSupplier') }}">Download Template Data</a>
           </form>    
         </div>

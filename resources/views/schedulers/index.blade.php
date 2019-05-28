@@ -647,7 +647,7 @@
           }
         },
         ScheduleDockUnavailability: {
-          text: 'Schedule Dock Unavailability',
+          text: 'Dock Unavailability',
           click: function() {
             $('#unavailability_id').val('');
             $('div.occupied_slot_box').addClass("slot_box");
@@ -1668,16 +1668,16 @@
             <input type="hidden" name="current_module" id="current_module">
             <input type="hidden" name="recurrence_hidden" id="recurrence_hidden">
           </div>
-           <div class="col-xl-6 group-module">
-            <div class="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
-              <button data-value="Baby Care 1" type="button" class="btn btn-secondary btn-modules">Baby Care 1</button>
+           <div class="col-xl-6 col-sm-6 offset-6 group-module">
+            <div class="btn-group btn-group-sm float-right" role="group">
+              <button data-value="Baby Care 1" type="button" class="btn btn-secondary btn-modules btn-modules">Baby Care 1</button>
               <button data-value="Baby Care 2" type="button" class="btn btn-secondary btn-modules">Baby Care 2</button>
               <button data-value="Baby Care 3" type="button" class="btn btn-secondary btn-modules">Baby Care 3</button>
               <button data-value="Baby Care Scrap" type="button" class="btn btn-secondary btn-modules">Baby Care Scrap</button>
               <button data-value="Laundry" type="button" class="btn btn-secondary btn-modules">Laundry</button>
               <button data-value="Laundry SB" type="button" class="btn btn-secondary btn-modules">Laundry SB</button>
             </div>
-            <div class="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
+            <div class="btn-group btn-group-sm float-right" role="group">
               <button data-value="Laundry Scrap" type="button" class="btn btn-secondary btn-modules">Laundry Scrap</button>
               <button data-value="PCC 1" type="button" class="btn btn-secondary btn-modules">PCC 1</button>
               <button data-value="PCC 2" type="button" class="btn btn-secondary btn-modules">PCC 2</button>

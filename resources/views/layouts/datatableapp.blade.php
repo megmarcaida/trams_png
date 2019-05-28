@@ -35,7 +35,7 @@
 
 
 </head>
-<body id="page-top">
+<body id="page-top" class="sidebar-toggled">
 
   @include('layouts.navbar')
 
