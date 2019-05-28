@@ -391,7 +391,7 @@
       $(".driver_id").show();
       $('.modalresponse').empty();
       $('#driverForm').trigger("reset");      
-      var id = $(this).data('id');
+      var id = $(this).attr('data-id');
       $.get("{{ route('ajaxdrivers.index') }}" +'/' + id +'/edit', function (data) {
           $('#modelHeading').html("Edit Driver");
           $('#saveBtn').val("edit-user");
@@ -426,7 +426,9 @@
 
           $('#driver_suppliers').val(supplier_drivers);
           $('#supplier_ids').val(data.supplier_ids);
-          if(data.dateOfSafetyOrientation != undefined){
+
+          console.log(data.dateOfSafetyOrientation)
+          if(data.dateOfSafetyOrientation != null || data.dateOfSafetyOrientation != undefined){
 
             data.dateOfSafetyOrientation = data.dateOfSafetyOrientation.replace(" ","T")
             document.getElementById("dateOfSafetyOrientation").value = data.dateOfSafetyOrientation;

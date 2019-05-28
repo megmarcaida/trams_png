@@ -401,7 +401,7 @@
       $("#ajaxModelView").modal("hide");
       $('.modalresponse').empty();
       $('#assistantForm').trigger("reset");      
-      var id = $(this).data('id');
+      var id = $(this).attr('data-id');
       $(".assistant_id").show();
       $.get("{{ route('ajaxassistants.index') }}" +'/' + id +'/edit', function (data) {
           $('#modelHeading').html("Edit Assistant");
@@ -438,10 +438,12 @@
 
           $('#assistant_suppliers').val(supplier_assistant);
           $('#supplier_ids').val(data.supplier_ids);
-          data.dateOfSafetyOrientation = data.dateOfSafetyOrientation.replace(" ","T")
+          if(data.dateOfSafetyOrientation != null || data.dateOfSafetyOrientation != undefined){
 
-          //console.log(data.dateOfSafetyOrientation)
-          document.getElementById("dateOfSafetyOrientation").value = data.dateOfSafetyOrientation;
+            data.dateOfSafetyOrientation = data.dateOfSafetyOrientation.replace(" ","T")
+            document.getElementById("dateOfSafetyOrientation").value = data.dateOfSafetyOrientation;
+
+          }
           // $('#delivery_type').val(data.delivery_type);
       })
    });
