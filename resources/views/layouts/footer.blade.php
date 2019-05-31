@@ -28,8 +28,28 @@
         {
           changeToFinalized();
         }
-      
+        checkIfNoShowSchedule();
     },5000);
+
+
+    //change to No-Show
+    function checkIfNoShowSchedule(){
+       $.ajax({
+          data: {},
+          url: "{{ url('checkIfNoShowSchedule') }}",
+          type: "POST",
+          dataType: 'json',
+          success: function (data) {
+            //console.log(data)
+            //var current_module = $("#current_module").val()
+            //testCalendar(current_module)
+          },
+          error: function (data) {
+              //console.log('Error:', data);
+              $('#saveBtn').html('Save Changes');
+          }
+        });
+    }
 </script>
 <footer class="sticky-footer">
 	<div class="container my-auto">

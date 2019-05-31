@@ -96,7 +96,7 @@ Route::post('changeToFinalized', 'SchedulerController@changeToFinalized' )->name
 Route::post('singleEventInsert', 'SchedulerController@singleEventInsert' )->name('singleEventInsert');
 Route::post('recurrentEventInsert', 'SchedulerController@recurrentEventInsert' )->name('recurrentEventInsert');
 Route::post('recurrentEventInsertInitial', 'SchedulerController@recurrentEventInsertInitial' )->name('recurrentEventInsertInitial');
-
+Route::post('checkIfNoShowSchedule', 'SchedulerController@checkIfNoShowSchedule')->name('checkIfNoShowSchedule');
 #END SCHEDULER
 
 #Docker

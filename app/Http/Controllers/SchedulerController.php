@@ -215,6 +215,8 @@ class SchedulerController extends Controller
                 $nestedData['status'] = $status;
                 $nestedData['title'] =  $supplier_name . "\n Trucks" . $truck_details . "\n" . $driver_name . "\n" . $assistant_name . "\n" . $status;
 
+                $nestedData['backgroundColor'] = $schedule->status == 5 ? "#F08080" : "#11ee99";
+                $nestedData['borderColor'] = $schedule->status == 5 ? "#F08080" : "#11ee99";
                 $data[] = $nestedData;
                 $dow = array();
 
@@ -791,7 +793,7 @@ class SchedulerController extends Controller
     }
 
     public function checkIfConflictsDate($dateOfDelivery,$slotting_time){
-        $schedules = Schedule::where("date_of_delivery",$dateOfDelivery)->get();
+        $schedules = Schedule::where("date_of_delivery",$dateOfDelivery)->where("status","<>",0)->get();
         $slotting_time = explode("|", $slotting_time);
         $ret = 0;
         foreach($schedules as $schedule){
@@ -814,6 +816,35 @@ class SchedulerController extends Controller
         }
 
         return $ret;
+    }
+
+    public function checkIfNoShowSchedule(Request $request){
+        $schedule = Schedule::where('status','<>',0)->get();
+        $data = array();
+        foreach($schedule as $value){
+            $slotting_ = str_replace("|","",$value->slotting_time);
+            $start = substr($slotting_, 0, 5);
+            $end = substr($slotting_, -5);
+            $date1 = strtotime($value->date_of_delivery . " " . $start);  
+            $date2 = strtotime($value->date_of_delivery . " " . $end);  
+            $curdate = strtotime(date('Y-m-d H:i:s'));
+            $schedule_diff = abs($date2 - $date1);
+            $current_diff = abs($curdate - $date2);    
+
+            $nestedData['schedule_diff'] = $schedule_diff;
+            $nestedData['current_diff'] =  $current_diff;
+            
+            $number = 100 - floor(($current_diff / $schedule_diff) * 100);
+            $nestedData['number'] = $number;
+            $nestedData['isNoShow'] = $number >=  75 ? true : false;
+            if($number >= 75 && $number < 100){
+                $noshowSched = Schedule::find($value->id);
+                $noshowSched->update(['status'=>5]);
+            }
+            $data[] = $nestedData;
+        }
+
+        return $data;
     }
 
     public function getVoucher($id){
@@ -1064,96 +1095,198 @@ class SchedulerController extends Controller
         $dates = array();
         $recurrent_id = time().'-'.mt_rand();
         $ids_ = array();
-        foreach($request->ordering_days as $sched)
-        {
-            $sched = trim($sched);
-            if($sched == ""){
-                continue;
-            }
-            switch ($sched) {
-                case 'Mon':
-                $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,1);
-                    break;
-                case 'Tue':
-                $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,2);
-                    break;
-                case 'Wed':
-                $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,3);
-                    break;
-                case 'Thu':
-                $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,4);
-                    break;
-                case 'Fri':
-                $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,5);
-                    break;
-                case 'Sat':
-                $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,6);
-                    break;
-                case 'Sun':
-                $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,7);
-                    break;
-                
-                default:
+
+        $compare_data = Schedule::where("id",$request->schedule_id)->first();
+        if(!empty($compare_data)){
+            if($compare_data->date_of_delivery == $request->dateOfDelivery){
+
+                 $sched = Schedule::where("recurrent_id",$compare_data->recurrent_id)->get();
+                 foreach($sched as $data){
+                    $data->update(['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name, 'recurrence' => $request->recurrence, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => 1, 'material_list' => $material_list]);
+                 }       
+                 // $sched = Schedule::updateOrCreate(['recurrent_id' => $compare_data->recurrent_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name, 'recurrence' => $request->recurrence, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => 1, 'material_list' => $material_list]); 
+
+                 $ret = ['success'=>"Schedule successfully saved!","id"=>$request->schedule_id]; 
+                return json_encode($ret);
                     
-                    break;
-            }
-
-            foreach($dates as $date) {
-                //check if has conflict on date
-                $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time);
-
-                if($hasConflict > 0){
-                    
-                    // CONFLICTS ENTRY
-                    
-
-                    $allRecurrent = Schedule::find($request->schedule_id);
-                    $recurrent_id = $allRecurrent->recurrent_id;
-                    // $allRecurrent->delete();
-
-                    $sched = Schedule::updateOrCreate(['id' => ""],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => 10, 'material_list' => $material_list,'recurrent_id' => $recurrent_id,'conflict_id'=>$hasConflict]);
-
-                    
-
-
-
-                }else{
-                    //CONTINUE NORMAL ENTRY
-                    if($request->schedule_id != null){
-
-                        $checkIfFinalized = Schedule::find($request->schedule_id);
-                        $date_yesterday = date('d.m.Y',strtotime("-1 days"));
-                        $timestamp = $checkIfFinalized->updated_at;
-                        $timestamp = date('d.m.Y',strtotime($timestamp));
+            }else{
+                if(!empty($compare_data)){
+                    $recurrent_schedule = Schedule::where("recurrent_id",$compare_data->recurrent_id);
+                    $recurrent_schedule->update(["status"=>0]);
+                    $request->schedule_id = null;
+                }
+                foreach($request->ordering_days as $sched)
+                {
+                    $sched = trim($sched);
+                    if($sched == ""){
+                        continue;
+                    }
+                    switch ($sched) {
+                        case 'Mon':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,1);
+                            break;
+                        case 'Tue':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,2);
+                            break;
+                        case 'Wed':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,3);
+                            break;
+                        case 'Thu':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,4);
+                            break;
+                        case 'Fri':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,5);
+                            break;
+                        case 'Sat':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,6);
+                            break;
+                        case 'Sun':
+                        $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,7);
+                            break;
                         
-                        if($timestamp == $date_yesterday){
-                            if($checkIfFinalized->status == 3){
-                                $checkIfFinalized->update(["status" => 0]);
-                                $status = 4;
-                                $request->schedule_id = null;
-                            }else{
-                                $status = 2;
-                            }
+                        default:
+                            
+                            break;
+                    }
+
+                    foreach($dates as $date) {
+                        //check if has conflict on date
+                        $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time);
+
+                        if($hasConflict > 0){
+                            
+                            // CONFLICTS ENTRY
+                            
+
+                            $sched = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => 10, 'material_list' => $material_list,'recurrent_id' => $recurrent_id,'conflict_id'=>$hasConflict]); 
+                            
+
+
+
                         }else{
-                            $status = 2;
+                            //CONTINUE NORMAL ENTRY
+                            if($request->schedule_id != null){
+
+                                $checkIfFinalized = Schedule::find($request->schedule_id);
+                                $date_yesterday = date('d.m.Y',strtotime("-1 days"));
+                                $timestamp = $checkIfFinalized->updated_at;
+                                $timestamp = date('d.m.Y',strtotime($timestamp));
+                                
+                                if($timestamp == $date_yesterday){
+                                    if($checkIfFinalized->status == 3){
+                                        $checkIfFinalized->update(["status" => 0]);
+                                        $status = 4;
+                                        $request->schedule_id = null;
+                                    }else{
+                                        $status = 2;
+                                    }
+                                }else{
+                                    $status = 2;
+                                }
+                            }
+                            
+                            
+
+                            $last_inserted_id = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list,'recurrent_id' => $recurrent_id]);
+                            $nestedData['id'] = $last_inserted_id->id;  
+                            $ids_[] = $nestedData;
+                            
+                           
                         }
                     }
-                    
-
-                    $allRecurrent = Schedule::find($request->schedule_id);
-                    $recurrent_id = $allRecurrent->recurrent_id;
-
-                    $last_inserted_id = Schedule::updateOrCreate(['recurrent_id' => $recurrent_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list,'recurrent_id' => $recurrent_id]);  
-
-                    $nestedData['id'] = $last_inserted_id->id;  
-                    $ids_[] = $nestedData;
-
-
 
                 }
             }
-
         }
+        else{
+            if(!empty($compare_data)){
+                $recurrent_schedule = Schedule::where("recurrent_id",$compare_data->recurrent_id);
+                $recurrent_schedule->update(["status"=>0]);
+            }
+            foreach($request->ordering_days as $sched)
+            {
+                $sched = trim($sched);
+                if($sched == ""){
+                    continue;
+                }
+                switch ($sched) {
+                    case 'Mon':
+                    $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,1);
+                        break;
+                    case 'Tue':
+                    $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,2);
+                        break;
+                    case 'Wed':
+                    $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,3);
+                        break;
+                    case 'Thu':
+                    $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,4);
+                        break;
+                    case 'Fri':
+                    $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,5);
+                        break;
+                    case 'Sat':
+                    $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,6);
+                        break;
+                    case 'Sun':
+                    $dates = $this->getDateForSpecificDayBetweenDates($startDateTime,$endDateTime,7);
+                        break;
+                    
+                    default:
+                        
+                        break;
+                }
+
+                foreach($dates as $date) {
+                    //check if has conflict on date
+                    $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time);
+
+                    if($hasConflict > 0){
+                        
+                        // CONFLICTS ENTRY
+                        
+
+                        $sched = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => 10, 'material_list' => $material_list,'recurrent_id' => $recurrent_id,'conflict_id'=>$hasConflict]); 
+                        
+
+
+
+                    }else{
+                        //CONTINUE NORMAL ENTRY
+                        if($request->schedule_id != null){
+
+                            $checkIfFinalized = Schedule::find($request->schedule_id);
+                            $date_yesterday = date('d.m.Y',strtotime("-1 days"));
+                            $timestamp = $checkIfFinalized->updated_at;
+                            $timestamp = date('d.m.Y',strtotime($timestamp));
+                            
+                            if($timestamp == $date_yesterday){
+                                if($checkIfFinalized->status == 3){
+                                    $checkIfFinalized->update(["status" => 0]);
+                                    $status = 4;
+                                    $request->schedule_id = null;
+                                }else{
+                                    $status = 2;
+                                }
+                            }else{
+                                $status = 2;
+                            }
+                        }
+                        
+                        
+
+                        $last_inserted_id = Schedule::updateOrCreate(['id' => $request->schedule_id],['po_number' => $request->po_number, 'supplier_id' => $supplier_id, 'dock_id' => $request->dock_id,  'dock_name' => $dock_name,'date_of_delivery' => $date,'recurrent_dateend' => $request->recurrent_dateend, 'recurrence' => $request->recurrence, 'ordering_days' => $ordering_days, 'slotting_time' => $request->slotting_time, 'truck_id' => $request->truck_id, 'container_number' => $request->container_number, 'driver_id' => $request->driver_id, 'assistant_id' => $request->assistant_id, 'status' => $status, 'material_list' => $material_list,'recurrent_id' => $recurrent_id]);
+                        $nestedData['id'] = $last_inserted_id->id;  
+                        $ids_[] = $nestedData;
+                        
+                       
+                    }
+                }
+
+            }
+        }
+
+        
         
         $return_schedule = Schedule::where("recurrent_id",$recurrent_id)->where("status",10)->get();
 

@@ -71,6 +71,7 @@
 
           $('#saveBtn').html('Save Changes');
           $('#response').html(''); 
+
           var id = $('#selected_schedule').val();
           var selected = $('#selected_supplierid').val();
 
@@ -239,6 +240,7 @@
         $('#ajaxModelEditRecurrent').modal('hide')
         $('#isEditingRecurrent').val("1");
         $('#isEditingSingle').val("0")
+        $('#dataEditID').val("")
         //console.log($('#selected_schedule').val()) 
 
         //console.log($('#recurrence_hidden').val())   
@@ -336,7 +338,7 @@
 
               $('#container_number').val(data.container_number);
 
-              $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+              $("#recurrence").val(data.recurrence)
               if(data.recurrence == "Recurrent"){
                 $(".r_ordering_days").css('display','block')
               }
@@ -355,6 +357,11 @@
                   if(item != ""){
 
                     addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                  }else{
+                    console.log(data.material_list.gcas.length)
+                    if(data.material_list.gcas.length==2){
+                      addRow("","","")
+                    }
                   }
               });
 
@@ -400,6 +407,191 @@
 
           // change the border color just for fun
           //info.el.style.borderColor = 'red';
+    });
+
+    $('body').on('click', '.edit_single_event', function (e) {
+        $('#ajaxModelEditRecurrent').modal('hide')
+        $('#isEditingRecurrent').val("0")
+        $('#isEditingSingle').val("1")
+        $('#dataEditID').val("")
+        $('#modelViewErrorRecurrent').modal('hide')
+        //console.log($('#selected_schedule').val())  
+        //console.log($('#recurrence_hidden').val())
+        
+
+
+          //$('div.slot_box').removeClass("slot_box");
+          $('div.editable_slot_box').addClass('slot_box').removeClass("editable_slot_box");
+          $('div.occupied_slot_box').addClass('slot_box').removeClass("occupied_slot_box");
+
+          $('#saveBtn').html('Save Changes');
+          $('#response').html(''); 
+
+          //var id = $('#selected_schedule').val();
+          if($(this).attr("data-edit-id") != null){
+              id = $(this).attr("data-edit-id")
+              $('#dataEditID').val(id)
+          }
+          var selected = $('#selected_supplierid').val();
+
+          if(id == "" && selected == ""){
+            $('#response').append('<div class="alert alert-warning">Please select schedule to edit.</div>  ')
+          }
+          $('#truck_id').html('');
+          $('#driver_id').html('');
+          $('#assistant_id').html('');
+          $('#dock_id').html('');
+          $('#alt_supplier_id').val('');
+          //$('#supplier_id').attr("disabled","disabled");
+          $('#po_number').attr("readonly","true");
+
+          $('#supplier_id').not(this).find('option').prop('disabled', 'true');
+
+          $('#supplier_id').addClass('disableSelect');
+
+          $('#dock_id').addClass('disableSelect');
+          $('#dock_id').not(this).find('option').prop('disabled', 'true');
+
+          $.ajax({
+              url: "{{ url('getSupplierData') }}",
+              type: "POST",
+              data: {id:selected},
+              success: function (data) {
+                ////console.log(JSON.parse(data))  
+                $.each(JSON.parse(data), function(index, item) {
+                  // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
+                  if(index == 'truckdata'){
+                    $.each(item, function(index, truck) {
+
+                      $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
+                    });
+                  }
+
+                  if(index == 'driverdata'){
+                    $.each(item, function(index, driver) {
+                      $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
+                    });
+                  }
+
+                  if(index == 'assistantdata'){
+                    $.each(item, function(index, assistant) {
+                      $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
+                    });
+                  }
+                  if(index == 'dockdata'){
+
+                    $.each(item, function(index, dock) {
+                      $('#dock_id').append("<option value="+dock.id +">" + dock.dock_name + "</option>")
+                    });
+                  }
+                });
+
+              },
+              error: function (data) {
+                  //console.log('Error:', data);
+              }
+          });
+
+
+          $('#scheduleForm').trigger("reset");      
+          
+          $.get("{{ route('ajaxschedules.index') }}" +'/' + id +'/edit', function (data) {
+              $('#modelHeading').html("Edit Schedule");
+              $('#saveBtn').val("edit-user");
+              $('#ajaxModel').modal({
+                backdrop:'static',
+                keyboard: false
+              })
+              //console.log(data.date_of_delivery)
+              $('#schedule_id').val(data.id);
+              $('#po_number').val(data.po_number);
+              $('#supplier_id').val(data.supplier_id);
+              $('#alt_supplier_id').val(data.supplier_id);
+              $('#dock_id').val(data.dock_id);
+
+              $('#dateOfDelivery').val(data.date_of_delivery);
+              $('#recurrent_dateend').val(data.recurrent_dateend);
+
+              $('#truck_id').val(data.truck_id);
+
+              $('#driver_id').val(data.driver_id);
+
+              $('#assistant_id').val(data.assistant_id);
+
+              $('#container_number').val(data.container_number);
+
+              // $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+              console.log(data.recurrence)
+              $("#recurrence").val(data.recurrence)
+              if(data.recurrence == "Recurrent"){
+                $(".r_ordering_days").css('display','block')
+              }
+              var ordering_days_arr = data.ordering_days.split("|")
+              $.each(ordering_days_arr, function(i,e){
+                $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
+              });
+
+              $('#cont').html('');
+              createTable();
+              //console.log(data.material_list  + "Test")
+              if(data.material_list == 0){
+                  addRow('','','')
+              }
+              $.each(data.material_list.gcas, function(index, item) {
+                  if(item != ""){
+
+                    addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                  }else{
+                    console.log(data.material_list.gcas.length)
+                    if(data.material_list.gcas.length==2){
+                      addRow("","","")
+                    }
+                  }
+              });
+
+              $("#slotting_time").val(data.slotting_time_text);
+
+               $('div.occupied_slot_box').addClass("slot_box");
+
+
+              //refresh slot box
+              $('div.slot_box').removeClass("occupied_slot_box");
+              $('div.slot_box').removeClass("active_slot_box");
+              var date_of_delivery = $('#dateOfDelivery').val();
+              $.ajax({
+                  url: "{{ url('getSlottingTime') }}",
+                  type: "POST",
+                  data: {date_of_delivery:date_of_delivery},
+                  success: function (data) {
+                      $.each(JSON.parse(data), function(index, item) {
+                        $.each(item.slotting_time, function(i, slot) {
+                          if(slot != ""){
+                            $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                            $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                          }
+                        });
+                      });
+                  },
+                  error: function (data) {
+                      //console.log('Error:', data);
+                  }
+              });
+              //refresh slot box
+
+
+              $.each(data.slotting_time, function(index, slot) {
+                  //console.log(slot)
+                    if(slot != ""){
+                      $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
+                      $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
+                      $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                    }
+                });
+          })
+
+          // change the border color just for fun
+          //info.el.style.borderColor = 'red';
+
     });
 
 
@@ -747,6 +939,10 @@
           $('#recurrence_hidden').val('');
           $('#selected_schedule').val(info.event.id);
           $('#selected_supplierid').val(info.event.extendedProps.supplier_id);
+          $('#isEditingSingle').val('')
+          $('#isEditingRecurrent').val('')
+          $('#dataEditID').val('')
+
           if(info.event.extendedProps.isForUnavailability != 1){
             $('#recurrence_hidden').val(info.event.extendedProps.recurrence)
           }
@@ -797,7 +993,7 @@
               type: "POST",
               data: {id:selected},
               success: function (data) {
-                //console.log("test:" + data)
+                console.log("test:" + data)
                 $.each(JSON.parse(data), function(index, item) {
                   if(index == 'truckdata'){
                     $.each(item, function(index, truck) {
@@ -1009,13 +1205,153 @@
           //info.el.style.borderColor = 'red';
 
           }else{
-            $('#ajaxModelEditRecurrent').modal({
-                backdrop:'static',
-                keyboard: false
+            if(info.event.extendedProps.status != "No-Show"){
+              $('#ajaxModelEditRecurrent').modal({
+                  backdrop:'static',
+                  keyboard: false
               })
+            }
           }
 
 
+          console.log(info.event.extendedProps.status)
+          //RESCHEDULING
+          if(info.event.extendedProps.status == "No-Show"){
+              $('#isEditingSingle').val('1');
+              $.get("{{ route('ajaxschedules.index') }}" +'/' + info.event.id +'/edit', function (data) {
+                  $('#modelHeading').html("Reschedule Slotting");
+                  $('#saveBtn').val("edit-user");
+                  $('#ajaxModel').modal({
+                    backdrop:'static',
+                    keyboard: false
+                  })
+                    $.ajax({
+                      url: "{{ url('getSupplierData') }}",
+                      type: "POST",
+                      data: {id:info.event.id},
+                      success: function (data) {
+                        console.log("test:" + data)
+                        $.each(JSON.parse(data), function(index, item) {
+                          if(index == 'truckdata'){
+                            $.each(item, function(index, truck) {
+
+                              $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
+                            });
+                          }
+
+                          if(index == 'driverdata'){
+                            $.each(item, function(index, driver) {
+                              $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
+                            });
+                          }
+
+                          if(index == 'assistantdata'){
+                            $.each(item, function(index, assistant) {
+                              $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
+                            });
+                          }
+
+                          if(index == 'dockdata'){
+
+                            $.each(item, function(index, dock) {
+                              $('#dock_id').append("<option value="+dock.id +">" + dock.dock_name + "</option>")
+                            });
+                          }
+                        });
+
+                      },
+                      error: function (data) {
+                          //console.log('Error:', data);
+                      }
+                  });
+
+
+                  setTimeout(function(){
+                      $('#schedule_id').val(data.id);
+                      $('#po_number').val(data.po_number);
+                      $('#supplier_id').val(data.supplier_id);
+                      $('#alt_supplier_id').val(data.supplier_id);
+                      $('#dock_id').val(data.dock_id);
+
+                      $('#dateOfDelivery').val(data.date_of_delivery);
+
+                      $('#recurrent_dateend').val(data.recurrent_dateend);
+
+                      $('#truck_id').val(data.truck_id);
+
+                      $('#driver_id').val(data.driver_id);
+
+                      $('#assistant_id').val(data.assistant_id);
+
+                      $('#container_number').val(data.container_number);
+
+                      $('#btnPrintVoucher').hide();
+
+                      $("#recurrence").val(data.recurrence)
+                      if(data.recurrence == "Recurrent"){
+                        $(".r_ordering_days").css('display','block')
+                      }
+                      var ordering_days_arr = data.ordering_days.split("|")
+                      $.each(ordering_days_arr, function(i,e){
+                        $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
+                      });
+
+                      $('#cont').html('');
+                      createTable();
+                      //console.log(data.material_list  + "Test")
+                      if(data.material_list == 0){
+                          addRow('','','')
+                      }
+                      $.each(data.material_list.gcas, function(index, item) {
+                          if(item != ""){
+
+                            addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                          }
+                      });
+
+                      $("#slotting_time").val(data.slotting_time_text);
+
+                      $('div.occupied_slot_box').addClass("slot_box");
+
+
+                      //refresh slot box
+                      $('div.slot_box').removeClass("occupied_slot_box");
+                      $('div.slot_box').removeClass("active_slot_box");
+                      var date_of_delivery = $('#dateOfDelivery').val();
+                      $.ajax({
+                          url: "{{ url('getSlottingTime') }}",
+                          type: "POST",
+                          data: {date_of_delivery:date_of_delivery},
+                          success: function (data) {
+                              //console.log(data)
+                              $.each(JSON.parse(data), function(index, item) {
+                                $.each(item.slotting_time, function(i, slot) {
+                                  if(slot != ""){
+                                    $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                                    $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                                  }
+                                });
+                              });
+                          },
+                          error: function (data) {
+                              //console.log('Error:', data);
+                          }
+                      });
+                      //refresh slot box
+
+
+                      $.each(data.slotting_time, function(index, slot) {
+                          //console.log(slot)
+                            if(slot != ""){
+                              $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
+                              $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
+                              $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                            }
+                      });
+                    },2000)
+                  
+              })
+          }
 
          
       }
@@ -1232,6 +1568,7 @@
               type: "POST",
               dataType: 'json',
               success: function (data) {
+                console.log(data)
                  if(data.conflict != undefined){
                   console.log(data)
                   $('#modelViewErrorRecurrent').modal({
@@ -1240,8 +1577,10 @@
                   })
                   $('#ajaxModel').modal('hide');
                   if(data.conflict.length > 0 ){
+                      $("#modelViewErrorRecurrent > .modal-dialog > .modal-content").css('width','960px');
+                      $("#modelViewErrorRecurrent > .modal-dialog > .modal-content").css('margin-left','-220px');
                       $.each(data.conflict, function(index, sched) {
-                        $(".error_recurrent").append("<div class='row'><div class='col-md-6'><p>"+sched.date_of_delivery+"</p><p>"+sched.slotting_time+"</p><p>"+sched.supplier_name+"</p><p>CONFLICT WITH: Delivery ID: "+sched.conflict_id+"</p></div><div class='col-md-6'><button class='btn btn-primary btn-block'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div></div>")
+                        $(".error_recurrent").append("<div class='row'><div class='col-md-3'><p>"+sched.date_of_delivery+"</p><p>"+sched.slotting_time+"</p><p>"+sched.supplier_name+"</p><p>Delivery ID:"+ sched.id +"</p><p> CONFLICT WITH: Delivery ID: "+sched.conflict_id+"</p></div><div class='col-md-3'><button class='btn btn-primary btn-block edit_single_event' data-edit-id='"+sched.id+"'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div><div class='col-md-3'><p>Delivery ID:"+sched.conflict_id+"</p><p> CONFLICT WITH: Delivery ID: "+sched.id+"</p></div><div class='col-md-3'><button class='btn btn-primary btn-block edit_single_event' data-edit-id='"+sched.conflict_id+"'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.conflict_id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div></div>")
                     });
                   }
                   
@@ -1256,7 +1595,7 @@
                     
                     if(data.data != null){
 
-                      $.each(data.data, function(key,value){   console.log9
+                      $.each(data.data, function(key,value){   
                           window.open("printVoucher/"+value.id,"_blank")
                       });
                     }else{
@@ -1266,6 +1605,13 @@
                      var current_module = $("#current_module").val()
                      testCalendar(current_module)
                      $('#saveBtn').html('Save Changes');
+                 }
+
+                 if($('#dataEditID').val() != ''){
+                    $("#modelViewErrorRecurrent").modal({
+                      backdrop:'static',
+                      keyboard: false
+                    })
                  }
               },
               error: function (data) {
@@ -1310,6 +1656,12 @@
                     var current_module = $("#current_module").val()
                     testCalendar(current_module)
                     $('#ajaxModelDelete').modal('hide');
+                    if($('#dataEditID').val() != ''){
+                      $("#modelViewErrorRecurrent").modal({
+                        backdrop:'static',
+                        keyboard: false
+                      })
+                    }
                 },
                 error: function (data) {
                     //console.log('Error:', data);
@@ -1635,6 +1987,8 @@
           e.preventDefault();
           $('#response').html(''); 
           $('#selected_schedule').val($(this).attr('data-id'))
+
+          $('#dataEditID').val($(this).attr('data-id'))
           $('#selected_supplierid').val($(this).attr('data-supplier_id'))
           var id = $('#selected_schedule').val();
           var selected = $('#selected_supplierid').val();
@@ -1729,6 +2083,8 @@
                      <input type="hidden" value="0" name="isForUnavailability" id="isForUnavailability">
                      <input type="hidden" value="0" name="isEditingRecurrent" id="isEditingRecurrent">
                      <input type="hidden" value="0" name="isEditingSingle" id="isEditingSingle">
+
+                     <input type="hidden" value="0" name="dataEditID" id="dataEditID">
 
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*PO Number</label>
@@ -2380,7 +2736,7 @@
             <div class="modal-header">
                 <h4 class="modal-title">Create Schedule - Error Recurrent Schedule</h4>
 
-                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+               <!--  <button type="button" class="close" data-dismiss="modal">&times;</button> --> 
             </div>
             <div class="modal-body">
                 <div class="text-center"><p>The following schedules part of this recurrent schedule cannot be posted due to conflicts with other posted schedules.</p></div>
