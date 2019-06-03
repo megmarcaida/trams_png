@@ -72,7 +72,7 @@
           </div>
           <div class="col-md-3">
               <div class="form-group">
-               <label for="name" class="col-sm-12 control-label">*Filter Ordering Days</label>
+               <label for="name" class="col-sm-12 control-label">*Filter Module Days</label>
                <div class="col-sm-12">
                   <select multiple="true" class="form-control module_filter" id="module_filter" name="module_filter[]">
                        <option value="PCC">PCC</option>
@@ -302,7 +302,44 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
             <div class="modal-body">
-                
+                <div class="row">
+                        <div class="col-md-6" style="line-height: 0px">
+                          Vendor Code:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_vendor_code"></p></b>
+                        </div>
+                     
+                        <div class="col-md-6" style="line-height: 0px">
+                          Supplier Name:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_supplier_name"></p></b>
+                        </div>
+                   
+                        <div class="col-md-6" style="line-height: 0px">
+                          Delivery Type:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_delivery_type"></p></b>
+                        </div>
+                    
+                        <div class="col-md-6" style="line-height: 0px">
+                          Ordering Days:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_ordering_days"></p></b>
+                        </div>
+                     
+                        <div class="col-md-6" style="line-height: 0px">
+                          Modules:
+                        </div>
+                        <div class="col-md-6" style="line-height: 0px">
+                          <b><p id="view_modules"></p></b>
+                        </div>
+                    
+                       
+                </div>
                 <div class="row">
                   <div class="col-md-12 spoc text-center">
                     SPOC
@@ -633,6 +670,13 @@
               type: "POST",
               dataType: 'json',
               success: function (data) {
+
+                  $("#view_vendor_code").html(data.vendor_code)
+                  $("#view_supplier_name").html(data.supplier_name)
+                  $("#view_delivery_type").html(data.delivery_type)
+                  $("#view_ordering_days").html(data.ordering_days)
+                  $("#view_modules").html(data.module)
+
                   console.log(data)
                   var spoc_full_name = data.spoc_full_name.split("<br>") 
                   var spoc_email_address = data.spoc_email_address.split("<br>")

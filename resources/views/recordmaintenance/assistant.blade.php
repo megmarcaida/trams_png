@@ -19,11 +19,9 @@
 
         <div class="row">
           <div class="col-xl-6 col-md-6">
-            @if(Auth::user()->role_id != 3)      
+              
                <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Assistant</a>
-            @elseif(Auth::user()->role_id == 3)
-               <a class="btn btn-success" href="javascript:void(0)" id="viewPendingRegistration"> View Pending Registrations</a>       
-            @endif
+          
            
             <a class="btn btn-warning" href="{{ route('exportAssistant') }}">Export Assistants</a>
           </div>
@@ -35,6 +33,36 @@
                 <button class="btn btn-success text-right">Import Assistants Data</button>
                 <a class="btn btn-secondary" href="{{ route('exportAssistant') }}">Download Template Data</a>
             </form> 
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+              
+            <div class="form-group">
+               <label for="name" class="col-sm-12 control-label">*Filter Supplier</label>
+               <div class="col-sm-12">
+                  <select multiple="true" class="form-control supplier_filter" id="supplier_filter" name="supplier_filter[]">
+                       <option value="">All</option>
+                       @foreach($supplierData['data'] as $supplier)
+                         <option value='{{ $supplier->supplier_name }}'>{{ $supplier->supplier_name }}</option>
+                       @endforeach
+                  </select>
+                </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+              
+            <div class="form-group">
+               <label for="name" class="col-sm-12 control-label">*Filter Status</label>
+               <div class="col-sm-12">
+                  <select multiple="true" class="form-control status_filter" id="status_filter" name="status_filter[]">
+                       <option value="">All</option>
+                       <option value="Active">Active</option>
+                       <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+            </div>
           </div>
         </div>
         <br> <br>
@@ -74,7 +102,7 @@
 
 <div class="modal fade" id="ajaxModel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="width:960px;margin-left:-220px;">
             <div class="modal-header">
                 <h4 class="modal-title" id="modelHeading"></h4>
 
@@ -84,113 +112,125 @@
                 <form id="assistantForm" name="assistantForm" class="form-horizontal">
                     
                     <input type="hidden" name="id" id="id">
-
-                    <div class="form-group assistant_id">
-                        <label for="name" class="col-sm-12 control-label">*Assistant ID</label>
-                        <div class="col-sm-12">
-                            <input type="text" readonly="" class="form-control" id="assistant_id" name="id" value="" maxlength="100" required="">
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                       <label for="name" class="col-sm-12 control-label">*Supplier</label>
-                       <div class="col-sm-12">
-                          <select  class="form-control" id="supplier_id" name="supplier_id">
-                             @foreach($supplierData['data'] as $supplier)
-                               <option value='{{ $supplier->id }}'>{{ $supplier->supplier_name }}</option>
-                             @endforeach
-                          </select>
+                    <div class="row">
+                        <div class="col-4 assistant_id">
+                          <div class="form-group assistant_id">
+                              <label for="name" class="col-sm-12 control-label">*Assistant ID</label>
+                              <div class="col-sm-12">
+                                  <input type="text" readonly="" class="form-control" id="assistant_id" name="id" value="" maxlength="100" required="">
+                              </div>
+                          </div>
+                        </div> 
+                        <div class="col-4">
+                          <div class="form-group">
+                             <label for="name" class="col-sm-12 control-label">*Supplier</label>
+                             <div class="col-sm-12">
+                                <select  class="form-control" id="supplier_id" name="supplier_id">
+                                   @foreach($supplierData['data'] as $supplier)
+                                     <option value='{{ $supplier->id }}'>{{ $supplier->supplier_name }}</option>
+                                   @endforeach
+                                </select>
+                              </div>
+                              <br>
+                              <div class="col-sm-12">
+                                <a href="#" class="btn btn-primary add_supplier">Add Supplier</a>
+                                <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
+                              </div>
+                          </div>
+                        </div> 
+                        <div class="col-4">
+                          <div class="form-group">
+                              <label for="name" class="col-sm-12 control-label">*Assistant Suppliers</label>
+                              <div class="col-sm-12">
+                                  <textarea class="form-control" id="assistant_suppliers" name="supplier_names" readonly="" required=""></textarea>
+                                  <!-- <input type="text" class="form-control" id="assistant_suppliers" disabled="" required=""> -->
+                                  <input type="hidden" id="supplier_ids" name="supplier_ids">
+                              </div>
+                          </div>
+                        </div> 
+                        <div class="col-4">
+                          <div class="form-group">
+                              <label for="name" class="col-sm-12 control-label">*Logistics Company</label>
+                              <div class="col-sm-12">
+                                  <input type="text" class="form-control" id="logistics_company" name="logistics_company" placeholder="Enter Logistics Company" value="" maxlength="100" required="">
+                              </div>
+                          </div>
+                        </div> 
+                        <div class="col-4">
+                          <div class="form-group">
+                              <label for="name" class="col-sm-12 control-label">*First Name</label>
+                              <div class="col-sm-12">
+                                  <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" value="" maxlength="50" required="">
+                              </div>
+                          </div>
+                        </div> 
+                        <div class="col-4">
+                          <div class="form-group">
+                              <label for="name" class="col-sm-12 control-label">*Last Name</label>
+                              <div class="col-sm-12">
+                                  <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" value="" maxlength="50" required="">
+                              </div>
+                          </div>
+                        </div> 
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label for="name" class="col-sm-12 control-label">*Mobile Number</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter Mobile Number" value="" maxlength="50" required="">
+                            </div>
+                          </div>
+                        </div> 
+                        <div class="col-4">  
+                          <div class="form-group">
+                            <label class="col-sm-12 control-label">*Company ID Number</label>
+                            <div class="col-sm-12">
+                              <div class="col-sm-12">
+                                  <input type="text" class="form-control" id="company_id_number" name="company_id_number" placeholder="Enter Company ID Number" value="" maxlength="50" required="">
+                              </div>
+                            </div>
+                          </div>
+                        </div> 
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label class="col-sm-12 control-label">*Valid ID Present</label>
+                            <div class="col-sm-12">
+                              <div class="col-sm-12">
+                                  <input type="text" class="form-control" id="valid_id_present" name="valid_id_present" placeholder="Enter Valid ID Present" value="" maxlength="50" required="">
+                              </div>
+                            </div>
+                          </div>
+                        </div> 
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label class="col-sm-12 control-label">*Valid ID Number</label>
+                            <div class="col-sm-12">
+                              <div class="col-sm-12">
+                                  <input type="text" class="form-control" id="valid_id_number" name="valid_id_number" placeholder="Enter Valid ID Number" value="" maxlength="50" required="">
+                              </div>
+                            </div>
+                          </div>
+                        </div> 
+                        <div class="col-4">
+                          <input type="hidden" name="isApproved" value="0">
+                          @if(Auth::user()->role_id == 3)
+                          <div class="form-group">
+                            <label class="col-sm-12 control-label">*Date of Validity</label>
+                            <div class="col-sm-12">
+                              <div class="col-sm-12">
+                              <input type="date" class="form-control datepicker" name="dateOfSafetyOrientation" id="dateOfSafetyOrientation" required="">
+                              <input type="hidden" id="isApproved" name="isApproved" value="1">
+                              </div>
+                            </div>
+                          </div>
+                           @endif
+                          <br>
+                        </div> 
+                        <div class="offset-8 col-sm-4">
+                           <button type="submit" class="btn btn-primary btn-block" id="saveBtn" value="create">Save changes
+                           </button>
                         </div>
                         <br>
-                        <div class="col-sm-12">
-                          <a href="#" class="btn btn-primary add_supplier">Add Supplier</a>
-                          <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
-                        </div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Assistant Suppliers</label>
-                        <div class="col-sm-12">
-                            <textarea class="form-control" id="assistant_suppliers" name="supplier_names" readonly="" required=""></textarea>
-                            <!-- <input type="text" class="form-control" id="assistant_suppliers" disabled="" required=""> -->
-                            <input type="hidden" id="supplier_ids" name="supplier_ids">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Logistics Company</label>
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="logistics_company" name="logistics_company" placeholder="Enter Logistics Company" value="" maxlength="100" required="">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*First Name</label>
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" value="" maxlength="50" required="">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Last Name</label>
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" value="" maxlength="50" required="">
-                        </div>
-                    </div>
-
-                      <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Mobile Number</label>
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter Mobile Number" value="" maxlength="50" required="">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label class="col-sm-12 control-label">*Company ID Number</label>
-                      <div class="col-sm-12">
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="company_id_number" name="company_id_number" placeholder="Enter Company ID Number" value="" maxlength="50" required="">
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label class="col-sm-12 control-label">*Valid ID Present</label>
-                      <div class="col-sm-12">
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="valid_id_present" name="valid_id_present" placeholder="Enter Valid ID Present" value="" maxlength="50" required="">
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label class="col-sm-12 control-label">*Valid ID Number</label>
-                      <div class="col-sm-12">
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="valid_id_number" name="valid_id_number" placeholder="Enter Valid ID Number" value="" maxlength="50" required="">
-                        </div>
-                      </div>
-                    </div>
-                    <input type="hidden" name="isApproved" value="0">
-                    @if(Auth::user()->role_id == 3)
-                    <div class="form-group">
-                      <label class="col-sm-12 control-label">*Date of Safety Orientation</label>
-                      <div class="col-sm-12">
-                        <div class="col-sm-12">
-                        <input type="datetime-local" class="form-control datepicker" name="dateOfSafetyOrientation" id="dateOfSafetyOrientation" required="">
-                        <input type="hidden" id="isApproved" name="isApproved" value="1">
-                        </div>
-                      </div>
-                    </div>
-                     @endif
-                    <br>
-
-                    <div class="col-sm-offset-2 col-sm-10">
-                       <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
-                       </button>
-                    </div>
-                    <br>
                     <div class="modalresponse"></div> 
                 </form>
 
@@ -223,13 +263,70 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Actions</h4>
+                <h4 class="modal-title">View Assistant</h4>
 
                 <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
             <div class="modal-body">
                 
                 <div class="row">
+
+                  <div class="col-md-6" style="line-height: 0px">
+                    Supplier:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_supplier_name"></p></b>
+                  </div>
+               
+                  <div class="col-md-6" style="line-height: 0px">
+                    Logistic Company:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_logistics"></p></b>
+                  </div>
+             
+                  <div class="col-md-6" style="line-height: 0px">
+                    Full Name:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_full_name"></p></b>
+                  </div>
+              
+                  <div class="col-md-6" style="line-height: 0px">
+                    Mobile Number:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_mobile_no"></p></b>
+                  </div>
+               
+                  <div class="col-md-6" style="line-height: 0px">
+                    Company ID Number:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_company_id_number"></p></b>
+                  </div>
+              
+                  <div class="col-md-6" style="line-height: 0px">
+                    Valid Id Present:
+                  </div>
+
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_valid_id_present"></p></b>
+                  </div>
+
+                  <div class="col-md-6" style="line-height: 0px">
+                    Valid Id Number:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_valid_id_number"></p></b>
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    Date of Validity:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_validity_date"></p></b>
+                  </div>
+                  <br></br>
                   <div class="col-xl-4 col-sm-12">
                     <button id="btn-edit" class="btn btn-primary btn-xs btn-block editProduct" type="button">Edit</button>
                   </div>
@@ -302,10 +399,38 @@
         $("#supplier_ids").val("");
         $('#assistantForm').trigger("reset");
         $('#modelHeading').html("Register Assistant");
+
+        $('#saveBtn').html('Save Changes')
+        $('#supplier_id').not(this).find('option').removeAttr('disabled');
+        $('#supplier_id').removeClass('disableSelect');
+        $('#logistics_company').attr('readonly',false);
+        $('#first_name').attr('readonly',false);
+        $('#last_name').attr('readonly',false);
+        $('#mobile_number').attr('readonly',false);
+        $('#company_id_number').attr('readonly',false);
+        $('#valid_id_number').attr('readonly',false);
+        $('#valid_id_present').attr('readonly',false);
+        $('#logistics_company').attr('readonly',false);
         $('#ajaxModel').modal({
           backdrop:'static',
           keyboard: false
         })
+    });
+
+    $('#supplier_filter').on('change', function(){
+       table.search(this.value).draw();   
+    });
+    $('#logistics_company_filter').on('change', function(){
+        var ordering_days = "ordering_days|";
+        $.each($(".ordering_days_filter option:selected"), function(){            
+            ordering_days += this.value + " | "
+        }); 
+
+       console.log(ordering_days)
+       table.search(ordering_days).draw();   
+    });
+    $('#status_filter').on('change', function(){
+       table.search(this.value).draw();   
     });
 
 
@@ -398,6 +523,23 @@
     return str.length < max ? pad("0" + str, max) : str;
   }
     $('body').on('click', '.editProduct', function () {
+
+      if(role_id != 3){
+        $('#saveBtn').html('Save Changes')
+      }else{
+        $('#supplier_id').not(this).find('option').prop('disabled', 'true');
+        $('#supplier_id').addClass('disableSelect');
+        $('#logistics_company').attr('readonly',true);
+        $('#first_name').attr('readonly',true);
+        $('#last_name').attr('readonly',true);
+        $('#mobile_number').attr('readonly',true);
+        $('#company_id_number').attr('readonly',true);
+        $('#valid_id_present').attr('readonly',true);
+        $('#valid_id_number').attr('readonly',true);
+        $('#logistics_company').attr('readonly',true);
+        $('#saveBtn').html('Approve')
+      }
+
       $("#ajaxModelView").modal("hide");
       $('.modalresponse').empty();
       $('#assistantForm').trigger("reset");      
@@ -602,6 +744,14 @@
                   console.log(data)
                   
 
+                  $('#view_supplier_name').html(data.supplier_names)
+                  $('#view_logistics').html(data.logistics_company)
+                  $('#view_full_name').html(data.first_name + " " + data.last_name)
+                  $('#view_mobile_no').html(data.mobile_number)
+                  $('#view_company_id_number').html(data.company_id_number)
+                  $('#view_valid_id_present').html(data.valid_id_present)
+                  $('#view_valid_id_number').html(data.valid_id_number)
+                  $('#view_validity_date').html(data.dateOfSafetyOrientation) 
                   $("#btn-edit").attr("data-id",data.id)
                   $("#btn-deactivate").attr("data-id",data.id)
                   

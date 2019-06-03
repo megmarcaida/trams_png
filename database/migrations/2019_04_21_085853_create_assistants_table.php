@@ -25,10 +25,10 @@ class CreateAssistantsTable extends Migration
             $table->string('company_id_number',255);
             $table->string('valid_id_present',255);
             $table->string('valid_id_number',255);
-            $table->datetime('dateOfSafetyOrientation')->nullable();
+            $table->date('dateOfSafetyOrientation')->nullable();
             $table->integer('isApproved')->default(0)->nullable();
             $table->integer('status')->default(1);
-            $table->datetime('expirationDate')->nullable();
+            $table->date('expirationDate')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

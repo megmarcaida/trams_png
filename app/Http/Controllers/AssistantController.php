@@ -106,6 +106,7 @@ class AssistantController extends Controller
                                 ->orWhere('logistics_company','LIKE',"%{$search}%")
                                 ->orWhere('first_name','LIKE',"%{$search}%")
                                 ->orWhere('mobile_number','LIKE',"%{$search}%")
+                                ->orWhere('status',$search == "Active" ? 1 : 0)
                                 ->offset($start)
                                 ->limit($limit)
                                 ->orderBy($order,$dir)

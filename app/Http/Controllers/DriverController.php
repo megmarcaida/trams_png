@@ -124,6 +124,7 @@ class DriverController extends Controller
                 $drivers_s .= $value->id ."|";
             }
 
+
             if($drivers_s == "" ){
 
                 $drivers =  Driver::where('id','LIKE',"%{$search}%")
@@ -131,6 +132,7 @@ class DriverController extends Controller
                                 ->orWhere('first_name','LIKE',"%{$search}%")
                                 ->orWhere('last_name','LIKE',"%{$search}%")
                                 ->orWhere('mobile_number','LIKE',"%{$search}%")
+                                ->orWhere('isApproved',$search == "Approved" ? 1 : 0)
                                 ->offset($start)
                                 ->limit($limit)
                                 ->orderBy($order,$dir)
@@ -160,7 +162,7 @@ class DriverController extends Controller
             foreach ($drivers as $driver)
             {
 
-                if(time() > strtotime($driver->expirationDate)){
+                if(time() > strtotime($driver->dateOfSafetyOrientation)){
                     Driver::find($driver->id)->update(["dateOfSafetyOrientation"=>null,"expirationDate"=>null,"isApproved"=>0]);
                 }
 
@@ -343,6 +345,7 @@ class DriverController extends Controller
     public function getDriver(Request $request){
         $id = ltrim($request->id, '0');
         $driver = Driver::where("id",$id)->first();
+      
 
         return json_encode($driver);
     }
