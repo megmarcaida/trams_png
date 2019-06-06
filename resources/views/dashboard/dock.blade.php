@@ -186,7 +186,7 @@
                 <div class="row {{ $dock['slug'] }}-dock">
                     <div class="col-xl-12">
                     <div class="text-center">
-                        <h4><b>Module: {{ $dock['title'] }} </b></h4>
+                        <h4><b><!-- {{ $dock['title'] }} --> </b></h4>
                     </div>
                     @foreach($dock['details'] as $d)
                         
@@ -222,7 +222,7 @@
                             </table>
                         </div>
                         
-                        <div class="text-center">{{ $d }}</div>
+                        <div class="text-center"><b><h3>{{ $d }}</h3></b></div>
                         <br>
                         <br>
                         <script type="text/javascript">
@@ -235,7 +235,7 @@
                         // //if(new_first_dock_data != first_data){
                         //   first_data = new_first_dock_data
                         // //}
-                      },5000)
+                      },60000)
                         </script>
                     @endforeach
                     </div>
@@ -503,7 +503,7 @@
       }
 
 
-    },5000)
+    },60000)
     //socket
 
      $('.data-table-incoming tbody').on( 'click', 'tr', function () {

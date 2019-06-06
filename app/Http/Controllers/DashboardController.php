@@ -27,55 +27,55 @@ class DashboardController extends Controller
             $datenow = $date->format("M d, Y"); 
             return view('dashboard/general')->with('datenow',$datenow);
         }else if($role_id != "1" && $role_id != "3"){
-
+            $submodules = array();
             $role_account = Role::where('id',$role_id)->first();
+            $sub_docks = explode("|",$role_account->submodules);
+            $submodules = array_filter($sub_docks,function($values) { return $values !== ''; });
             $docks = array();
-            $pcc = array("title" => "PCC","slug" => "pcc","details" => array("PCC 1","PCC 2"));
-            $babycare = array("title" => "Baby Care","slug" => "baby-care","details" => array("Baby Care 1","Baby Care 2","Baby Care 3","Baby Care Scrap"));
-            $femcare = array("title" => "Fem Care","slug" => "fem-care","details" => array("Fem Care"));
-            $liquids = array("title" => "Liquids", "slug" => "liquids", "details" => array("Liquids","Liquids Out Canopy"));
-            $laundry = array("title" => "Laundry", "slug" => "laundry", "details" => array("Laundry","Laundry SB","Laundry Scrap"));
-
+            // $pcc = array("title" => "PCC","slug" => "pcc","details" => array("PCC 1","PCC 2"));
+            // $babycare = array("title" => "Baby Care","slug" => "baby-care","details" => array("Baby Care 1","Baby Care 2","Baby Care 3","Baby Care Scrap"));
+            // $femcare = array("title" => "Fem Care","slug" => "fem-care","details" => array("Fem Care"));
+            // $liquids = array("title" => "Liquids", "slug" => "liquids", "details" => array("Liquids","Liquids Out Canopy"));
+            // $laundry = array("title" => "Laundry", "slug" => "laundry", "details" => array("Laundry","Laundry SB","Laundry Scrap"));
+            $account_dock = array("title"=>"Dock","slug"=>"dock","details"=>$submodules);
             $role_account_desc = $role_account['description'];
             switch ($role_account_desc) {
                 case 'North':
-                    array_push($docks, $pcc);
-                    array_push($docks, $babycare);
+                    array_push($docks, $account_dock);
                     break;
                 case 'South':
-                    array_push($docks, $liquids);
-                    array_push($docks, $laundry);
-                    array_push($docks, $femcare);
+                    array_push($docks, $account_dock);
                     break;
                 
                 default:
-                    $docks =  array(
-                                array(
-                                    "title" => "PCC", 
-                                    "slug" => "pcc",
-                                    "details" => array("PCC1","PCC2")
-                                ),
-                                array(
-                                    "title" => "Baby Care", 
-                                    "slug" => "baby-care", 
-                                    "details" => array("Baby Care 1","Baby Care 2","Baby Care 3","Baby Care Scrap")
-                                ),
-                                array(
-                                    "title" => "Fem Care", 
-                                    "slug" => "fem-care", 
-                                    "details" => array("Fem Care")
-                                ),
-                                array(
-                                    "title" => "Laundry",  
-                                    "slug" => "laundry",
-                                    "details" => array("Laundry","Laundry SB","Laundry Scrap")
-                                ),
-                                array(
-                                    "title" => "Liquids", 
-                                    "slug" => "liquids", 
-                                    "details" => array("Liquids","Liquids Out Canopy")
-                                )
-                            );
+                    array_push($docks, $account_dock);
+                    // $docks =  array(
+                    //             array(
+                    //                 "title" => "PCC", 
+                    //                 "slug" => "pcc",
+                    //                 "details" => array("PCC1","PCC2")
+                    //             ),
+                    //             array(
+                    //                 "title" => "Baby Care", 
+                    //                 "slug" => "baby-care", 
+                    //                 "details" => array("Baby Care 1","Baby Care 2","Baby Care 3","Baby Care Scrap")
+                    //             ),
+                    //             array(
+                    //                 "title" => "Fem Care", 
+                    //                 "slug" => "fem-care", 
+                    //                 "details" => array("Fem Care")
+                    //             ),
+                    //             array(
+                    //                 "title" => "Laundry",  
+                    //                 "slug" => "laundry",
+                    //                 "details" => array("Laundry","Laundry SB","Laundry Scrap")
+                    //             ),
+                    //             array(
+                    //                 "title" => "Liquids", 
+                    //                 "slug" => "liquids", 
+                    //                 "details" => array("Liquids","Liquids Out Canopy")
+                    //             )
+                    //         );
                     break;
             }
             
