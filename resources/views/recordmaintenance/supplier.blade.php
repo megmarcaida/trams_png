@@ -27,7 +27,7 @@
               <input type="file" name="file" class="form-control">
               <br>
               <button class="btn btn-success">Import Supplier Data</button>
-               <a class="btn btn-secondary" href="{{ route('exportSupplier') }}">Download Template Data</a>
+              <a class="btn btn-secondary" href="{{ Storage::url('template/suppliers_template.xlsx') }}">Download Template Data</a>
           </form>    
         </div>
       </div>
