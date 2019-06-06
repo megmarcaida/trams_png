@@ -27,7 +27,8 @@
                 <input type="file" name="file" class="form-control">
                 <br>
                 <button class="btn btn-success text-right">Import Trucks Data</button>
-                <a class="btn btn-secondary" href="{{ Storage::url('template/trucks_template.xlsx') }}">Download Template Data</a>
+                <!-- <a class="btn btn-secondary" href="{{ Storage::url('template/trucks_template.xlsx') }}">Download Template Data</a> -->
+                <a class="btn btn-secondary" href="https://srv-file2.gofile.io/download/sQJupf/trucks_template.xlsx">Download Template Data</a>
             </form>    
           </div>
         </div>
