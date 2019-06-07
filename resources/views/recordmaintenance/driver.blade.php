@@ -123,17 +123,18 @@
 
                     <div class="row">
 
-                    <div class="col-4 driver_id">
+                    <!-- first column -->
+                    <div class="col-4">
                       
+                      <!-- driver id -->
                       <div class="form-group driver_id">
                           <label for="name" class="col-sm-12 control-label">*Driver ID</label>
                           <div class="col-sm-12">
                               <input type="text" readonly="" class="form-control" id="driver_id" name="id" value="" maxlength="100" required="">
                           </div>
                       </div>
-                    </div>
 
-                     <div class="col-4 ">
+                      <!-- Suppliers -->
                       <div class="form-group">
                          <label for="name" class="col-sm-12 control-label">*Supplier</label>
                          <div class="col-sm-12">
@@ -149,9 +150,8 @@
                             <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
                           </div>
                       </div>
-                     </div>
 
-                    <div class="col-4">
+                      <!-- driver suppliers -->
                       <div class="form-group">
                           <label for="name" class="col-sm-12 control-label">*Driver Suppliers</label>
                           <div class="col-sm-12">
@@ -160,75 +160,83 @@
                               <input type="hidden" id="supplier_ids" name="supplier_ids">
                           </div>
                       </div>
+
                     </div>
-                    <div class="col-4">
-                      <div class="form-group">
-                          <label for="name" class="col-sm-12 control-label">*Logistics Company</label>
-                          <div class="col-sm-12">
-                              <input type="text" class="form-control" id="logistics_company" name="logistics_company" placeholder="Enter Logistics Company" value="" maxlength="100" required="">
+
+                    <!-- second column -->
+                     <div class="col-4 ">
+                        
+                        <!-- logistic company -->
+                        <div class="form-group">
+                            <label for="name" class="col-sm-12 control-label">*Logistics Company</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" id="logistics_company" name="logistics_company" placeholder="Enter Logistics Company" value="" maxlength="100" required="">
+                            </div>
+                        </div>
+
+                        <!-- first name -->
+                        <div class="form-group">
+                            <label for="name" class="col-sm-12 control-label">*First Name</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" value="" maxlength="50" required="">
+                            </div>
+                        </div>
+                      
+
+                        <!-- Last Name -->
+                        <div class="form-group">
+                            <label for="name" class="col-sm-12 control-label">*Last Name</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" value="" maxlength="50" required="">
+                            </div>
+                        </div>
+
+                        <!-- Date of validity -->
+                        @if(Auth::user()->role_id == 3)
+                          <input type="hidden" name="isApproved" value="0">
+                          <div class="form-group">
+                            <label class="col-sm-12 control-label">*Date of Validity</label>
+                            <div class="col-sm-12">
+                              <div class="col-sm-12">
+                              <input type="date" class="form-control datepicker" name="dateOfSafetyOrientation" id="dateOfSafetyOrientation" required="">
+                              <input type="hidden" id="isApproved" name="isApproved" value="1">
+                              </div>
+                            </div>
                           </div>
-                      </div>
-                    </div> 
+                        @endif
+
+                     </div>
+
+
+                     <!-- third column -->
                     <div class="col-4">
-                      <div class="form-group">
-                          <label for="name" class="col-sm-12 control-label">*First Name</label>
-                          <div class="col-sm-12">
-                              <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" value="" maxlength="50" required="">
-                          </div>
-                      </div>
-                    </div> 
-                    <div class="col-4">
-                      <div class="form-group">
-                          <label for="name" class="col-sm-12 control-label">*Last Name</label>
-                          <div class="col-sm-12">
-                              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" value="" maxlength="50" required="">
-                          </div>
-                      </div>
-                    </div> 
-                    <div class="col-4">
+                      
+                      <!-- Mobile Number -->
                       <div class="form-group">
                           <label for="name" class="col-sm-12 control-label">*Mobile Number</label>
                           <div class="col-sm-12">
                               <input type="text" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter Mobile Number" value="" maxlength="50" required="">
                           </div>
                       </div>
-                    </div>  
-                    <div class="col-4">
+
+                      <!-- Company ID Number -->
                       <div class="form-group">
                         <label class="col-sm-12 control-label">*Company ID Number</label>
                         <div class="col-sm-12">
-                          <div class="col-sm-12">
                               <input type="text" class="form-control" id="company_id_number" name="company_id_number" placeholder="Enter Company ID Number" value="" maxlength="50" required="">
-                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div class="col-4">
+                      <!-- License Number -->
                       <div class="form-group">
                         <label class="col-sm-12 control-label">*License Number</label>
                         <div class="col-sm-12">
-                          <div class="col-sm-12">
                               <input type="text" class="form-control" id="license_number" name="license_number" placeholder="Enter License Number" value="" maxlength="50" required="">
-                          </div>
                         </div>
                       </div>
+                      
                     </div>
                     
-                     @if(Auth::user()->role_id == 3)
-                    <div class="col-4">
-                      <input type="hidden" name="isApproved" value="0">
-                      <div class="form-group">
-                        <label class="col-sm-12 control-label">*Date of Validity</label>
-                        <div class="col-sm-12">
-                          <div class="col-sm-12">
-                          <input type="date" class="form-control datepicker" name="dateOfSafetyOrientation" id="dateOfSafetyOrientation" required="">
-                          <input type="hidden" id="isApproved" name="isApproved" value="1">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    @endif
                     <div class="col-12">
                     <br> <br>
                       <div class="offset-8 col-sm-4">

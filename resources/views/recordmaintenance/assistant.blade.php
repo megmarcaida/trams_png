@@ -114,15 +114,20 @@
                     
                     <input type="hidden" name="id" id="id">
                     <div class="row">
-                        <div class="col-4 assistant_id">
+
+                        <!-- First Column -->
+                        <div class="col-4 ">
+
+                          <!-- assistant id -->
                           <div class="form-group assistant_id">
                               <label for="name" class="col-sm-12 control-label">*Assistant ID</label>
                               <div class="col-sm-12">
                                   <input type="text" readonly="" class="form-control" id="assistant_id" name="id" value="" maxlength="100" required="">
                               </div>
                           </div>
-                        </div> 
-                        <div class="col-4">
+
+                          <!-- supplier -->
+
                           <div class="form-group">
                              <label for="name" class="col-sm-12 control-label">*Supplier</label>
                              <div class="col-sm-12">
@@ -138,8 +143,9 @@
                                 <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
                               </div>
                           </div>
-                        </div> 
-                        <div class="col-4">
+
+
+                          <!-- assistant supplier -->
                           <div class="form-group">
                               <label for="name" class="col-sm-12 control-label">*Assistant Suppliers</label>
                               <div class="col-sm-12">
@@ -148,40 +154,54 @@
                                   <input type="hidden" id="supplier_ids" name="supplier_ids">
                               </div>
                           </div>
+
                         </div> 
+
+                        <!-- Second Column -->
                         <div class="col-4">
+
+                          <!-- logistics company -->
                           <div class="form-group">
                               <label for="name" class="col-sm-12 control-label">*Logistics Company</label>
                               <div class="col-sm-12">
                                   <input type="text" class="form-control" id="logistics_company" name="logistics_company" placeholder="Enter Logistics Company" value="" maxlength="100" required="">
                               </div>
                           </div>
-                        </div> 
-                        <div class="col-4">
+
+                          <!-- first name -->
                           <div class="form-group">
                               <label for="name" class="col-sm-12 control-label">*First Name</label>
                               <div class="col-sm-12">
                                   <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" value="" maxlength="50" required="">
                               </div>
                           </div>
-                        </div> 
-                        <div class="col-4">
+
+
+                          <!-- last name -->
                           <div class="form-group">
                               <label for="name" class="col-sm-12 control-label">*Last Name</label>
                               <div class="col-sm-12">
                                   <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" value="" maxlength="50" required="">
                               </div>
                           </div>
-                        </div> 
-                        <div class="col-4">
+
+
+                          <!-- mobile number -->
                           <div class="form-group">
                             <label for="name" class="col-sm-12 control-label">*Mobile Number</label>
                             <div class="col-sm-12">
                                 <input type="text" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter Mobile Number" value="" maxlength="50" required="">
                             </div>
                           </div>
+
+
                         </div> 
-                        <div class="col-4">  
+
+                        <!-- Third Column -->
+                        <div class="col-4">
+
+
+                          <!-- company id number -->
                           <div class="form-group">
                             <label class="col-sm-12 control-label">*Company ID Number</label>
                             <div class="col-sm-12">
@@ -190,8 +210,8 @@
                               </div>
                             </div>
                           </div>
-                        </div> 
-                        <div class="col-4">
+
+                          <!-- valid id Present -->
                           <div class="form-group">
                             <label class="col-sm-12 control-label">*Valid ID Present</label>
                             <div class="col-sm-12">
@@ -200,8 +220,8 @@
                               </div>
                             </div>
                           </div>
-                        </div> 
-                        <div class="col-4">
+
+                          <!-- valid id number -->
                           <div class="form-group">
                             <label class="col-sm-12 control-label">*Valid ID Number</label>
                             <div class="col-sm-12">
@@ -210,8 +230,8 @@
                               </div>
                             </div>
                           </div>
-                        </div> 
-                        <div class="col-4">
+
+                          <!-- date of validity -->
                           <input type="hidden" name="isApproved" value="0">
                           @if(Auth::user()->role_id == 3)
                           <div class="form-group">
@@ -224,8 +244,9 @@
                             </div>
                           </div>
                            @endif
-                          <br>
+
                         </div> 
+
                         <div class="offset-8 col-sm-4">
                            <button type="submit" class="btn btn-primary btn-block" id="saveBtn" value="create">Save changes
                            </button>
