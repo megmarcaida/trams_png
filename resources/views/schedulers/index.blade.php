@@ -868,7 +868,7 @@
             buttonText: '2 days',
           },
           listMonth: { buttonText: 'List Month' },
-          timeGridWeek: { buttonText: 'List Calendar'}
+          timeGridWeek: { buttonText: 'List Calendar'},
         },
 
 
@@ -1390,6 +1390,14 @@
     // });
 
     $('body').on('change','.btn-modules-dropdown',function(){
+
+        $(".button-area").empty();
+      setTimeout(function(){
+        $(".fc-center").appendTo(".button-area");
+        $(".fc-CreateSchedule-button").addClass('btn-block');
+        $(".fc-ScheduleDockUnavailability-button").addClass('btn-block');
+        $("#calendar > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2").text($("#calendar > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2").text().replace("â€“"," \u2013 "))
+      },100);
       count = count + 1;
       value = $('#btn-modules-dropdown').children("option:selected").val();
       console.log(value)
@@ -2033,9 +2041,8 @@
       $(".fc-center").appendTo(".button-area");
       $(".fc-CreateSchedule-button").addClass('btn-block');
       $(".fc-ScheduleDockUnavailability-button").addClass('btn-block');
-      $("#calendar > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2").text() 
-
-    },1000);
+      $("#calendar > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2").text($("#calendar > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2").text().replace("â€“"," \u2013 "))
+    },100);
     
 </script>
 <div class="container-fluid">
@@ -2107,7 +2114,7 @@
 <!-- /.container-fluid -->
 <div class="modal fade" id="ajaxModel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content" style="width:750px">
+        <div class="modal-content" style="width:750px;margin-left:-230px;">
             <div class="modal-header">
                 <h4 class="modal-title" id="modelHeading"></h4>
 
