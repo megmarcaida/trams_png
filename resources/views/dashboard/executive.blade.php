@@ -93,11 +93,19 @@
                 <div class="float-left">
                     Dashboard / General Dashboard
                 </div>
-                <div class="float-right">| 11:00 AM</div>
-                <div class="float-right"> {{ $datenow }} &nbsp;</div>
             </div>
         </div>
     </div>
+
+    <center>
+      <div class="clock">
+            {{ $datenow }} &nbsp;
+            <div class="hours"></div><!--
+         --><div class="minutes"></div><!--
+          --><div class="seconds"></div><!--
+          --><div class="twelvehr"></div>
+      </div>
+    </center>
 
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-12">
@@ -275,7 +283,7 @@
       initializeProgress8();
       initializeProgress9();
       initializeProgress10();
-    },5000)
+    },30000)
 
     function initializeProgress1() {
         $.ajax({

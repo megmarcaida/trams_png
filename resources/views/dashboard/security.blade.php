@@ -1,6 +1,7 @@
 @extends('layouts.datatableapp')
 
 @section('content')
+
 <div class="container-fluid">
 
     <div class="alert alert-secondary">
@@ -9,12 +10,19 @@
                 <div class="float-left">
                     Dashboard / Security Dashboard
                 </div>
-                <div class="float-right">| 11:00 AM</div>
-                <div class="float-right"> {{ $datenow }} &nbsp;</div>
             </div>
         </div>
     </div>
 
+    <center>
+      <div class="clock">
+            {{ $datenow }} &nbsp;
+            <div class="hours"></div><!--
+         --><div class="minutes"></div><!--
+          --><div class="seconds"></div><!--
+          --><div class="twelvehr"></div>
+      </div>
+    </center>
 
     <div class="alert alert-success" style="display:none;" id="response"></div>
     <div class="row">
@@ -280,7 +288,7 @@
         table.draw()
         table_incoming.draw()
         table_outgoing.draw()
-    },5000)
+    },10000)
 
 
     $('.data-table-incoming tbody').on( 'click', 'tr', function () {

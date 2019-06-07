@@ -9,11 +9,19 @@
                 <div class="float-left">
                     Dashboard / General Dashboard
                 </div>
-                <div class="float-right">| 11:00 AM</div>
-                <div class="float-right"> {{ $datenow }} &nbsp;</div>
             </div>
         </div>
     </div>
+
+    <center>
+      <div class="clock">
+            {{ $datenow }} &nbsp;
+            <div class="hours"></div><!--
+         --><div class="minutes"></div><!--
+          --><div class="seconds"></div><!--
+          --><div class="twelvehr"></div>
+      </div>
+    </center>
 
     <div class="row">
         <div class="col-xl-12 col-sm-12 mb-3">
@@ -269,7 +277,7 @@
     setInterval(function(){
         incomingTrucks();
         table.draw()
-    },5000)
+    },10000)
      
   });
 

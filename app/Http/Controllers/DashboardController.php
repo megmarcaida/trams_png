@@ -504,12 +504,13 @@ class DashboardController extends Controller
         }
 
         $parking_ = Parking::where("id",1)->first();
+        $process_name = $request->process_name;
 
         $sched = Schedule::find($id);
         if(!empty($sched)){
 
             //Gate-IN
-            if($sched->status == 10 && $sched->process_status == "incoming"){
+            if($sched->status == 10 && $sched->process_status == "incoming" && $process_name == "gate-in"){
                 
                 if($parking_->parking_slot == $parking_->parking_area){
                     return json_encode(["message"=>"Parking is Full"]);
@@ -518,46 +519,46 @@ class DashboardController extends Controller
                 $sched->update(['process_status'=>"incoming","status"=> 8,"gate_in_timestamp"=>Carbon::now()]);
                 $parking_->update(['parking_slot'=> $parking_->parking_slot + 1]);
                 if($sched){
-                    $ret = "Successfully Gate-IN";
+                    $ret = ["success"=>"Successfully Gate-IN"];
                 }else{
-                    $ret = "Failed to Gate-IN";
+                    $ret = ["error"=>"Failed to Gate-IN"];
                 }
 
-                return json_encode(["message"=>$ret]);
+                return json_encode($ret);
             }
 
             //Dock-IN
-            if($sched->status == 8 && $sched->process_status == "incoming"){
+            if($sched->status == 8 && $sched->process_status == "incoming" && $process_name == "dock-in"){
 
                 $gate_in_datetime = $sched->gate_in_timestamp;
                 $parking_time = time() - strtotime($gate_in_datetime);
                 $sched->update(['process_status'=>"incoming_dock_in","status"=> 9,"dock_in_timestamp"=>Carbon::now(),"parking_timestamp"=>$parking_time]);
                  $parking_->update(['parking_slot'=> $parking_->parking_slot - 1]);
                 if($sched){
-                    $ret = "Successfully Dock-IN";
+                    $ret = ["success"=>"Successfully Dock-IN"];
                 }else{
-                    $ret = "Failed  to Dock-IN";
+                    $ret = ["error"=>"Failed  to Dock-IN"];
                 }
 
-                return json_encode(["message"=>$ret]);
+                return json_encode($ret);
             }
 
             //Dock-OUT
-            if($sched->status == 9 && $sched->process_status == "incoming_dock_in"){
+            if($sched->status == 9 && $sched->process_status == "incoming_dock_in" && $process_name == "dock-out"){
                 $dock_in_datetime = $sched->dock_in_timestamp;
                 $unloading_time = time() - strtotime($dock_in_datetime);
                 $sched->update(['process_status'=>"outgoing","status"=> 11,"dock_out_timestamp"=>Carbon::now(),"unloading_timestamp"=>$unloading_time]);
                 if($sched){
-                    $ret = "Successfully Dock-Out";
+                    $ret = ["success"=>"Successfully Dock-Out"];
                 }else{
-                    $ret = "Failed to Dock-Out";
+                    $ret = ["error"=>"Failed to Dock-Out"];
                 }
 
-                return json_encode(["message"=>$ret]);
+                return json_encode($ret);
             }
 
             //Gate-Out
-            if($sched->status == 11 && $sched->process_status == "outgoing"){
+            if($sched->status == 11 && $sched->process_status == "outgoing" && $process_name == "gate-out" ){
                 $dock_out_datetime = $sched->dock_out_timestamp;
                 $egress_time = time() - strtotime($dock_out_datetime);
 
@@ -566,23 +567,23 @@ class DashboardController extends Controller
                 
                 $sched->update(['process_status'=>"completed","status"=> 7,"gate_out_timestamp"=>Carbon::now(),"egress_timestamp"=>$egress_time,'truck_turnaround_timestamp' => $truck_turnaround_timestamp]);
                 if($sched){
-                    $ret = "Successfully Gate-Out";
+                    $ret = ["success"=>"Successfully Gate-Out"];
                 }else{
-                    $ret = "Failed to Gate-Out";
+                    $ret = ["error"=>"Failed to Gate-Out"];
                 }
 
-                return json_encode(["message"=>$ret]);
+                return json_encode($ret);
             }
 
         }
 
         if($sched){
-            $ret = "Success";
+            $ret = ["success"=>"Success"];
         }else{
-            $ret = "Failed";
+            $ret = ["error"=>"Unable to process."];
         }
 
-        return json_encode(["message"=>$ret]);
+        return json_encode($ret);
         //$schedules = Schedule::update(['id'=>$request->id,'process_status'=> $request->process_status]);
 
 

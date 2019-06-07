@@ -10,18 +10,38 @@
                 <div class="float-left">
                     QR Code / Manual Process
                 </div>
-                <div class="float-right">| 11:00 AM</div>
-                <div class="float-right"> {{ $datenow }} &nbsp;</div>
             </div>
         </div>
     </div>
+
+    <center>
+      <div class="clock">
+            {{ $datenow }} &nbsp;
+            <div class="hours"></div><!--
+         --><div class="minutes"></div><!--
+          --><div class="seconds"></div><!--
+          --><div class="twelvehr"></div>
+      </div>
+    </center>
 
     <div class="row">
         <div class="col-xl-6">
           <h3>Manual Process</h3>
               <form id="scheduleForm" name="scheduleForm" class="form-horizontal">
                     <div id="response"></div>
-                   
+                    <div class="form-group">
+                      <label for="name" class="col-xl-6 control-label">*Process Name</label>
+                      <div class="col-md-6">
+                        
+                        <select class="form-control" required name="process_name">
+                          <option value="">Please select proccess</option>
+                          <option value="gate-in">Gate-In</option>
+                          <option value="dock-in">Dock-In</option>
+                          <option value="dock-out">Dock-Out</option>
+                          <option value="gate-out">Gate-Out</option>
+                        </select>
+                      </div>
+                    </div>
                     <div class="form-group">
                         <label for="name" class="col-xl-6 control-label">*Delivery Ticket No.</label>
                         <div class="col-xl-6">
@@ -74,7 +94,15 @@
               dataType: 'json',
               success: function (data) {
                 $('#response').show();
-                 $('#response').html("<div class='alert alert-success'>"+data.message+"</div>")
+                 if(data.error){
+
+                    $('#response').html("<div class='alert alert-danger'>"+data.error+"</div>")
+                 }
+
+                 if(data.success){
+
+                    $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                 }
                   $('#scheduleForm').trigger("reset");
                   
                   setTimeout(function(){
