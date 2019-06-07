@@ -10694,11 +10694,11 @@ a.text-dark:focus {
 }
 
 .parent_slotting{
-  overflow: scroll;
+  overflow-y: hidden;
 }
 
 .slotting_time{
-  width: 5900px;
+  width: 486px;
 }
 
 .slotting_time > .slot_box{
