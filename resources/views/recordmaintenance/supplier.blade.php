@@ -126,7 +126,7 @@
    
 <div class="modal fade" id="ajaxModel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="width:960px;margin-left:-220px;">
             <div class="modal-header">
                 <h4 class="modal-title" id="modelHeading"></h4>
 
@@ -137,19 +137,89 @@
                     
                     <input type="hidden" name="supplier_id" id="supplier_id">
 
-                    <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Vendor Code</label>
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="vendor_code" name="vendor_code" placeholder="Enter Vendor Code" value="" maxlength="100" required="">
-                        </div>
+                    <div class="row">
+                      
+                      <!-- first column -->
+                      <div class="col-md-6">
+
+                          <!-- vendor code -->
+                          <div class="form-group">
+                              <label for="name" class="col-sm-12 control-label">*Vendor Code</label>
+                              <div class="col-sm-12">
+                                  <input type="text" class="form-control" id="vendor_code" name="vendor_code" placeholder="Enter Vendor Code" value="" maxlength="100" required="">
+                              </div>
+                          </div>
+
+                          <!-- supplier name -->
+                          <div class="form-group">
+                              <label for="name" class="col-sm-12 control-label">*Supplier Name</label>
+                              <div class="col-sm-12">
+                                  <input type="text" class="form-control" id="supplier_name" name="supplier_name" placeholder="Enter Name" value="" maxlength="50" required="">
+                              </div>
+                          </div>
+
+                          <!-- delivery types -->
+                          <div class="form-group">
+                             <label for="name" class="col-sm-12 control-label">*Delivery Types</label>
+                             <div class="col-sm-12">
+                                <select class="form-control delivery_type" id="delivery_types" name="delivery_types">
+                                     <option value="">Please select Delivery Type</option>
+                                     <option value="Local">Local</option>
+                                     <option value="Imported">Imported</option>
+                                </select>
+                              </div>
+                          </div>
+
+                          <!-- ordering days -->
+                          <div class="form-group">
+                             <label for="name" class="col-sm-12 control-label">*Ordering Days</label>
+                             <div class="col-sm-12">
+                                <select multiple="true" class="form-control ordering_days" id="ordering_days" name="ordering_days[]">
+                                     <option value="Mon">Mon</option>
+                                     <option value="Tue">Tue</option>
+                                     <option value="Wed">Wed</option>
+                                     <option value="Thu">Thu</option>
+                                     <option value="Fri">Fri</option>
+                                     <option value="Sat">Sat</option>
+                                     <option value="Sun">Sun</option>
+                                </select>
+                              </div>
+                          </div>
+
+                          <!-- module -->
+                          <div class="form-group">
+                             <label for="name" class="col-sm-12 control-label">*Module</label>
+                             <div class="col-sm-12">
+                                <select multiple="true" class="form-control module" id="modules" name="module[]">
+                                     <option value="PCC">PCC</option>
+                                     <option value="Baby Care">Baby Care</option>
+                                     <option value="Laundry">Laundry</option>
+                                     <option value="Liquids">Liquids</option>
+                                     <option value="Fem Care">Fem Care</option>
+                                </select>
+                              </div>
+                          </div>
+
+                      </div>
+
+                      <!-- second column -->
+                      <div class="col-md-6">
+                          <div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC First Name</label><div class="col-sm-12"><input type="text" class="form-control" id="spoc_first_name0" name="spoc_first_name[]" placeholder="Enter SPOC First Name" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Last Name</label><div class="col-sm-12"><input type="text" class="form-control" id="spoc_last_name0" name="spoc_last_name[]" placeholder="Enter SPOC Last Name" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Contact Number</label><div class="col-sm-12"><input type="text" class="form-control" id="spoc_contact_number0" name="spoc_contact_number[]" placeholder="Enter SPOC Contact Number" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Email Address</label><div class="col-sm-12"><input type="email" class="form-control" id="spoc_email_address0" name="spoc_email_address[]" placeholder="Enter SPOC Email Address" value="" maxlength="150" required=""></div></div>
+
+                          <div id="spoc"></div>
+
+
+                          <div class="col-sm-12 text-right">
+                             <button type="submit" class="btn btn-warning" id="addSpocBtn" value="create">Add SPOC
+                             </button>
+                          </div>
+                      </div>
+
                     </div>
 
-                    <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Supplier Name</label>
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="supplier_name" name="supplier_name" placeholder="Enter Name" value="" maxlength="50" required="">
-                        </div>
-                    </div>
+                    
+
+                    
                     
                     <!-- <div class="form-group">
                       <label class="col-sm-12 control-label delivery_type">*Delivery Type</label>
@@ -165,16 +235,7 @@
                       </div>
                     </div> -->
 
-                    <div class="form-group">
-                       <label for="name" class="col-sm-12 control-label">*Delivery Types</label>
-                       <div class="col-sm-12">
-                          <select class="form-control delivery_type" id="delivery_types" name="delivery_types">
-                               <option value="">Please select Delivery Type</option>
-                               <option value="Local">Local</option>
-                               <option value="Imported">Imported</option>
-                          </select>
-                        </div>
-                    </div>
+                    
 
                     <!-- <div class="form-group">
                       <label class="col-sm-12 control-label ordering_days">*Ordering Days</label>
@@ -209,20 +270,7 @@
                         </div>
                       </div>
                     </div> -->
-                    <div class="form-group">
-                       <label for="name" class="col-sm-12 control-label">*Ordering Days</label>
-                       <div class="col-sm-12">
-                          <select multiple="true" class="form-control ordering_days" id="ordering_days" name="ordering_days[]">
-                               <option value="Mon">Mon</option>
-                               <option value="Tue">Tue</option>
-                               <option value="Wed">Wed</option>
-                               <option value="Thu">Thu</option>
-                               <option value="Fri">Fri</option>
-                               <option value="Sat">Sat</option>
-                               <option value="Sun">Sun</option>
-                          </select>
-                        </div>
-                    </div>
+                    
 
                     <!-- <div class="form-group">
                       <label class="col-sm-12 control-label module">*Module</label>
@@ -255,28 +303,9 @@
                         </div>
                       </div> -->
 
-                      <div class="form-group">
-                       <label for="name" class="col-sm-12 control-label">*Module</label>
-                       <div class="col-sm-12">
-                          <select multiple="true" class="form-control module" id="modules" name="module[]">
-                               <option value="PCC">PCC</option>
-                               <option value="Baby Care">Baby Care</option>
-                               <option value="Laundry">Laundry</option>
-                               <option value="Liquids">Liquids</option>
-                               <option value="Fem Care">Fem Care</option>
-                          </select>
-                        </div>
-                    </div>
+                      
 
-                    <hr><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC First Name</label><div class="col-sm-12"><input type="text" class="form-control" id="spoc_first_name0" name="spoc_first_name[]" placeholder="Enter SPOC First Name" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Last Name</label><div class="col-sm-12"><input type="text" class="form-control" id="spoc_last_name0" name="spoc_last_name[]" placeholder="Enter SPOC Last Name" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Contact Number</label><div class="col-sm-12"><input type="text" class="form-control" id="spoc_contact_number0" name="spoc_contact_number[]" placeholder="Enter SPOC Contact Number" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Email Address</label><div class="col-sm-12"><input type="email" class="form-control" id="spoc_email_address0" name="spoc_email_address[]" placeholder="Enter SPOC Email Address" value="" maxlength="150" required=""></div></div>
-
-                    <div id="spoc"></div>
-
-
-                    <div class="col-sm-offset-2 col-sm-10">
-                       <button type="submit" class="btn btn-warning" id="addSpocBtn" value="create">Add SPOC
-                       </button>
-                    </div>
+                    <hr>
 
                     <br>
 
@@ -657,7 +686,7 @@
     var count = 1;
     $("#addSpocBtn").click(function(e){
 
-        $("#spoc").append('<div class="appendedSpoc'+ count+'"><hr><a href="#" class="removeSpoc btn btn-danger" data-id="'+count+'">Remove</a><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC First Name</label><div class="col-sm-12"><input type="text" class="form-control" class="spoc_first_name" name="spoc_first_name[]" placeholder="Enter SPOC First Name" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Last Name</label><div class="col-sm-12"><input type="text" class="form-control" class="spoc_last_name" name="spoc_last_name[]" placeholder="Enter SPOC Last Name" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Contact Number</label><div class="col-sm-12"><input type="text" class="form-control" class="spoc_contact_number" name="spoc_contact_number[]" placeholder="Enter SPOC Contact Number" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Email Address</label><div class="col-sm-12"><input type="email" class="form-control" class="spoc_email_address" name="spoc_email_address[]" placeholder="Enter SPOC Email Address" value="" maxlength="150" required=""></div></div></div>');
+        $("#spoc").append('<div class="appendedSpoc'+ count+'"><hr><a href="#" class="removeSpoc btn btn-danger" style="float:right;" data-id="'+count+'">Remove</a><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC First Name</label><div class="col-sm-12"><input type="text" class="form-control" class="spoc_first_name" name="spoc_first_name[]" placeholder="Enter SPOC First Name" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Last Name</label><div class="col-sm-12"><input type="text" class="form-control" class="spoc_last_name" name="spoc_last_name[]" placeholder="Enter SPOC Last Name" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Contact Number</label><div class="col-sm-12"><input type="text" class="form-control" class="spoc_contact_number" name="spoc_contact_number[]" placeholder="Enter SPOC Contact Number" value="" maxlength="50" required=""></div></div><div class="form-group"><label for="name" class="col-sm-12 control-label">SPOC Email Address</label><div class="col-sm-12"><input type="email" class="form-control" class="spoc_email_address" name="spoc_email_address[]" placeholder="Enter SPOC Email Address" value="" maxlength="150" required=""></div></div></div>');
 
         count++;
     });
