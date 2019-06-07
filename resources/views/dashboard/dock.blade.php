@@ -155,11 +155,34 @@
     </div>
 
     <div class="row">
-        <div class="col-xl-5 col-sm-4 mb-3">
+        <div class="col-xl-8 col-sm-4 mb-3">
           <h3>Incoming</h3>
           <hr>
             <div class="table table-responsive">
-              <table class="table table-bordered table-striped data-table-incoming">
+              <table class="table table-bordered table-striped data-table-incoming" style="height: 250px;">
+                  <thead>
+                      <tr>
+                          <th>Delivery Ticket No.</th>
+                          <th>Slotting Time</th>
+                          <th>Supplier</th>
+                          <th>Truck</th>
+                          <th>Plate Number</th>
+                          <th>Container Number</th>
+                          <th>Dock</th>
+                          <th>Material List</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
+            </div>
+
+          <br><br>
+
+          <h3>Outgoing</h3>
+          <hr>
+            <div class="table table-responsive">
+              <table class="table table-bordered table-striped data-table-outgoing" style="height: 250px;">
                   <thead>
                       <tr>
                           <th>Delivery Ticket No.</th>
@@ -177,7 +200,7 @@
               </table>
             </div>
         </div>
-        <div class="col-xl-2 col-sm-2 mb-3">
+        <div class="col-xl-4 col-sm-2 mb-3">
                     
             <h3>Dock</h3>
             <hr>
@@ -243,28 +266,6 @@
                 @endforeach
                 <br>
                 
-        </div>
-        <div class="col-xl-5 col-sm-5 mb-3">
-          <h3>Outgoing</h3>
-          <hr>
-            <div class="table table-responsive">
-              <table class="table table-bordered table-striped data-table-outgoing">
-                  <thead>
-                      <tr>
-                          <th>Delivery Ticket No.</th>
-                          <th>Slotting Time</th>
-                          <th>Supplier</th>
-                          <th>Truck</th>
-                          <th>Plate Number</th>
-                          <th>Container Number</th>
-                          <th>Dock</th>
-                          <th>Material List</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-              </table>
-            </div>
         </div>
     </div>
 

@@ -762,600 +762,600 @@
 
     //SCHEDULING CALENDAR
     var count = 0;
-    var testCalendar = function(module_name){
+    function testCalendar(module_name) {
 
 
-    var calendarEl = document.getElementById('calendar');
+      var calendarEl = document.getElementById('calendar');
 
-    calendarEl.innerHTML = "";
+      calendarEl.innerHTML = "";
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
-      plugins: [ 'interaction', 'resourceDayGrid', 'resourceTimeGrid', 'list' ],
-      defaultView: 'timeGridWeek',
-      defaultDate: Date.now(),
-      editable: false,
-      selectable: true,
-      eventLimit: true, // allow "more" link when too many events
-      header: {
-        left: 'title',
-        center: 'CreateSchedule ScheduleDockUnavailability',
-        right: 'timeGridWeek listMonth today prev,next'
-      },
-      customButtons: {
-        CreateSchedule: {
-          text: 'Create Schedule',
-          click: function() {
-            $('#saveBtn').html('Save Changes');
-            $('#saveBtn').val("create-product");
-            $('#schedule_id').val('');
-            $('#scheduleForm').trigger("reset");
-            $('#truck_id').html('');
-            $('#driver_id').html('');
-            $('#assistant_id').html('');
-            $('#dock_id').html('');
-            $('#dock_id').removeAttr("disabled");
-            $('#supplier_id').removeAttr("disabled");
-            $('#po_number').removeAttr("readonly");
-            $('.btncancelSchedule').hide();
-            $('#btnPrintVoucher').hide();
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+        plugins: [ 'interaction', 'resourceDayGrid', 'resourceTimeGrid', 'list' ],
+        defaultView: 'timeGridWeek',
+        defaultDate: Date.now(),
+        editable: false,
+        selectable: true,
+        eventLimit: true, // allow "more" link when too many events
+        header: {
+          left: 'title',
+          center: 'CreateSchedule ScheduleDockUnavailability',
+          right: 'timeGridWeek listMonth today prev,next'
+        },
+        customButtons: {
+          CreateSchedule: {
+            text: 'Create Schedule',
+            click: function() {
+              $('#saveBtn').html('Save Changes');
+              $('#saveBtn').val("create-product");
+              $('#schedule_id').val('');
+              $('#scheduleForm').trigger("reset");
+              $('#truck_id').html('');
+              $('#driver_id').html('');
+              $('#assistant_id').html('');
+              $('#dock_id').html('');
+              $('#dock_id').removeAttr("disabled");
+              $('#supplier_id').removeAttr("disabled");
+              $('#po_number').removeAttr("readonly");
+              $('.btncancelSchedule').hide();
+              $('#btnPrintVoucher').hide();
 
-            $('#supplier_id').not(this).find('option').removeAttr('disabled')
-            $('#alt_supplier_id').val('');
-            $('#supplier_id').removeClass('disableSelect');
-            $('#dock_id').not(this).find('option').removeAttr('disabled')
-            $('#dock_id').removeClass('disableSelect');
+              $('#supplier_id').not(this).find('option').removeAttr('disabled')
+              $('#alt_supplier_id').val('');
+              $('#supplier_id').removeClass('disableSelect');
+              $('#dock_id').not(this).find('option').removeAttr('disabled')
+              $('#dock_id').removeClass('disableSelect');
 
-            $(".r_ordering_days").css('display','none')
-            $(".r_recurrent_dateend").css('display','none')
+              $(".r_ordering_days").css('display','none')
+              $(".r_recurrent_dateend").css('display','none')
 
-            $('.slot_box').removeClass('active_slot_box');
-            $('#modelHeading').html("Register Schedule");
+              $('.slot_box').removeClass('active_slot_box');
+              $('#modelHeading').html("Register Schedule");
 
+                $('div.occupied_slot_box').addClass("slot_box");
+                $('div.slot_box').removeClass("occupied_slot_box");
+                $('div.slot_box').removeClass("active_slot_box");
+                $('div.slot_box').removeClass("editable_slot_box");
+
+              $('#po_number').css("outline","solid 1px transparent")
+              $('#truck_id').css("outline","solid 1px transparent")
+              $('#supplier_id').css("outline","solid 1px transparent")
+              $('#driver_id').css("outline","solid 1px transparent")
+              $('#assistant_id').css("outline","solid 1px transparent")
+              $('#dock_id').css("outline","solid 1px transparent")
+              $('#dateOfDelivery').css("outline","solid 1px transparent")
+              $('#recurrence').css("outline","solid 1px transparent")
+              $('.slotting_time').css("color","black")
+
+              $('#cont').html('');
+              $('document').ready(function(){
+                createTable();
+                addRow('','','');
+              });
+              $('#ajaxModel').modal({
+                backdrop:'static',
+                keyboard: false
+              })
+            }
+          },
+          ScheduleDockUnavailability: {
+            text: 'Schedule Dock Unavailability',
+            click: function() {
+              $('#unavailability_id').val('');
               $('div.occupied_slot_box').addClass("slot_box");
               $('div.slot_box').removeClass("occupied_slot_box");
               $('div.slot_box').removeClass("active_slot_box");
               $('div.slot_box').removeClass("editable_slot_box");
+              $('#dock_id_unavailability').val(0)
+              $('#dateOfUnavailability').val('')
 
-            $('#po_number').css("outline","solid 1px transparent")
-            $('#truck_id').css("outline","solid 1px transparent")
-            $('#supplier_id').css("outline","solid 1px transparent")
-            $('#driver_id').css("outline","solid 1px transparent")
-            $('#assistant_id').css("outline","solid 1px transparent")
-            $('#dock_id').css("outline","solid 1px transparent")
-            $('#dateOfDelivery').css("outline","solid 1px transparent")
-            $('#recurrence').css("outline","solid 1px transparent")
-            $('.slotting_time').css("color","black")
-
-            $('#cont').html('');
-            $('document').ready(function(){
-              createTable();
-              addRow('','','');
-            });
-            $('#ajaxModel').modal({
-              backdrop:'static',
-              keyboard: false
-            })
-          }
-        },
-        ScheduleDockUnavailability: {
-          text: 'Schedule Dock Unavailability',
-          click: function() {
-            $('#unavailability_id').val('');
-            $('div.occupied_slot_box').addClass("slot_box");
-            $('div.slot_box').removeClass("occupied_slot_box");
-            $('div.slot_box').removeClass("active_slot_box");
-            $('div.slot_box').removeClass("editable_slot_box");
-            $('#dock_id_unavailability').val(0)
-            $('#dateOfUnavailability').val('')
-
-            $(".r_ordering_days_u").css('display','none')
-            $('#unavailabilityForm').trigger("reset");
-            $('#ajaxModelUnavailability').modal({
-              backdrop:'static',
-              keyboard: false
-            })
-            $('#modelHeadingUnavailability').html('')
-            $('#modelHeadingUnavailability').append('Schedule Dock Unavailability')
-            
-          }
-        },
-      },
-      views: {
-        resourceTimeGridTwoDay: {
-          type: 'resourceTimeGrid',
-          duration: { days: 2 },
-          buttonText: '2 days',
-        },
-        listMonth: { buttonText: 'List Month' },
-        timeGridWeek: { buttonText: 'List Calendar'}
-      },
-
-
-      //// uncomment this line to hide the all-day slot
-      allDaySlot: false,
-
-      //uncomment this for default setup
-      // resources: [
-      //   { id: 'a', title: 'Room A' },
-      //   { id: 'b', title: 'Room B', eventColor: 'green' },
-      //   { id: 'c', title: 'Room C', eventColor: 'orange' },
-      //   { id: 'd', title: 'Room D', eventColor: 'red' }
-      // ],
-      // events: [
-      //   { id: '1', resourceId: 'b', start: '2019-04-06', end: '2019-04-08', title: 'event 1' },
-      //   { id: '2', resourceId: 'a', start: '2019-04-07T09:00:00', end: '2019-04-07T14:00:00', title: 'event 2' },
-      //   { id: '3', resourceId: 'b', start: '2019-04-07T12:00:00', end: '2019-04-08T06:00:00', title: 'event 3' },
-      //   { id: '4', resourceId: 'c', start: '2019-04-07T07:30:00', end: '2019-04-07T09:30:00', title: 'event 4' },
-      //   { id: '5', resourceId: 'd', start: '2019-04-07T10:00:00', end: '2019-04-07T15:00:00', title: 'event 5' }
-      // ],
-
-      eventRender: function(info) {
-      },
-
-      events: {
-        url: "{{ url('allschedules') }}",
-        method: 'POST',
-        extraParams: {
-          _token: '{{csrf_token()}}',
-          module: module_name
-        },
-        success: function(event){
-          //console.log(event)
-        },
-        failure: function() {
-          //alert('there was an error while fetching events!');
-        },
-        color: '#1e9',   // a non-ajax option
-        textColor: 'black' // a non-ajax option
-      },
-      select: function(arg) {
-        
-        console.log(
-          'select',
-          arg.startStr,
-          arg.endStr,
-          arg.resource ? arg.resource.id : '(no resource)'
-        );
-      },
-      dateClick: function(arg) {
-        
-        console.log(
-          'dateClick',
-          arg.date,
-          arg.resource ? arg.resource.id : '(no resource)'
-        );
-      },
-       eventClick: function(info) {
-
-          $('#scheduleForm').trigger("reset");      
-
-          // view hide element
-          $('.btncancelSchedule').show();
-          $('#btnPrintVoucher').show();
-
-          $('#btnPrintVoucher').attr("data-id",info.event.id)
-          //set data
-          $('#recurrence_hidden').val('');
-          $('#selected_schedule').val(info.event.id);
-          $('#selected_supplierid').val(info.event.extendedProps.supplier_id);
-          $('#isEditingSingle').val('')
-          $('#isEditingRecurrent').val('')
-          $('#dataEditID').val('')
-
-          if(info.event.extendedProps.isForUnavailability != 1){
-            $('#recurrence_hidden').val(info.event.extendedProps.recurrence)
-          }
-          
-          if($('#recurrence_hidden').val() != 'Recurrent'){
-
-
-          $('.r_recurrent_dateend').hide();
-          $('div.editable_slot_box').addClass('slot_box').removeClass("editable_slot_box");
-          $('div.occupied_slot_box').addClass('slot_box').removeClass("occupied_slot_box");
-
-          $('#saveBtn').html('Save Changes');
-          $('#response').html(''); 
-          var id = $('#selected_schedule').val();
-          var selected = $('#selected_supplierid').val();
-
-          if(id == "" && selected == ""){
-            $('#response').append('<div class="alert alert-warning">Please select schedule to edit.</div>  ')
-          }
-          $('#truck_id').html('');
-          $('#driver_id').html('');
-          $('#assistant_id').html('');
-          $('#dock_id').html(''); 
-          $('#alt_supplier_id').val('');
-          //$('#supplier_id').attr("disabled","disabled");
-          $('#po_number').attr("readonly","true");
-          $('#dock_id').not(this).find('option').prop('disabled', 'true');
-          $('#supplier_id').not(this).find('option').prop('disabled', 'true');
-
-          $('#supplier_id').addClass('disableSelect');
-          $('#dock_id').addClass('disableSelect');
-
-          //console.log(info.event.extendedProps)
-          $('#recurrence_unavailability').css('outline','1px solid transparent')
-          $('#po_number').css('outline','1px solid transparent')
-          $('#recurrence').css('outline','1px solid transparent')
-          $('#dateOfDelivery').css('outline','1px solid transparent')
-          $('#truck_id').css('outline','1px solid transparent')
-          $('#driver_id').css('outline','1px solid transparent')
-          $('#assistant_id').css('outline','1px solid transparent')
-          $('#supplier_id').css('outline','1px solid transparent')
-          $('.slotting_time').css('color','black')
-          $('#dock_id_unavailability').css('outline','1px solid transparent')
-          $('#dateOfUnavailability').css('outline','1px solid transparent')
-          $('#type_unavailability').css('outline','1px solid transparent')
-          $.ajax({
-              url: "{{ url('getSupplierData') }}",
-              type: "POST",
-              data: {id:selected},
-              success: function (data) {
-                console.log("test:" + data)
-                $.each(JSON.parse(data), function(index, item) {
-                  if(index == 'truckdata'){
-                    $.each(item, function(index, truck) {
-
-                      $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
-                    });
-                  }
-
-                  if(index == 'driverdata'){
-                    $.each(item, function(index, driver) {
-                      $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
-                    });
-                  }
-
-                  if(index == 'assistantdata'){
-                    $.each(item, function(index, assistant) {
-                      $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
-                    });
-                  }
-
-                  if(index == 'dockdata'){
-
-                    $.each(item, function(index, dock) {
-                      $('#dock_id').append("<option value="+dock.id +">" + dock.dock_name + "</option>")
-                    });
-                  }
-                });
-
-              },
-              error: function (data) {
-                  //console.log('Error:', data);
-              }
-          });
-
-          //unavailability
-          //console.log(info.event.extendedProps)
-          if(info.event.extendedProps.isForUnavailability == 1){
-              $.ajax({
-              url: "{{ url('getEditDockUnavailability') }}",
-              type: "POST",
-              data: {id:id},
-              success: function (data) {
-                     $('#ajaxModelUnavailability').modal({
-                        backdrop:'static',
-                        keyboard: false
-                      })
-                      $('#modelHeadingUnavailability').html('')
-                      $('#modelHeadingUnavailability').append('Edit Schedule Dock Unavailability')
-                      //console.log(data.date_of_delivery)
-                      $('#unavailability_id').val(data.id);
-                      $('#dock_id_unavailability').val(data.dock_id);
-
-                      $('#dateOfUnavailability').val(data.date_of_delivery);
-                      //console.log(data.date_of_delivery)
-
-
-                      $("input[name=recurrence_unavailability][value='" + data.recurrence + "']").prop('checked', 'checked');
-                      if(data.recurrence == "Recurrent"){
-                        $(".r_ordering_days").css('display','block')
-                      }
-                      var ordering_days_arr = data.ordering_days.split("|")
-                      $.each( ordering_days_arr, function( key, value ) {
-                        $("input[value='" + $.trim(value) + "']").prop('checked', true);
-                      });
-                      //console.log(data)
-                      $("#slotting_time_unavailability").val(data.slotting_time_text);
-
-                      $('div.occupied_slot_box').addClass("slot_box");
-                      //refresh slot box
-                      $('div.slot_box').removeClass("occupied_slot_box");
-                      $('div.slot_box').removeClass("active_slot_box");
-                      var date_of_delivery = $('#dateOfUnavailability').val();
-
-                      $.ajax({
-                          url: "{{ url('getSlottingTime') }}",
-                          type: "POST",
-                          data: {date_of_delivery:date_of_delivery,isForUnavailability:info.event.extendedProps.isForUnavailability},
-                          success: function (data) {
-                              //console.log(data)
-                              $.each(JSON.parse(data), function(index, item) {
-                                $.each(item.slotting_time, function(i, slot) {
-                                  if(slot != ""){
-                                    $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
-                                    $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
-                                  }
-                                });
-                              });
-                          },
-                          error: function (data) {
-                              //console.log('Error:', data);
-                          }
-                      });
-                      //refresh slot box
-
-
-                      $.each(data.slotting_time, function(index, slot) {
-                          //console.log(slot)
-                            if(slot != ""){
-                              $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
-                              $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
-                              $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
-                            }
-                        });
-
-              },
-              error: function (data) {
-                  //console.log('Error:', data);
-              }
-          });
-
-              
-          }else{
-            $.get("{{ route('ajaxschedules.index') }}" +'/' + id +'/edit', function (data) {
-                $('#modelHeading').html("Edit Schedule");
-                $('#saveBtn').val("edit-user");
-                $('#ajaxModel').modal({
-                  backdrop:'static',
-                  keyboard: false
-                })
-                //console.log(data.date_of_delivery)
-                $('#schedule_id').val(data.id);
-                $('#po_number').val(data.po_number);
-                $('#supplier_id').val(data.supplier_id);
-                $('#alt_supplier_id').val(data.supplier_id);
-                $('#dock_id').val(data.dock_id);
-
-                $('#dateOfDelivery').val(data.date_of_delivery);
-
-                $('#recurrent_dateend').val(data.recurrent_dateend);
-
-                $('#truck_id').val(data.truck_id);
-
-                $('#driver_id').val(data.driver_id);
-
-                $('#assistant_id').val(data.assistant_id);
-
-                $('#container_number').val(data.container_number);
-
-                // $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
-                console.log(data.recurrence)
-                $("#recurrence").val(data.recurrence)
-                if(data.recurrence == "Recurrent"){
-                  $(".r_ordering_days").css('display','block')
-                }
-                var ordering_days_arr = data.ordering_days.split("|")
-                // $.each( ordering_days_arr, function( key, value ) {
-                //   $("input[value='" + $.trim(value) + "']").prop('checked', true);
-                // });
-                $.each(ordering_days_arr, function(i,e){
-                  $("#submodules option[value='" + $.trim(e) + "']").prop("selected", true);
-                });
-
-                $('#cont').html('');
-                createTable();
-                //console.log(data.material_list  + "Test")
-                if(data.material_list == 0){
-                    addRow('','','')
-                }
-                $.each(data.material_list.gcas, function(index, item) {
-                    if(item != ""){
-
-                      addRow(item,data.material_list.description[index],data.material_list.quantity[index])
-                    }
-                });
-
-                $("#slotting_time").val(data.slotting_time_text);
-
-                 $('div.occupied_slot_box').addClass("slot_box");
-
-
-                //refresh slot box
-                $('div.slot_box').removeClass("occupied_slot_box");
-                $('div.slot_box').removeClass("active_slot_box");
-                var date_of_delivery = $('#dateOfDelivery').val();
-                $.ajax({
-                    url: "{{ url('getSlottingTime') }}",
-                    type: "POST",
-                    data: {date_of_delivery:date_of_delivery},
-                    success: function (data) {
-                        //console.log(data)
-                        $.each(JSON.parse(data), function(index, item) {
-                          $.each(item.slotting_time, function(i, slot) {
-                            if(slot != ""){
-                              $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
-                              $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
-                            }
-                          });
-                        });
-                    },
-                    error: function (data) {
-                        //console.log('Error:', data);
-                    }
-                });
-                //refresh slot box
-
-
-                $.each(data.slotting_time, function(index, slot) {
-                    //console.log(slot)
-                      if(slot != ""){
-                        $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
-                        $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
-                        $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
-                      }
-                  });
-            })
-          }
-
-          // change the border color just for fun
-          //info.el.style.borderColor = 'red';
-
-          }else{
-            if(info.event.extendedProps.status != "No-Show"){
-              $('#ajaxModelEditRecurrent').modal({
-                  backdrop:'static',
-                  keyboard: false
+              $(".r_ordering_days_u").css('display','none')
+              $('#unavailabilityForm').trigger("reset");
+              $('#ajaxModelUnavailability').modal({
+                backdrop:'static',
+                keyboard: false
               })
+              $('#modelHeadingUnavailability').html('')
+              $('#modelHeadingUnavailability').append('Schedule Dock Unavailability')
+              
             }
-          }
+          },
+        },
+        views: {
+          resourceTimeGridTwoDay: {
+            type: 'resourceTimeGrid',
+            duration: { days: 2 },
+            buttonText: '2 days',
+          },
+          listMonth: { buttonText: 'List Month' },
+          timeGridWeek: { buttonText: 'List Calendar'}
+        },
 
 
-          console.log(info.event.extendedProps.status)
-          //RESCHEDULING
-          if(info.event.extendedProps.status == "No-Show"){
-              $('#isEditingSingle').val('1');
-              $.get("{{ route('ajaxschedules.index') }}" +'/' + info.event.id +'/edit', function (data) {
-                  $('#modelHeading').html("Reschedule Slotting");
+        //// uncomment this line to hide the all-day slot
+        allDaySlot: false,
+
+        //uncomment this for default setup
+        // resources: [
+        //   { id: 'a', title: 'Room A' },
+        //   { id: 'b', title: 'Room B', eventColor: 'green' },
+        //   { id: 'c', title: 'Room C', eventColor: 'orange' },
+        //   { id: 'd', title: 'Room D', eventColor: 'red' }
+        // ],
+        // events: [
+        //   { id: '1', resourceId: 'b', start: '2019-04-06', end: '2019-04-08', title: 'event 1' },
+        //   { id: '2', resourceId: 'a', start: '2019-04-07T09:00:00', end: '2019-04-07T14:00:00', title: 'event 2' },
+        //   { id: '3', resourceId: 'b', start: '2019-04-07T12:00:00', end: '2019-04-08T06:00:00', title: 'event 3' },
+        //   { id: '4', resourceId: 'c', start: '2019-04-07T07:30:00', end: '2019-04-07T09:30:00', title: 'event 4' },
+        //   { id: '5', resourceId: 'd', start: '2019-04-07T10:00:00', end: '2019-04-07T15:00:00', title: 'event 5' }
+        // ],
+
+        eventRender: function(info) {
+        },
+
+        events: {
+          url: "{{ url('allschedules') }}",
+          method: 'POST',
+          extraParams: {
+            _token: '{{csrf_token()}}',
+            module: module_name
+          },
+          success: function(event){
+            //console.log(event)
+          },
+          failure: function() {
+            //alert('there was an error while fetching events!');
+          },
+          color: '#1e9',   // a non-ajax option
+          textColor: 'black' // a non-ajax option
+        },
+        select: function(arg) {
+          
+          console.log(
+            'select',
+            arg.startStr,
+            arg.endStr,
+            arg.resource ? arg.resource.id : '(no resource)'
+          );
+        },
+        dateClick: function(arg) {
+          
+          console.log(
+            'dateClick',
+            arg.date,
+            arg.resource ? arg.resource.id : '(no resource)'
+          );
+        },
+         eventClick: function(info) {
+
+            $('#scheduleForm').trigger("reset");      
+
+            // view hide element
+            $('.btncancelSchedule').show();
+            $('#btnPrintVoucher').show();
+
+            $('#btnPrintVoucher').attr("data-id",info.event.id)
+            //set data
+            $('#recurrence_hidden').val('');
+            $('#selected_schedule').val(info.event.id);
+            $('#selected_supplierid').val(info.event.extendedProps.supplier_id);
+            $('#isEditingSingle').val('')
+            $('#isEditingRecurrent').val('')
+            $('#dataEditID').val('')
+
+            if(info.event.extendedProps.isForUnavailability != 1){
+              $('#recurrence_hidden').val(info.event.extendedProps.recurrence)
+            }
+            
+            if($('#recurrence_hidden').val() != 'Recurrent'){
+
+
+            $('.r_recurrent_dateend').hide();
+            $('div.editable_slot_box').addClass('slot_box').removeClass("editable_slot_box");
+            $('div.occupied_slot_box').addClass('slot_box').removeClass("occupied_slot_box");
+
+            $('#saveBtn').html('Save Changes');
+            $('#response').html(''); 
+            var id = $('#selected_schedule').val();
+            var selected = $('#selected_supplierid').val();
+
+            if(id == "" && selected == ""){
+              $('#response').append('<div class="alert alert-warning">Please select schedule to edit.</div>  ')
+            }
+            $('#truck_id').html('');
+            $('#driver_id').html('');
+            $('#assistant_id').html('');
+            $('#dock_id').html(''); 
+            $('#alt_supplier_id').val('');
+            //$('#supplier_id').attr("disabled","disabled");
+            $('#po_number').attr("readonly","true");
+            $('#dock_id').not(this).find('option').prop('disabled', 'true');
+            $('#supplier_id').not(this).find('option').prop('disabled', 'true');
+
+            $('#supplier_id').addClass('disableSelect');
+            $('#dock_id').addClass('disableSelect');
+
+            //console.log(info.event.extendedProps)
+            $('#recurrence_unavailability').css('outline','1px solid transparent')
+            $('#po_number').css('outline','1px solid transparent')
+            $('#recurrence').css('outline','1px solid transparent')
+            $('#dateOfDelivery').css('outline','1px solid transparent')
+            $('#truck_id').css('outline','1px solid transparent')
+            $('#driver_id').css('outline','1px solid transparent')
+            $('#assistant_id').css('outline','1px solid transparent')
+            $('#supplier_id').css('outline','1px solid transparent')
+            $('.slotting_time').css('color','black')
+            $('#dock_id_unavailability').css('outline','1px solid transparent')
+            $('#dateOfUnavailability').css('outline','1px solid transparent')
+            $('#type_unavailability').css('outline','1px solid transparent')
+            $.ajax({
+                url: "{{ url('getSupplierData') }}",
+                type: "POST",
+                data: {id:selected},
+                success: function (data) {
+                  console.log("test:" + data)
+                  $.each(JSON.parse(data), function(index, item) {
+                    if(index == 'truckdata'){
+                      $.each(item, function(index, truck) {
+
+                        $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
+                      });
+                    }
+
+                    if(index == 'driverdata'){
+                      $.each(item, function(index, driver) {
+                        $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
+                      });
+                    }
+
+                    if(index == 'assistantdata'){
+                      $.each(item, function(index, assistant) {
+                        $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
+                      });
+                    }
+
+                    if(index == 'dockdata'){
+
+                      $.each(item, function(index, dock) {
+                        $('#dock_id').append("<option value="+dock.id +">" + dock.dock_name + "</option>")
+                      });
+                    }
+                  });
+
+                },
+                error: function (data) {
+                    //console.log('Error:', data);
+                }
+            });
+
+            //unavailability
+            //console.log(info.event.extendedProps)
+            if(info.event.extendedProps.isForUnavailability == 1){
+                $.ajax({
+                url: "{{ url('getEditDockUnavailability') }}",
+                type: "POST",
+                data: {id:id},
+                success: function (data) {
+                       $('#ajaxModelUnavailability').modal({
+                          backdrop:'static',
+                          keyboard: false
+                        })
+                        $('#modelHeadingUnavailability').html('')
+                        $('#modelHeadingUnavailability').append('Edit Schedule Dock Unavailability')
+                        //console.log(data.date_of_delivery)
+                        $('#unavailability_id').val(data.id);
+                        $('#dock_id_unavailability').val(data.dock_id);
+
+                        $('#dateOfUnavailability').val(data.date_of_delivery);
+                        //console.log(data.date_of_delivery)
+
+
+                        $("input[name=recurrence_unavailability][value='" + data.recurrence + "']").prop('checked', 'checked');
+                        if(data.recurrence == "Recurrent"){
+                          $(".r_ordering_days").css('display','block')
+                        }
+                        var ordering_days_arr = data.ordering_days.split("|")
+                        $.each( ordering_days_arr, function( key, value ) {
+                          $("input[value='" + $.trim(value) + "']").prop('checked', true);
+                        });
+                        //console.log(data)
+                        $("#slotting_time_unavailability").val(data.slotting_time_text);
+
+                        $('div.occupied_slot_box').addClass("slot_box");
+                        //refresh slot box
+                        $('div.slot_box').removeClass("occupied_slot_box");
+                        $('div.slot_box').removeClass("active_slot_box");
+                        var date_of_delivery = $('#dateOfUnavailability').val();
+
+                        $.ajax({
+                            url: "{{ url('getSlottingTime') }}",
+                            type: "POST",
+                            data: {date_of_delivery:date_of_delivery,isForUnavailability:info.event.extendedProps.isForUnavailability},
+                            success: function (data) {
+                                //console.log(data)
+                                $.each(JSON.parse(data), function(index, item) {
+                                  $.each(item.slotting_time, function(i, slot) {
+                                    if(slot != ""){
+                                      $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                                      $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                                    }
+                                  });
+                                });
+                            },
+                            error: function (data) {
+                                //console.log('Error:', data);
+                            }
+                        });
+                        //refresh slot box
+
+
+                        $.each(data.slotting_time, function(index, slot) {
+                            //console.log(slot)
+                              if(slot != ""){
+                                $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
+                                $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
+                                $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                              }
+                          });
+
+                },
+                error: function (data) {
+                    //console.log('Error:', data);
+                }
+            });
+
+                
+            }else{
+              $.get("{{ route('ajaxschedules.index') }}" +'/' + id +'/edit', function (data) {
+                  $('#modelHeading').html("Edit Schedule");
                   $('#saveBtn').val("edit-user");
                   $('#ajaxModel').modal({
                     backdrop:'static',
                     keyboard: false
                   })
-                    $.ajax({
-                      url: "{{ url('getSupplierData') }}",
+                  //console.log(data.date_of_delivery)
+                  $('#schedule_id').val(data.id);
+                  $('#po_number').val(data.po_number);
+                  $('#supplier_id').val(data.supplier_id);
+                  $('#alt_supplier_id').val(data.supplier_id);
+                  $('#dock_id').val(data.dock_id);
+
+                  $('#dateOfDelivery').val(data.date_of_delivery);
+
+                  $('#recurrent_dateend').val(data.recurrent_dateend);
+
+                  $('#truck_id').val(data.truck_id);
+
+                  $('#driver_id').val(data.driver_id);
+
+                  $('#assistant_id').val(data.assistant_id);
+
+                  $('#container_number').val(data.container_number);
+
+                  // $("input[name=recurrence][value='" + data.recurrence + "']").prop('checked', 'checked');
+                  console.log(data.recurrence)
+                  $("#recurrence").val(data.recurrence)
+                  if(data.recurrence == "Recurrent"){
+                    $(".r_ordering_days").css('display','block')
+                  }
+                  var ordering_days_arr = data.ordering_days.split("|")
+                  // $.each( ordering_days_arr, function( key, value ) {
+                  //   $("input[value='" + $.trim(value) + "']").prop('checked', true);
+                  // });
+                  $.each(ordering_days_arr, function(i,e){
+                    $("#submodules option[value='" + $.trim(e) + "']").prop("selected", true);
+                  });
+
+                  $('#cont').html('');
+                  createTable();
+                  //console.log(data.material_list  + "Test")
+                  if(data.material_list == 0){
+                      addRow('','','')
+                  }
+                  $.each(data.material_list.gcas, function(index, item) {
+                      if(item != ""){
+
+                        addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                      }
+                  });
+
+                  $("#slotting_time").val(data.slotting_time_text);
+
+                   $('div.occupied_slot_box').addClass("slot_box");
+
+
+                  //refresh slot box
+                  $('div.slot_box').removeClass("occupied_slot_box");
+                  $('div.slot_box').removeClass("active_slot_box");
+                  var date_of_delivery = $('#dateOfDelivery').val();
+                  $.ajax({
+                      url: "{{ url('getSlottingTime') }}",
                       type: "POST",
-                      data: {id:info.event.id},
+                      data: {date_of_delivery:date_of_delivery},
                       success: function (data) {
-                        console.log("test:" + data)
-                        $.each(JSON.parse(data), function(index, item) {
-                          if(index == 'truckdata'){
-                            $.each(item, function(index, truck) {
-
-                              $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
+                          //console.log(data)
+                          $.each(JSON.parse(data), function(index, item) {
+                            $.each(item.slotting_time, function(i, slot) {
+                              if(slot != ""){
+                                $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                                $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                              }
                             });
-                          }
-
-                          if(index == 'driverdata'){
-                            $.each(item, function(index, driver) {
-                              $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
-                            });
-                          }
-
-                          if(index == 'assistantdata'){
-                            $.each(item, function(index, assistant) {
-                              $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
-                            });
-                          }
-
-                          if(index == 'dockdata'){
-
-                            $.each(item, function(index, dock) {
-                              $('#dock_id').append("<option value="+dock.id +">" + dock.dock_name + "</option>")
-                            });
-                          }
-                        });
-
+                          });
                       },
                       error: function (data) {
                           //console.log('Error:', data);
                       }
                   });
+                  //refresh slot box
 
 
-                  setTimeout(function(){
-                      $('#schedule_id').val(data.id);
-                      $('#po_number').val(data.po_number);
-                      $('#supplier_id').val(data.supplier_id);
-                      $('#alt_supplier_id').val(data.supplier_id);
-                      $('#dock_id').val(data.dock_id);
-
-                      $('#dateOfDelivery').val(data.date_of_delivery);
-
-                      $('#recurrent_dateend').val(data.recurrent_dateend);
-
-                      $('#truck_id').val(data.truck_id);
-
-                      $('#driver_id').val(data.driver_id);
-
-                      $('#assistant_id').val(data.assistant_id);
-
-                      $('#container_number').val(data.container_number);
-
-                      $('#btnPrintVoucher').hide();
-
-                      $("#recurrence").val(data.recurrence)
-                      if(data.recurrence == "Recurrent"){
-                        $(".r_ordering_days").css('display','block')
-                      }
-                      var ordering_days_arr = data.ordering_days.split("|")
-                      $.each(ordering_days_arr, function(i,e){
-                        $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
-                      });
-
-                      $('#cont').html('');
-                      createTable();
-                      //console.log(data.material_list  + "Test")
-                      if(data.material_list == 0){
-                          addRow('','','')
-                      }
-                      $.each(data.material_list.gcas, function(index, item) {
-                          if(item != ""){
-
-                            addRow(item,data.material_list.description[index],data.material_list.quantity[index])
-                          }
-                      });
-
-                      $("#slotting_time").val(data.slotting_time_text);
-
-                      $('div.occupied_slot_box').addClass("slot_box");
-
-
-                      //refresh slot box
-                      $('div.slot_box').removeClass("occupied_slot_box");
-                      $('div.slot_box').removeClass("active_slot_box");
-                      var date_of_delivery = $('#dateOfDelivery').val();
-                      $.ajax({
-                          url: "{{ url('getSlottingTime') }}",
-                          type: "POST",
-                          data: {date_of_delivery:date_of_delivery},
-                          success: function (data) {
-                              //console.log(data)
-                              $.each(JSON.parse(data), function(index, item) {
-                                $.each(item.slotting_time, function(i, slot) {
-                                  if(slot != ""){
-                                    $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
-                                    $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
-                                  }
-                                });
-                              });
-                          },
-                          error: function (data) {
-                              //console.log('Error:', data);
-                          }
-                      });
-                      //refresh slot box
-
-
-                      $.each(data.slotting_time, function(index, slot) {
-                          //console.log(slot)
-                            if(slot != ""){
-                              $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
-                              $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
-                              $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
-                            }
-                      });
-                    },2000)
-                  
+                  $.each(data.slotting_time, function(index, slot) {
+                      //console.log(slot)
+                        if(slot != ""){
+                          $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
+                          $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
+                          $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                        }
+                    });
               })
-          }
+            }
 
-         
-      }
-    });
+            // change the border color just for fun
+            //info.el.style.borderColor = 'red';
+
+            }else{
+              if(info.event.extendedProps.status != "No-Show"){
+                $('#ajaxModelEditRecurrent').modal({
+                    backdrop:'static',
+                    keyboard: false
+                })
+              }
+            }
+
+
+            console.log(info.event.extendedProps.status)
+            //RESCHEDULING
+            if(info.event.extendedProps.status == "No-Show"){
+                $('#isEditingSingle').val('1');
+                $.get("{{ route('ajaxschedules.index') }}" +'/' + info.event.id +'/edit', function (data) {
+                    $('#modelHeading').html("Reschedule Slotting");
+                    $('#saveBtn').val("edit-user");
+                    $('#ajaxModel').modal({
+                      backdrop:'static',
+                      keyboard: false
+                    })
+                      $.ajax({
+                        url: "{{ url('getSupplierData') }}",
+                        type: "POST",
+                        data: {id:info.event.id},
+                        success: function (data) {
+                          console.log("test:" + data)
+                          $.each(JSON.parse(data), function(index, item) {
+                            if(index == 'truckdata'){
+                              $.each(item, function(index, truck) {
+
+                                $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
+                              });
+                            }
+
+                            if(index == 'driverdata'){
+                              $.each(item, function(index, driver) {
+                                $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
+                              });
+                            }
+
+                            if(index == 'assistantdata'){
+                              $.each(item, function(index, assistant) {
+                                $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
+                              });
+                            }
+
+                            if(index == 'dockdata'){
+
+                              $.each(item, function(index, dock) {
+                                $('#dock_id').append("<option value="+dock.id +">" + dock.dock_name + "</option>")
+                              });
+                            }
+                          });
+
+                        },
+                        error: function (data) {
+                            //console.log('Error:', data);
+                        }
+                    });
+
+
+                    setTimeout(function(){
+                        $('#schedule_id').val(data.id);
+                        $('#po_number').val(data.po_number);
+                        $('#supplier_id').val(data.supplier_id);
+                        $('#alt_supplier_id').val(data.supplier_id);
+                        $('#dock_id').val(data.dock_id);
+
+                        $('#dateOfDelivery').val(data.date_of_delivery);
+
+                        $('#recurrent_dateend').val(data.recurrent_dateend);
+
+                        $('#truck_id').val(data.truck_id);
+
+                        $('#driver_id').val(data.driver_id);
+
+                        $('#assistant_id').val(data.assistant_id);
+
+                        $('#container_number').val(data.container_number);
+
+                        $('#btnPrintVoucher').hide();
+
+                        $("#recurrence").val(data.recurrence)
+                        if(data.recurrence == "Recurrent"){
+                          $(".r_ordering_days").css('display','block')
+                        }
+                        var ordering_days_arr = data.ordering_days.split("|")
+                        $.each(ordering_days_arr, function(i,e){
+                          $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
+                        });
+
+                        $('#cont').html('');
+                        createTable();
+                        //console.log(data.material_list  + "Test")
+                        if(data.material_list == 0){
+                            addRow('','','')
+                        }
+                        $.each(data.material_list.gcas, function(index, item) {
+                            if(item != ""){
+
+                              addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                            }
+                        });
+
+                        $("#slotting_time").val(data.slotting_time_text);
+
+                        $('div.occupied_slot_box').addClass("slot_box");
+
+
+                        //refresh slot box
+                        $('div.slot_box').removeClass("occupied_slot_box");
+                        $('div.slot_box').removeClass("active_slot_box");
+                        var date_of_delivery = $('#dateOfDelivery').val();
+                        $.ajax({
+                            url: "{{ url('getSlottingTime') }}",
+                            type: "POST",
+                            data: {date_of_delivery:date_of_delivery},
+                            success: function (data) {
+                                //console.log(data)
+                                $.each(JSON.parse(data), function(index, item) {
+                                  $.each(item.slotting_time, function(i, slot) {
+                                    if(slot != ""){
+                                      $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                                      $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                                    }
+                                  });
+                                });
+                            },
+                            error: function (data) {
+                                //console.log('Error:', data);
+                            }
+                        });
+                        //refresh slot box
+
+
+                        $.each(data.slotting_time, function(index, slot) {
+                            //console.log(slot)
+                              if(slot != ""){
+                                $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
+                                $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
+                                $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                              }
+                        });
+                      },2000)
+                    
+                })
+            }
+
+           
+        }
+  });
 
   
 
@@ -1379,14 +1379,25 @@
     }
 
     var value = "";
-    $('body').on('click', '.btn-modules', function () {
-       count = count + 1;
-       value = $(this).attr("data-value");
-       $("#current_module").val(value)
-       calendarEl.innerHTML = "";
-       calendar.destroy();
-       testCalendar(value)
+    // $('body').on('click', '.btn-modules', function () {
+    //    count = count + 1;
+    //    value = $(this).attr("data-value");
+    //    $("#current_module").val(value)
+    //    calendarEl.innerHTML = "";
+    //    calendar.destroy();
+    //    testCalendar(value)
         
+    // });
+
+    $('body').on('change','.btn-modules-dropdown',function(){
+      count = count + 1;
+      value = $('#btn-modules-dropdown').children("option:selected").val();
+      console.log(value)
+      $('#current_dock').html(value)
+      $("#current_module").val(value)
+      calendarEl.innerHTML = "";
+      calendar.destroy();
+      testCalendar(value)
     });
 
 
@@ -1569,7 +1580,7 @@
               dataType: 'json',
               success: function (data) {
                 console.log(data)
-                 if(data.conflict != undefined){
+                 if(data.conflict != undefined && data.conflict != null){
                   console.log(data)
                   $('#modelViewErrorRecurrent').modal({
                     backdrop:'static',
@@ -1607,7 +1618,7 @@
                      $('#saveBtn').html('Save Changes');
                  }
 
-                 if($('#dataEditID').val() != ''){
+                 if($('#dataEditID').val() != '0'){
                     $("#modelViewErrorRecurrent").modal({
                       backdrop:'static',
                       keyboard: false
@@ -2018,7 +2029,13 @@
     });
 
     //end new window
-   
+    setTimeout(function(){
+      $(".fc-center").appendTo(".button-area");
+      $(".fc-CreateSchedule-button").addClass('btn-block');
+      $(".fc-ScheduleDockUnavailability-button").addClass('btn-block');
+      $("#calendar > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2").text() 
+
+    },1000);
     
 </script>
 <div class="container-fluid">
@@ -2036,14 +2053,35 @@
       <h1>Schedule</h1>
         <div id="response"></div>
         <div class="row">
-          <div class="col-xl-6 group-module">
+          <div class="col-xl-3 button-area group-module">
             <input type="hidden" name="selected_schedule" id="selected_schedule">
             <input type="hidden" name="selected_supplierid" id="selected_supplierid">
             <input type="hidden" name="current_module" id="current_module">
             <input type="hidden" name="recurrence_hidden" id="recurrence_hidden">
           </div>
            <div class="col-xl-6 group-module">
-            <div class="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
+            <div class="form-group">
+               <label for="name" class="col-sm-12 control-label"><h4>Current Dock: <b id="current_dock"></b></h4> </label>
+
+               <div class="col-sm-12">
+                  <select class="form-control btn-modules-dropdown" id="btn-modules-dropdown">
+                       <option value="">Please select Dock</option>
+                       <option value="Baby Care 1">Baby Care 1</option>
+                       <option value="Baby Care 2">Baby Care 2</option>
+                       <option value="Baby Care 3">Baby Care 3</option>
+                       <option value="Baby Care Scrap">Baby Care Scrap</option>
+                       <option value="Laundry">Laundry</option>
+                       <option value="Laundry SB">Laundry SB</option>
+                       <option value="Laundry Scrap">Laundry Scrap</option>
+                       <option value="PCC 1">PCC 1</option>
+                       <option value="PCC 2">PCC 2</option>
+                       <option value="Liquids">Liquids</option>
+                       <option value="Liquids Out Canopy">Liquids Out Canopy</option>
+                       <option value="Fem Care">Fem Care</option>
+                  </select>
+                </div>
+            </div>
+            <!-- <div class="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
               <button data-value="Baby Care 1" type="button" class="btn btn-secondary btn-modules">Baby Care 1</button>
               <button data-value="Baby Care 2" type="button" class="btn btn-secondary btn-modules">Baby Care 2</button>
               <button data-value="Baby Care 3" type="button" class="btn btn-secondary btn-modules">Baby Care 3</button>
@@ -2058,7 +2096,7 @@
               <button data-value="Liquids" type="button" class="btn btn-secondary btn-modules">Liquids</button>
               <button data-value="Liquids Out Canopy" type="button" class="btn btn-secondary btn-modules">Liquids Out Canopy</button>
               <button data-value="Fem Care" type="button" class="btn btn-secondary btn-modules">Fem Care</button>
-            </div>
+            </div>-->
           </div>
         </div>
         <div id='calendar'></div>

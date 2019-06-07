@@ -9,8 +9,8 @@
           dataType: 'json',
           success: function (data) {
             //console.log(data)
-            var current_module = $("#current_module").val()
-            testCalendar(current_module)
+            //var current_module = $("#current_module").val()
+            //testCalendar(current_module)
             $('#saveBtn').html('Save Changes');
           },
           error: function (data) {

@@ -1,0 +1,10 @@
+if not "%minimized%"=="" goto :minimized
+set minimized=true
+@echo off
+
+cd "C:\Users\Latte\Documents\MIgz\Projects\trams"
+php artisan serve --host=0.0.0.0 --port=8000
+
+start /min cmd /C "rs"
+goto :EOF
+:minimized
