@@ -453,6 +453,7 @@ class SchedulerController extends Controller
             }
         }elseif($request->isForUnavailability == "1") {
             $slotting = Dock_Unavailability::where("date_of_unavailability",$request->date_of_unavailability)->where('status','1')->get();
+            $schedule = Schedule::where("date_of_delivery",$request->date_of_unavailability)->where('status','<>','0')->get();
         }
 
         
@@ -477,6 +478,19 @@ class SchedulerController extends Controller
 
                 $scheduleData[] = $nestedData;
 
+            }
+
+            if($request->isForUnavailability == "1"){
+                foreach($schedule as $sched){
+                    $nestedData['id'] = $sched->id;
+                    $nestedData['date_of_delivery'] = $sched->date_of_delivery;
+                   
+                    $nestedData['status'] = $sched->status == 1 ? "Active" : "Inactive";
+
+                    $nestedData['slotting_time'] = explode("|",$sched->slotting_time);
+
+                    $scheduleData[] = $nestedData;
+                }
             }
         }
 
@@ -566,6 +580,7 @@ class SchedulerController extends Controller
 
                  
         }elseif($request->isForUnavailability == "1") {
+
             $ordering_days='';
 
             if($request->ordering_days_unavailability){
@@ -588,14 +603,14 @@ class SchedulerController extends Controller
                 $end = substr($getSlot, -5);
 
                 $startDateTime = $request->dateOfUnavailability;
-                $endDateTime = date("Y-m-d", strtotime(date("Y-m-d", strtotime($request->dateOfUnavailability)) . " + 100 day"));
+                $endDateTime = $request->recurrent_dateend;
 
                 // $scheds = trim($ordering_days);
                 // $scheds = explode("|", $scheds);
                 
                 $dates = array();
 
-                foreach($request->ordering_days_unavailability as $sched){
+                foreach($request->ordering_days as $sched){
                     $sched = trim($sched);
                     if($sched == ""){
                         continue;
@@ -628,18 +643,40 @@ class SchedulerController extends Controller
                             break;
                     }
 
+                    $return_conflicts = array();
+                    $count = 0;
                     foreach($dates as $date){
-                        Dock_Unavailability::updateOrCreate(['id' => $request->unavailability_id],['dock_id' => $request->dock_id_unavailability,  'dock_name' => $dock_name,'date_of_unavailability' => $date, 'recurrence' => $request->recurrence_unavailability, 'ordering_days' => $ordering_days, 'time' => $request->slotting_time_unavailability, 'emergency' => "", 'reason' => $request->reason_unavailability, 'status' => $status]);   
+
+                        $checkConflict = $this->checkIfConflictsDate($date,$request->slotting_time_unavailability);
+                        if($checkConflict > 0){
+                            $nestedData['id'] = $checkConflict;
+                            $return_conflicts[] = $nestedData;
+                        }else{
+                            Dock_Unavailability::updateOrCreate(['id' => $request->unavailability_id],['dock_id' => $request->dock_id_unavailability,  'dock_name' => $dock_name,'date_of_unavailability' => $date, 'recurrence' => $request->recurrence_unavailability, 'ordering_days' => $ordering_days, 'time' => $request->slotting_time_unavailability, 'emergency' => "", 'reason' => $request->reason_unavailability, 'status' => $status]);  
+                        } 
+                    }
+
+                    if(!empty($return_conflicts)){
+                        return response()->json(["error"=>"Recurrent: The dock unavailabilities has conflict","ids"=>$return_conflicts,"type"=>$request->type_unavailability    ]);
                     }
 
                 }
                 
-
                 $ret = ['success'=>'Schedule saved successfully.']; 
             }else{
-                $ret = ['success'=>'Schedule saved successfully.'];
-                Dock_Unavailability::updateOrCreate(['id' => $request->unavailability_id],
-                ['dock_id' => $request->dock_id_unavailability,  'dock_name' => $dock_name,'date_of_unavailability' => $request->dateOfUnavailability, 'recurrence' => $request->recurrence_unavailability, 'ordering_days' => $ordering_days, 'time' => $request->slotting_time_unavailability, 'emergency' => "", 'reason' => $request->reason_unavailability, 'status' => $status]); 
+
+                $checkConflict = $this->checkIfConflictsDate($request->dateOfUnavailability,$request->slotting_time_unavailability);
+
+                if($checkConflict > 0){
+                    return response()->json(["success"=>"The dock unavailabilities has conflict with this Delivery ID Number: " . $checkConflict]);
+                }else{
+                    $ret = ['success'=>'Schedule saved successfully.'];
+                    Dock_Unavailability::updateOrCreate(['id' => $request->unavailability_id],
+                    ['dock_id' => $request->dock_id_unavailability,  'dock_name' => $dock_name,'date_of_unavailability' => $request->dateOfUnavailability, 'recurrence' => $request->recurrence_unavailability, 'ordering_days' => $ordering_days, 'time' => $request->slotting_time_unavailability, 'emergency' => "", 'reason' => $request->reason_unavailability, 'status' => $status]); 
+                }
+
+
+                
             }
 
             
@@ -799,6 +836,32 @@ class SchedulerController extends Controller
         foreach($schedules as $schedule){
             
             $get_time = explode("|",$schedule->slotting_time);
+            foreach($slotting_time as $time){
+                if($time == ""){
+                    continue;
+                }
+                foreach($get_time as $val){
+                    if($val == ""){
+                        continue;
+                    }
+                    if($time == $val){
+                        $ret = $schedule->id;
+                        
+                    }
+                }
+            }
+        }
+
+        return $ret;
+    }
+
+    public function checkIfConflictsDockUnavailability($dateOfDelivery,$slotting_time){
+        $schedules = Dock_Unavailability::where("date_of_delivery",$dateOfDelivery)->where("status","<>",0)->get();
+        $slotting_time = explode("|", $slotting_time);
+        $ret = 0;
+        foreach($schedules as $schedule){
+            
+            $get_time = explode("|",$schedule->time);
             foreach($slotting_time as $time){
                 if($time == ""){
                     continue;

@@ -22,6 +22,7 @@ class CreateDockUnavailabilityTable extends Migration
             $table->string('emergency',255)->nullable();
             $table->string('ordering_days',255)->nullable();
             $table->string('time',255)->nullable();
+            $table->string('type',255)->nullable();
             $table->text('reason')->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();

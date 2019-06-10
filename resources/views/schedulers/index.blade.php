@@ -452,45 +452,7 @@
           $('#dock_id').addClass('disableSelect');
           $('#dock_id').not(this).find('option').prop('disabled', 'true');
 
-          $.ajax({
-              url: "{{ url('getSupplierData') }}",
-              type: "POST",
-              data: {id:selected},
-              success: function (data) {
-                ////console.log(JSON.parse(data))  
-                $.each(JSON.parse(data), function(index, item) {
-                  // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
-                  if(index == 'truckdata'){
-                    $.each(item, function(index, truck) {
-
-                      $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
-                    });
-                  }
-
-                  if(index == 'driverdata'){
-                    $.each(item, function(index, driver) {
-                      $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
-                    });
-                  }
-
-                  if(index == 'assistantdata'){
-                    $.each(item, function(index, assistant) {
-                      $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
-                    });
-                  }
-                  if(index == 'dockdata'){
-
-                    $.each(item, function(index, dock) {
-                      $('#dock_id').append("<option value="+dock.id +">" + dock.dock_name + "</option>")
-                    });
-                  }
-                });
-
-              },
-              error: function (data) {
-                  //console.log('Error:', data);
-              }
-          });
+         
 
 
           $('#scheduleForm').trigger("reset");      
@@ -507,6 +469,47 @@
               $('#po_number').val(data.po_number);
               $('#supplier_id').val(data.supplier_id);
               $('#alt_supplier_id').val(data.supplier_id);
+
+             $.ajax({
+                  url: "{{ url('getSupplierData') }}",
+                  type: "POST",
+                  data: {id:data.supplier_id},
+                  success: function (data) {
+                    ////console.log(JSON.parse(data))  
+                    $.each(JSON.parse(data), function(index, item) {
+                      // $('#truck_id').append("<option>"+ item.plate_number+"</option>")
+                      if(index == 'truckdata'){
+                        $.each(item, function(index, truck) {
+
+                          $('#truck_id').append("<option data-type="+truck.type+" value="+ truck.id +">"+ truck.plate_number+"</option>")
+                        });
+                      }
+
+                      if(index == 'driverdata'){
+                        $.each(item, function(index, driver) {
+                          $('#driver_id').append("<option value="+ driver.id +">"+ driver.first_name + " " + driver.last_name+"</option>")
+                        });
+                      }
+
+                      if(index == 'assistantdata'){
+                        $.each(item, function(index, assistant) {
+                          $('#assistant_id').append("<option value="+assistant.id +">"+ assistant.first_name + " " + assistant.last_name+"</option>")
+                        });
+                      }
+                      if(index == 'dockdata'){
+
+                        $.each(item, function(index, dock) {
+                          $('#dock_id').append("<option value="+dock.id +">" + dock.dock_name + "</option>")
+                        });
+                      }
+                    });
+
+                  },
+                  error: function (data) {
+                      //console.log('Error:', data);
+                  }
+              });
+
               $('#dock_id').val(data.dock_id);
 
               $('#dateOfDelivery').val(data.date_of_delivery);
@@ -848,6 +851,7 @@
               $('div.slot_box').removeClass("editable_slot_box");
               $('#dock_id_unavailability').val(0)
               $('#dateOfUnavailability').val('')
+              $('.r_recurrent_dateend').hide();
 
               $(".r_ordering_days_u").css('display','none')
               $('#unavailabilityForm').trigger("reset");
@@ -1771,7 +1775,39 @@
               type: "POST",
               dataType: 'json',
               success: function (data) {
+                if(data.error != undefined && data.error != null){
+                  console.log(data)
+                  $('.btn_recurrent_close').show();
+                  $('#modelViewErrorRecurrent').modal({
+                    backdrop:'static',
+                    keyboard: false
+                  })
+                  $('#ajaxModel').modal('hide');
+                  if(data.ids.length > 0 ){
+
+                    $("#modelViewErrorRecurrent > .modal-dialog > .modal-content").css('width','960px');
+                    $("#modelViewErrorRecurrent > .modal-dialog > .modal-content").css('margin-left','-220px');
+                    
+                    if(data.type == "Planned"){
+                      $.each(data.ids, function(index, sched) {
+                      $(".error_recurrent").append("<div class='row'><div class='col-md-6'<p>Type:<b class='alert-danger'>"+data.type+"</b> CONFLICT WITH: Delivery ID: "+sched.id+"</p></div><div class='col-md-6'><button class='btn btn-primary btn-block edit_single_event' data-edit-id='"+sched.id+"'>Edit Schedule</button><button data-id='"+sched.id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div></div>")
+                      });
+                    }
+
+                    if(data.type == "Unplanned"){
+                      $.each(data.ids, function(index, sched) {
+                      $(".error_recurrent").append("<div class='row'><div class='col-md-6'<p>Type:<b class='alert-danger'>"+data.type+"</b> CONFLICT WITH: Delivery ID: "+sched.id+"</p></div><div class='col-md-6'><button class='btn btn-primary btn-block edit_single_event' data-edit-id='"+sched.id+"'>Edit Schedule</button><button data-id='"+sched.id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div></div>")
+                      });
+                    }
+
+                    
+                  }
+                  
+                 }
+
+                if(data.success){
                  $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                }
                   $('#unavailabilityForm').trigger("reset");
                   $('#ajaxModelUnavailability').modal('hide');
                   setTimeout(function(){
@@ -2671,6 +2707,16 @@
                         </div>
                     </div>
 
+
+                    <div class="form-group r_recurrent_dateend">
+                      <label class="col-sm-12 control-label">*Recurrent Date End</label>
+                      <div class="col-sm-12">
+                        <div class="col-sm-12">
+                        <input type="date" class="form-control datepicker" name="recurrent_dateend" id="recurrent_dateend" required="">
+                        </div>
+                      </div>
+                    </div>
+
                     <div class="form-group">
                       <label class="col-sm-12 control-label slotting_time">*Slotting Time</label>
                       <input type="hidden" class="form-control" id="slotting_time_unavailability" name="slotting_time_unavailability" required="">
@@ -2835,7 +2881,7 @@
                 <div class="error_recurrent"></div>
                 
                 <br>
-                <button class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button> 
+                <button class="btn btn-secondary btn-xs btn-block btn_recurrent_close" type="button" data-dismiss="modal">Close</button> 
             </div>
         </div>
     </div>
