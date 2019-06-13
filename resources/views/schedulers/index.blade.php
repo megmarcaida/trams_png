@@ -1406,12 +1406,10 @@
       },100);
       count = count + 1;
       value = $('#btn-modules-dropdown').children("option:selected").val();
-      console.log(value)
-      $('#current_dock').html(value)
-      $("#current_module").val(value)
-      calendarEl.innerHTML = "";
-      calendar.destroy();
-      testCalendar(value)
+      window.location = "/scheduler/index?get_module=" + value
+      //calendarEl.innerHTML = "";
+      //calendar.destroy();
+      //testCalendar(value)
     });
 
 
@@ -1422,7 +1420,13 @@
     }
 
    $('document').ready(function(){
-      testCalendar("Null");
+      var val = ""
+      <?php if(isset($_GET['get_module'])){ ?>
+      val = "<?php echo $_GET["get_module"]; ?>"
+      $('#current_dock').html(val)
+      $("#current_module").val(val) 
+      <?php } ?>  
+      testCalendar(val);
     });
 
     $('body').on('click', '#saveBtn', function (e) {
