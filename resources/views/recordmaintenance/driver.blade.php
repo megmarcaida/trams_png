@@ -89,8 +89,8 @@
                       <th>Logistics Company</th>
                       <th>Full Name</th>
                       <th>Mobile Number</th>
-                      <th>Company ID Number</th>
-                      <th>License Number</th>
+                      <!-- <th>Company ID Number</th>
+                      <th>License Number</th> -->
                       <th>Date of Safety Orientation</th>
                       <!-- <th>Expiration Date</th> -->
                       <th>Status</th>
@@ -181,35 +181,22 @@
                                 <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" value="" maxlength="50" required="">
                             </div>
                         </div>
-                      
 
-                        <!-- Last Name -->
-                        <div class="form-group">
-                            <label for="name" class="col-sm-12 control-label">*Last Name</label>
-                            <div class="col-sm-12">
-                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" value="" maxlength="50" required="">
-                            </div>
-                        </div>
-
-                        <!-- Date of validity -->
-                        @if(Auth::user()->role_id == 3)
-                          <input type="hidden" name="isApproved" value="0">
-                          <div class="form-group">
-                            <label class="col-sm-12 control-label">*Date of Validity</label>
-                            <div class="col-sm-12">
-                              <div class="col-sm-12">
-                              <input type="date" class="form-control datepicker" name="dateOfSafetyOrientation" id="dateOfSafetyOrientation" required="">
-                              <input type="hidden" id="isApproved" name="isApproved" value="1">
-                              </div>
-                            </div>
-                          </div>
-                        @endif
 
                      </div>
 
 
                      <!-- third column -->
                     <div class="col-4">
+                      
+
+                      <!-- Last Name -->
+                      <div class="form-group">
+                          <label for="name" class="col-sm-12 control-label">*Last Name</label>
+                          <div class="col-sm-12">
+                              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" value="" maxlength="50" required="">
+                          </div>
+                      </div>
                       
                       <!-- Mobile Number -->
                       <div class="form-group">
@@ -219,21 +206,35 @@
                           </div>
                       </div>
 
+                      <!-- Date of validity -->
+                      @if(Auth::user()->role_id == 3)
+                        <input type="hidden" name="isApproved" value="0">
+                        <div class="form-group">
+                          <label class="col-sm-12 control-label">*Date of Validity</label>
+                          <div class="col-sm-12">
+                            <div class="col-sm-12">
+                            <input type="date" class="form-control datepicker" name="dateOfSafetyOrientation" id="dateOfSafetyOrientation" required="">
+                            <input type="hidden" id="isApproved" name="isApproved" value="1">
+                            </div>
+                          </div>
+                        </div>
+                      @endif
+
                       <!-- Company ID Number -->
-                      <div class="form-group">
+                      <!-- <div class="form-group">
                         <label class="col-sm-12 control-label">*Company ID Number</label>
                         <div class="col-sm-12">
-                              <input type="text" class="form-control" id="company_id_number" name="company_id_number" placeholder="Enter Company ID Number" value="" maxlength="50" required="">
+                              <input type="hidden" class="form-control" id="company_id_number" name="company_id_number" placeholder="Enter Company ID Number" value="" maxlength="50" required="">
                         </div>
-                      </div>
+                      </div> -->
 
                       <!-- License Number -->
-                      <div class="form-group">
+                      <!-- <div class="form-group">
                         <label class="col-sm-12 control-label">*License Number</label>
                         <div class="col-sm-12">
-                              <input type="text" class="form-control" id="license_number" name="license_number" placeholder="Enter License Number" value="" maxlength="50" required="">
+                              <input type="hidden" class="form-control" id="license_number" name="license_number" placeholder="Enter License Number" value="" maxlength="50" required="">
                         </div>
-                      </div>
+                      </div> -->
                       
                     </div>
                     
@@ -314,7 +315,7 @@
                           <b><p id="view_mobile_no"></p></b>
                         </div>
                      
-                        <div class="col-md-6" style="line-height: 0px">
+                       <!--  <div class="col-md-6" style="line-height: 0px">
                           Company ID Number:
                         </div>
                         <div class="col-md-6" style="line-height: 0px">
@@ -326,7 +327,7 @@
                         </div>
                         <div class="col-md-6" style="line-height: 0px">
                           <b><p id="view_license_number"></p></b>
-                        </div>
+                        </div> -->
                         <div class="col-md-6" style="line-height: 0px">
                           Date of Validity:
                         </div>
@@ -373,8 +374,8 @@
             {"data": 'logistics_company'},
             {"data": 'fullname'},
             {"data": 'mobile_number'},
-            {"data": 'company_id_number'},
-            {"data": 'license_number'},
+            // {"data": 'company_id_number'},
+            // {"data": 'license_number'},
             {"data": 'dateOfSafetyOrientation'},
             // {"data": 'expirationDate'},
             { "data": "status"},

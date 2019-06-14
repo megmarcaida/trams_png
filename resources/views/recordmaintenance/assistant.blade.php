@@ -83,9 +83,9 @@
                       <th>Logistics Company</th>
                       <th>Full Name</th>
                       <th>Mobile Number</th>
-                      <th>Company ID Number</th>
+                      <!-- <th>Company ID Number</th>
                       <th>Valid ID Present</th>
-                      <th>Valid ID Number</th>
+                      <th>Valid ID Number</th> -->
                       <th>Date of Safety Orientation</th>
                       <th>Status</th>
                       <th>Is Approved?</th>
@@ -177,6 +177,11 @@
                           </div>
 
 
+                        </div> 
+
+                        <!-- Third Column -->
+                        <div class="col-4">
+
                           <!-- last name -->
                           <div class="form-group">
                               <label for="name" class="col-sm-12 control-label">*Last Name</label>
@@ -194,42 +199,35 @@
                             </div>
                           </div>
 
-
-                        </div> 
-
-                        <!-- Third Column -->
-                        <div class="col-4">
-
-
                           <!-- company id number -->
-                          <div class="form-group">
+                          <!-- <div class="form-group">
                             <label class="col-sm-12 control-label">*Company ID Number</label>
                             <div class="col-sm-12">
                               <div class="col-sm-12">
                                   <input type="text" class="form-control" id="company_id_number" name="company_id_number" placeholder="Enter Company ID Number" value="" maxlength="50" required="">
                               </div>
                             </div>
-                          </div>
+                          </div> -->
 
                           <!-- valid id Present -->
-                          <div class="form-group">
+                          <!-- <div class="form-group">
                             <label class="col-sm-12 control-label">*Valid ID Present</label>
                             <div class="col-sm-12">
                               <div class="col-sm-12">
                                   <input type="text" class="form-control" id="valid_id_present" name="valid_id_present" placeholder="Enter Valid ID Present" value="" maxlength="50" required="">
                               </div>
                             </div>
-                          </div>
+                          </div> -->
 
                           <!-- valid id number -->
-                          <div class="form-group">
+                          <!-- <div class="form-group">
                             <label class="col-sm-12 control-label">*Valid ID Number</label>
                             <div class="col-sm-12">
                               <div class="col-sm-12">
                                   <input type="text" class="form-control" id="valid_id_number" name="valid_id_number" placeholder="Enter Valid ID Number" value="" maxlength="50" required="">
                               </div>
                             </div>
-                          </div>
+                          </div> -->
 
                           <!-- date of validity -->
                           <input type="hidden" name="isApproved" value="0">
@@ -321,7 +319,7 @@
                     <b><p id="view_mobile_no"></p></b>
                   </div>
                
-                  <div class="col-md-6" style="line-height: 0px">
+                  <!-- <div class="col-md-6" style="line-height: 0px">
                     Company ID Number:
                   </div>
                   <div class="col-md-6" style="line-height: 0px">
@@ -341,7 +339,7 @@
                   </div>
                   <div class="col-md-6" style="line-height: 0px">
                     <b><p id="view_valid_id_number"></p></b>
-                  </div>
+                  </div> -->
                   <div class="col-md-6" style="line-height: 0px">
                     Date of Validity:
                   </div>
@@ -389,9 +387,9 @@
             {"data": 'logistics_company'},
             {"data": 'fullname'},
             {"data": 'mobile_number'},
-            {"data": 'company_id_number'},
-            {"data": 'valid_id_present'},
-            {"data": 'valid_id_number'},
+            // {"data": 'company_id_number'},
+            // {"data": 'valid_id_present'},
+            // {"data": 'valid_id_number'},
             {"data": 'dateOfSafetyOrientation'},
             { "data": "status"},
             { "data": "isApproved"},

@@ -57,9 +57,9 @@ class AssistantController extends Controller
                             3 => 'last_name',
                             4 => 'mobile_number',
                             5 => 'id',
-                            6 => 'company_id_number',
-                            7 => 'valid_id_present',
-                            9 => 'valid_id_number',
+                            // 6 => 'company_id_number',
+                            // 7 => 'valid_id_present',
+                            // 9 => 'valid_id_number',
                             10 => 'status',
                             11 => 'dateOfSafetyOrientation'
                         );
@@ -150,10 +150,9 @@ class AssistantController extends Controller
                 $nestedData['logistics_company'] = $assistant->logistics_company;
                 $nestedData['fullname'] = $assistant->first_name . " " . $assistant->last_name;
                 $nestedData['mobile_number'] = $assistant->mobile_number;
-                $nestedData['company_id_number'] = $assistant->company_id_number;
-                $nestedData['valid_id_present'] = $assistant->valid_id_present;
-
-                $nestedData['valid_id_number'] = $assistant->valid_id_number;
+                // $nestedData['company_id_number'] = $assistant->company_id_number;
+                // $nestedData['valid_id_present'] = $assistant->valid_id_present;
+                // $nestedData['valid_id_number'] = $assistant->valid_id_number;
                 $nestedData['isApproved'] = $assistant->isApproved == 0 ? "<b class='text-danger'>NO</b>" : "<b class='text-success'>YES</b>";
                 $nestedData['dateOfSafetyOrientation'] = $assistant->dateOfSafetyOrientation;
 
@@ -215,7 +214,7 @@ class AssistantController extends Controller
         }
 
         Assistant::updateOrCreate(['id' => ltrim($request->id,0)],
-                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => $request->company_id_number, 'valid_id_present' => $request->valid_id_present,'valid_id_number' => $request->valid_id_number, 'dateOfSafetyOrientation' => $dateOfSafetyOrientation, 'isApproved' => $isApproved,'expirationDate'=>$expirationDate]);        
+                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => "", 'valid_id_present' => "",'valid_id_number' => "", 'dateOfSafetyOrientation' => $dateOfSafetyOrientation, 'isApproved' => $isApproved,'expirationDate'=>$expirationDate]);        
    
         return response()->json(['success'=>'Assistant saved successfully.']);
     }
