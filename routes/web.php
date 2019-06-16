@@ -152,6 +152,7 @@ Route::get('/dashboard/parking', ['middleware' => 'auth', 'uses' => 'DashboardCo
 Route::get('/dashboard/dock', ['middleware' => 'auth', 'uses' => 'DashboardController@docking']);
 Route::get('/dashboard/gate', ['middleware' => 'auth', 'uses' => 'DashboardController@gate']);
 Route::get('/dashboard/manual', ['middleware' => 'auth', 'uses' => 'DashboardController@manual']);
+Route::get('/dashboard/reader', ['middleware' => 'auth', 'uses' => 'DashboardController@qrreader']);
 
 Route::post('dockingDashboard', 'DashboardController@dockingDashboard' )->name('dockingDashboard');
 Route::post('parkingDashboard', 'DashboardController@parkingDashboard' )->name('parkingDashboard');

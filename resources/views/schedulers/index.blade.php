@@ -1406,7 +1406,7 @@
       },100);
       count = count + 1;
       value = $('#btn-modules-dropdown').children("option:selected").val();
-      window.location = "/scheduler/index?get_module=" + value
+      window.location = "/trams/public/scheduler/index?get_module=" + value
       //calendarEl.innerHTML = "";
       //calendar.destroy();
       //testCalendar(value)
