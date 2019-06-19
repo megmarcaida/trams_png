@@ -106,24 +106,24 @@ class BannedIssueController extends Controller
                 // $nestedData['supplier_name'] = substr(strip_tags($post->supplier_name),0,50)."...";
                 $nestedData['location'] = $supplier->location;
                 $nestedData['violation'] = $supplier->violation;
-                $nestedData['date'] = "";
-                $nestedData['time'] = "";
+                $nestedData['date'] = date('j M Y',strtotime($supplier->date_time));
+                $nestedData['time'] = date('h:i a',strtotime($supplier->date_time));
                 $nestedData['reason'] = $supplier->reason;
                 $nestedData['additional_information'] = $supplier->additional_information;
                 $nestedData['supplier'] = "";
                 
                 $nestedData['created_at'] = date('j M Y h:i a',strtotime($supplier->created_at));
-                if($supplier->status == 1){
+                // if($supplier->status == 1){
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-status='".$supplier->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateBannedIssue'>Deactivate</a>";
-                }else{
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-status='".$supplier->status."'data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateBannedIssue'>Deactivate</a>";
+                // }else{
 
-                    $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
+                //     $nestedData['options'] = "<a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-original-title='Edit' class='edit btn btn-primary btn-sm editProduct'>Edit</a>
 
-                        <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-status='".$supplier->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateBannedIssue'>Activate</a>";
-                }
+                //         <a href='javascript:void(0)' data-toggle='tooltip'  data-id='".$supplier->id."' data-status='".$supplier->status."' data-original-title='Delete' class='btn btn-danger btn-sm deactivateOrActivateBannedIssue'>Activate</a>";
+                // }
                 $nestedData['status'] = $supplier->status == 1 ? "Active" : "Inactive";
                 $data[] = $nestedData;
 
@@ -149,48 +149,10 @@ class BannedIssueController extends Controller
     public function store(Request $request)
     {
 
-        $ordering_days='';
-        $modules = '';
-        $spoc_first_name = '';
-        $spoc_last_name = '';
-        $spoc_contact_number = '';
-        $spoc_email_address = '';
-
-        foreach ($request->ordering_days as $ordering_day){
-            $ordering_days .=  $ordering_day.' | ';
-        }
-
-         foreach ($request->module as $module){
-            $modules .=  $module.' | ';
-        }
-
-        foreach ($request->spoc_first_name as $fname){
-            $spoc_first_name .=  $fname.' |<br> ';
-        }
-
-        foreach ($request->spoc_last_name as $lname){
-            $spoc_last_name .=  $lname.' |<br> ';
-        }
-
-        foreach ($request->spoc_contact_number as $cnumber){
-            $spoc_contact_number .=  $cnumber.' |<br> ';
-        }
-
-        foreach ($request->spoc_email_address as $email){
-            $spoc_email_address .=  $email.' |<br> ';
-        }
-
-        $isExistVendorCode = BannedIssue::where("vendor_code",$request->vendor_code)->first();
-
-        $isExist = BannedIssue::find($request->supplier_id);
-
-        if($isExistVendorCode && !$isExist){
-            $ret = ['error'=>'Vendor Code already exists.'];
-        }else{
-            $ret = ['success'=>'Supplier saved successfully.'];
-            BannedIssue::updateOrCreate(['id' => $request->supplier_id],
-                ['vendor_code' => $request->vendor_code, 'supplier_name' => $request->supplier_name, 'delivery_type' => $request->delivery_types, 'ordering_days' => $ordering_days, 'module' => $modules, 'spoc_firstname' => $spoc_first_name, 'spoc_lastname' => $spoc_last_name, 'spoc_contact_number' => $spoc_contact_number, 'spoc_email_address' => $spoc_email_address]);        
-        }
+    $ret = ['success'=>'Supplier saved successfully.'];
+    BannedIssue::updateOrCreate(['id' => $request->bannedissue_id],
+        ['name' => $request->name, 'location' => $request->location, 'violation' => $request->violation, 'date_time' => $request->date_time, 'reason' => $request->reason, 'additional_information' => $request->additional_information]);        
+      
 
         return response()->json($ret);
     }
@@ -217,7 +179,7 @@ class BannedIssueController extends Controller
     {
         //BannedIssue::find($id)->delete();
         BannedIssue::find($id)->update(['status' => 0]);
-        return response()->json(['success'=>'Supplier deactivated successfully.']);
+        return response()->json(['success'=>'Data deactivated successfully.']);
     }
 
     public function deactivateOrActivateBannedIssue(Request $request)
@@ -228,11 +190,11 @@ class BannedIssueController extends Controller
          if($status == 1){
 
             BannedIssue::find($id)->update(['status' => 0]);
-            return response()->json(['success'=>'Supplier deactivated successfully.']);
+            return response()->json(['success'=>'Data deactivated successfully.']);
         }elseif($status == 0){
 
             BannedIssue::find($id)->update(['status' => 1]);
-            return response()->json(['success'=>'Supplier activated successfully.']);
+            return response()->json(['success'=>'Data activated successfully.']);
         }
 
        //  $response = array(
@@ -253,5 +215,10 @@ class BannedIssueController extends Controller
         Excel::import(new SupplierImport,request()->file('file'));
        
         return redirect()->back()->with("import_message","Importing of Suppliers process successfully."); 
+    }
+    public function getBannedIssue(Request $request){
+        $bannedissue = BannedIssue::where("id",$request->id)->first();
+
+        return json_encode($bannedissue);
     }
 }

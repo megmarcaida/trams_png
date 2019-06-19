@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class BannedIssue extends Model
 {
     protected $fillable = [
-        'dock_name', 'module', 'status',
+        'name', 'location', 'date_time', 'violation', 'reason', 'additional_information', 'supplier','status'
     ];
 }

@@ -41,17 +41,15 @@
           <table class="table table-bordered data-table">
               <thead>
                   <tr>
+                      <th>ID</th>
                       <th>Name</th>
                       <th>Location</th>
                       <th>Date</th>
-                      <th>Time</th>
                       <th>Nature of Violation</th>
                       <th>Reason</th>
                       <th>Additional Information</th>
-                      <th>Supplier</th>
                       <th>Created At</th>
                       <th>Status</th>
-                      <th>Options</th>
                   </tr>
               </thead>
               <tbody>
@@ -76,7 +74,7 @@
                 <div id="modalresponse"></div> 
                 <form id="bannedIssueForm" name="bannedIssueForm" class="form-horizontal">
                     
-                    <input type="hidden" name="supplier_id" id="supplier_id">
+                    <input type="hidden" name="bannedissue_id" id="bannedissue_id">
 
 
                     <div class="form-group">
@@ -101,7 +99,7 @@
                           <label class="form-check-label" for="inlineRadio1">Warning</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="violation" class="delivery_type" value="Imported">
+                          <input class="form-check-input" type="radio" name="violation" class="violation" value="Imported">
                           <label class="form-check-label" for="inlineRadio1">Ban</label>
                         </div>
                       </div>
@@ -111,7 +109,7 @@
                       <label class="col-sm-12 control-label">*Date and Time</label>
                       <div class="col-sm-12">
                         <div class="col-sm-12">
-                        <input type="datetime-local" class="form-control datepicker" name="date_time" id="date_time" required="">
+                        <input type="date" class="form-control datepicker" name="date_time" id="date_time" required="">
                         </div>
                       </div>
                     </div>
@@ -142,7 +140,72 @@
     </div>
 </div>
     
-    
+<div class="modal fade" id="ajaxModelView" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">View Assistant</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
+            </div>
+            <div class="modal-body">
+                
+                <div class="row">
+
+                  <div class="col-md-6" style="line-height: 0px">
+                    Name:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_name"></p></b>
+                  </div>
+               
+                  <div class="col-md-6" style="line-height: 0px">
+                    Location:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_location"></p></b>
+                  </div>
+             
+                  <div class="col-md-6" style="line-height: 0px">
+                    Date and Time:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_date_time"></p></b>
+                  </div>
+              
+                  <div class="col-md-6" style="line-height: 0px">
+                    Nature of Violation:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_violation"></p></b>
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    Reason:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_reason"></p></b>
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    Additional Information:
+                  </div>
+                  <div class="col-md-6" style="line-height: 0px">
+                    <b><p id="view_additional_information"></p></b>
+                  </div>
+                  <br></br>
+                  <div class="col-xl-4 col-sm-12">
+                    <button id="btn-edit" class="btn btn-primary btn-xs btn-block editProduct" type="button">Edit</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12">
+                    <button id="btn-deactivate" class="btn btn-secondary btn-xs btn-danger btn-block deactivateOrActivateBannedIssue" type="button">Deactivate</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12">  
+                    <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
+                  </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
 <script type="text/javascript">
   $(function () {
      
@@ -162,18 +225,15 @@
                  "data":{ _token: "{{csrf_token()}}"}
                },
         "columns": [
-            // { "data": "id" },
+            { "data": "id" },
             {"data": 'name'},
             {"data": 'location'},
             {"data": 'date'},
-            {"data": 'time'},
             {"data": 'violation'},
             {"data": 'reason'},
             {"data": 'additional_information'},
-            {"data": 'supplier'},
             { "data": "created_at" },
             { "data": "status"},
-            { "data": "options" },
         ]  
 
     });
@@ -192,39 +252,25 @@
     });
     
     $('body').on('click', '.editProduct', function () {
-
-      $('#spoc').empty();
+      $("#ajaxModelView").modal("hide")
       $('#bannedIssueForm').trigger("reset");      
-      var supplier_id = $(this).data('id');
-      $.get("{{ route('ajaxsuppliers.index') }}" +'/' + supplier_id +'/edit', function (data) {
+      var bannedissue_id = $(this).data('id');
+      console.log(bannedissue_id)
+      $.get("{{ route('ajaxBannedIssue.index') }}" +'/' + bannedissue_id +'/edit', function (data) {
           $('#modelHeading').html("Edit Product");
           $('#saveBtn').val("edit-user");
           $('#ajaxModel').modal({
             backdrop:'static',
             keyboard: false
           })
-          $('#supplier_id').val(data.id);
-          $('#vendor_code').val(data.vendor_code);
-          $('#supplier_name').val(data.supplier_name);
+          $('#bannedissue_id').val(data.id);
+          $('#name').val(data.name);
+          $('#location').val(data.location);
+          $('#reason').val(data.reason);
+          $('#additional_information').val(data.additional_information);
          
-          console.log(data.ordering_days)
-          var ordering_days_arr = data.ordering_days.split("|")
-          var modules_arr = data.module.split("|")
-          var spoc_first_name_arr = data.spoc_firstname.split("|")
-          var spoc_last_name_arr = data.spoc_lastname.split("|")
-          var spoc_contact_number_arr = data.spoc_contact_number.split("|")
-          var spoc_email_address_arr = data.spoc_email_address.split("|")
-          var spoc_length = spoc_first_name_arr.length - 1;
-
-          console.log(spoc_length)
-          $.each( ordering_days_arr, function( key, value ) {
-            $("input[value='" + $.trim(value) + "']").prop('checked', true);
-          });
-
-
-
-          $("input[name=delivery_types][value=" + data.delivery_type + "]").prop('checked', 'checked');
-          // $('#delivery_type').val(data.delivery_type);
+          $("input[name=violation][value=" + data.violation + "]").prop('checked', 'checked');
+          $('#date_time').val(data.date_time);
       })
    });
     
@@ -232,46 +278,41 @@
         
       //console.log($("#delivery_type").prop('checked'));
 
-        var delivery_types = $(':radio[name^=delivery_types]:checked').length;
-          
-        var ordering_days = $(':checkbox[name^=ordering_days]:checked').length;
+        var violation = $(':radio[name^=violation]:checked').length;
 
-        var modules = $(':checkbox[name^=module]:checked').length;
-        if($("#vendor_code").val() == "" || $("#supplier_name").val() == "" || delivery_types==0 || ordering_days == 0 || modules == 0){
+        if($("#name").val() == "" || $("#location").val() == "" || $("#reason").val() == "" || $("#date_time").val() == "" || $("#additional_information").val() == "" || violation == 0){
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
-            if($("#vendor_code").val() == "")
-              $("#vendor_code").css('outline','1px red solid')
+            if($("#name").val() == "")
+              $("#name").css('outline','1px red solid')
             else
-              $("#vendor_code").css('outline','1px black solid')
+              $("#name").css('outline','1px black solid')
           
-            if($("#supplier_name").val() == "")
-              $("#supplier_name").css('outline','1px red solid')
+            if($("#location").val() == "")
+              $("#location").css('outline','1px red solid')
             else
-              $("#supplier_name").css('outline','1px black solid')
+              $("#location").css('outline','1px black solid')
 
-            // if($(".delivery_type").prop('checked') == false)
-
-            // if($("input[name='delivery_types[]']:checked"))
-            //   $(".delivery_type").css('color','red')
-            // else
-            //   $(".delivery_type").css('color','black')
-
-            
-            if(delivery_types == 0)
-              $(".delivery_type").css('color','red')
+            if($("#date_time").val() == "")
+              $("#date_time").css('outline','1px red solid')
             else
-              $(".delivery_type").css('color','black')
+              $("#date_time").css('outline','1px black solid')
 
-            if(ordering_days == 0)
-              $(".ordering_days").css('color','red')
+            if($("#reason").val() == "")
+              $("#reason").css('outline','1px red solid')
             else
-              $(".ordering_days").css('color','black')
+              $("#reason").css('outline','1px black solid')
 
-            if(modules == 0)
-              $(".module").css('color','red')
+            if($("#additional_information").val() == "")
+              $("#additional_information").css('outline','1px red solid')
             else
-              $(".module").css('color','black')
+              $("#additional_information").css('outline','1px black solid')
+
+             if(violation == 0)
+              $(".violation").css('color','red')
+            else
+              $(".violation").css('color','black')
+
 
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){
@@ -313,6 +354,7 @@
     
     $('body').on('click', '.deactivateOrActivateBannedIssue', function () {
      
+      $("#ajaxModelView").modal("hide")
         var supplier_id = $(this).data("id");
         var status = $(this).data("status");
         console.log(status)
@@ -332,6 +374,53 @@
             });
 
         }
+    });
+
+    $('.data-table tbody').on( 'click', 'tr', function () {
+            var id = $(this).find("td:nth-child(1)").first().text().trim()
+            $.ajax({
+              data: {id:id},
+              url: "{{ url('getBannedIssue') }}",
+              type: "POST",
+              dataType: 'json',
+              success: function (data) {
+                  console.log(data)
+                  
+
+                  $('#view_name').html(data.name)
+                  $('#view_location').html(data.location)
+                  $('#view_violation').html(data.violation)
+                  $('#view_date_time').html(data.date_time)
+                  $('#view_reason').html(data.reason)
+                  $('#view_additional_information').html(data.additional_information)
+                  $("#btn-edit").attr("data-id",data.id)
+                  $("#btn-deactivate").attr("data-id",data.id)
+                  
+                  if(data.status == "1"){
+                    $("#btn-deactivate").html("Deactivate")
+                  }else{
+                    $("#btn-deactivate").html("Activate")
+                  }
+
+                  $("#btn-deactivate").attr("data-status",data.status)
+
+                  $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
+                  
+                  $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
+                  
+                  $(this).addClass('selected');
+                  
+                  $('#ajaxModelView').modal({
+                      backdrop:'static',
+                      keyboard: false
+                  })
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+                  $('#saveBtn').html('Save Changes');
+              }
+          });
     });
 
   

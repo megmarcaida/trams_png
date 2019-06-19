@@ -198,4 +198,5 @@ Route::post('deactivateOrActivateBannedIssue', 'BannedIssueController@deactivate
 
 Route::get('exportBannedIssue', 'BannedIssueController@export')->name('exportBannedIssue');
 Route::post('importBannedIssue', 'BannedIssueController@import')->name('importBannedIssue');
+Route::post('getBannedIssue', 'BannedIssueController@getBannedIssue')->name('getBannedIssue');
 #End BannedIssue Route
