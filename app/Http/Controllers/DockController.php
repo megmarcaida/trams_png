@@ -90,13 +90,6 @@ class DockController extends Controller
                 $nestedData['id'] = $number;
                 $nestedData['dock_name'] = $dock->dock_name;
                 $nestedData['module'] = $dock->module;
-                if($role){
-
-                    $nestedData['user_type'] = $role['name'];
-                }else{
-
-                    $nestedData['user_type'] = "";
-                }
                 
                 $nestedData['created_at'] = date('j M Y h:i a',strtotime($dock->created_at));
                 // if($dock->status == 1){
@@ -144,7 +137,7 @@ class DockController extends Controller
         }else{
             $ret = ['success'=>'Dock saved successfully.'];
             Dock::updateOrCreate(['id' => $request->dock_id],
-                ['dock_name' => $request->dock_name, 'module' => $request->module,'user_type' => $request->user_type]);        
+                ['dock_name' => $request->dock_name, 'module' => $request->module,'user_type' => ""]);        
         }
 
         return response()->json($ret);

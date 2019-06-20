@@ -254,28 +254,7 @@
     });
 
 
-
-    function incomingTrucks(){
-        $.ajax({
-            async: false,
-            url: "{{ url('checkIfIncoming') }}",
-            type: "POST",
-            global: false,
-            data: {process_status:"incoming"},
-            success: function (data) {
-              console.log(data.length)
-              if(data.length > 2){
-                table.draw();
-              }
-            },
-            error: function (data) {
-                console.log('Error:', data);
-            }
-        });
-    }
-
     setInterval(function(){
-        incomingTrucks();
         table.draw()
     },10000)
      

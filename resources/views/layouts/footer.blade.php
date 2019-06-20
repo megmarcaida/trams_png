@@ -29,6 +29,9 @@
           changeToFinalized();
         }
         checkIfNoShowSchedule();
+
+        incomingTrucks12hrs();
+        incomingTrucks();
     },5000);
 
 
@@ -50,6 +53,41 @@
           }
         });
     }
+
+     function incomingTrucks12hrs(){
+        $.ajax({
+            async: false,
+            url: "{{ url('checkIfIncomingDock') }}",
+            type: "POST",
+            global: false,
+            data: {process_status:"incoming"},
+            success: function (data) {
+              console.log(data)
+              
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+    }
+
+    function incomingTrucks(){
+        $.ajax({
+            async: false,
+            url: "{{ url('checkIfIncoming') }}",
+            type: "POST",
+            global: false,
+            data: {process_status:"incoming"},
+            success: function (data) {
+              console.log(data.length)
+             
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+    }
+
 </script>
 
 <script type="text/javascript">

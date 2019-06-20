@@ -44,7 +44,6 @@
                       <th>Dock ID</th>
                       <th>Dock Name</th>
                       <th>Module</th>
-                      <th>User Type</th>
                       <th>Created At</th>
                       <th>Status</th>
                       <!-- <th>Options</th> -->
@@ -82,7 +81,7 @@
                     </div>
                     
                     <div class="form-group">
-                       <label for="name" class="col-sm-12 control-label">*Dock</label>
+                       <label for="name" class="col-sm-12 control-label">*Module</label>
                        <div class="col-sm-12">
                           <select  class="form-control" id="module" name="module">
                              <option value="0">Please select Dock</option>
@@ -91,15 +90,6 @@
                               <option value="Laundry">Laundry</option>
                               <option value="Liquids">Liquids</option>
                               <option value="Fem Care">Fem Care</option>
-                          </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                       <label for="name" class="col-sm-12 control-label">*User Type</label>
-                       <div class="col-sm-12">
-                          <select  class="form-control" id="user_type" name="user_type">
-                             <option value="0">Please select User Type</option>
                           </select>
                         </div>
                     </div>
@@ -168,7 +158,6 @@
             { "data": "id" },
             {"data": 'dock_name'},
             {"data": 'module'},
-            {"data": 'user_type'},
             { "data": "created_at" },
             { "data": "status"},
             //{ "data": "options" },
@@ -211,7 +200,7 @@
     
     $('#saveBtn').click(function (e) {
         
-        if($("#dock_name").val() == "" || $("#module").val() =="0" || $("#user_type").val() =="0"){
+        if($("#dock_name").val() == "" || $("#module").val() =="0" ){
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
             if($("#dock_name").val() == "")
@@ -223,11 +212,6 @@
               $("#module").css('outline','1px red solid')
             else
               $("#module").css('outline','1px black solid')
-
-            if($("#user_type").val() == "0" || $("#user_type").val() == null)
-              $("#user_type").css('outline','1px red solid')
-            else
-              $("#user_type").css('outline','1px black solid')
 
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){

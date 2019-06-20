@@ -144,6 +144,7 @@ Route::post('getCountDock', 'DashboardController@getCountDock' )->name('getCount
 Route::post('getFirstDockData', 'DashboardController@getFirstDockData' )->name('getFirstDockData');
 Route::post('changeProcessStatus', 'DashboardController@changeProcessStatus' )->name('changeProcessStatus');
 Route::post('checkIfIncoming', 'DashboardController@checkIfIncoming' )->name('checkIfIncoming');
+Route::post('checkIfIncomingDock', 'DashboardController@checkIfIncomingDock' )->name('checkIfIncomingDock');
 #end dashboard
 
 #all stand alone dashboards

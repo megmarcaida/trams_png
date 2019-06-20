@@ -164,6 +164,7 @@
 
     <div class="row">
         <div class="col-xl-8 col-sm-4 mb-3">
+          <div class="response"></div>
           <h3>Incoming</h3>
           <hr>
             <div class="table table-responsive">
@@ -337,8 +338,10 @@
                 </div>
                 <br>
                 <div class="row">
-                  <div class="col-xl-4 col-sm-12">
+                  <div class="col-xl-4 col-sm-12 btn-dock-in">
                     <button id="btn-dock-in" class="btn btn-secondary btn-xs btn-block" type="button">Dock-In</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12 btn-dock-out">
                     <button id="btn-dock-out" class="btn btn-secondary btn-xs btn-block" type="button">Dock-Out</button>
                   </div>
                   <div class="col-xl-4 col-sm-12">
@@ -412,6 +415,11 @@
         ]  
 
     });
+
+    setInterval(function(){
+        table_incoming.draw()
+        table_outgoing.draw()
+    },10000)
 
 
 
@@ -534,9 +542,9 @@
             $(this).addClass('selected');
 
 
-            $("#btn-dock-in").show();
+            $(".btn-dock-in").show();
             $("#btn-overtime").show();
-            $("#btn-dock-out").hide();
+            $(".btn-dock-out").hide();
 
             $('#ajaxModelView').modal({
                 backdrop:'static',
@@ -563,7 +571,8 @@
             $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
 
-            $("#btn-dock-out").hide();
+            $(".btn-dock-in").hide();
+            $(".btn-dock-out").show();
             $("#btn-overtime").hide();
 
             $('#ajaxModelView').modal({
@@ -587,8 +596,8 @@
             $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
 
-            $("#btn-dock-out").show();
-            $("#btn-dock-in").hide();
+            $(".btn-dock-out").show();
+            $(".btn-dock-in").hide();
             $("#btn-overtime").show();
 
             $('#ajaxModelView').modal({
@@ -659,9 +668,18 @@
             url: "{{ url('changeProcessStatus') }}",
             type: "POST",
             global: false,
-            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:8,process_status:'incoming'},
+            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:8,process_status:'incoming',process_name:'dock-in'},
             success: function (data) {
-              console.log(JSON.parse(data).message) 
+              console.log(data) 
+              if(data.success){
+                  $("#ajaxModelView").modal('hide');
+                  $(".response").show();
+                  $(".response").html(data.success)
+                  setTimeout(function(){
+                    $('.response').fadeOut(1000);
+                  },2000)
+
+              }
             },
             error: function (data) {
                 console.log('Error:', data);
@@ -676,9 +694,17 @@
             url: "{{ url('changeProcessStatus') }}",
             type: "POST",
             global: false,
-            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:9,process_status:'incoming'},
+            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:9,process_status:'incoming',process_name:'dock-out'},
             success: function (data) {
-              console.log(JSON.parse(data).message) 
+              if(data.success){
+                  $("#ajaxModelView").modal('hide');
+                  $(".response").show();
+                  $(".response").html(data.success)
+                  setTimeout(function(){
+                    $('.response').fadeOut(1000);
+                  },2000)
+
+              }
             },
             error: function (data) {
                 console.log('Error:', data);

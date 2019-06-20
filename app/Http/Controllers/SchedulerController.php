@@ -68,7 +68,7 @@ class SchedulerController extends Controller
                 array_push($dock_names, $submodules);
             }
         }
-        $dock = Dock::whereIn("dock_name",$dock_names)->where("user_type",$role_id)->get();
+        $dock = Dock::whereIn("dock_name",$dock_names)->get();
         foreach($dock as $d){
             array_push($dock_ids, $d->id);
         }
@@ -374,10 +374,6 @@ class SchedulerController extends Controller
                 }
                 
             }
-
-            $supplier_ids = explode('|',$truck->supplier_ids);
-                
-            
         }
 
         if(!empty($assistants))

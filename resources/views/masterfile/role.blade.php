@@ -25,7 +25,7 @@
                     <th>Role ID</th>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Sub Modules</th>
+                    <th>Docks</th>
                     <th>Status</th>
                     <!-- <th>Options</th> -->
                 </tr>

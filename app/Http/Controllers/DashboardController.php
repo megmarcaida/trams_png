@@ -528,12 +528,12 @@ class DashboardController extends Controller
             }
 
             //Dock-IN
-            if($sched->status == 8 && $sched->process_status == "incoming" && $process_name == "dock-in"){
+            if(($sched->status == 8 || $sched->status == 1) && $sched->process_status == "incoming" && $process_name == "dock-in"){
 
                 $gate_in_datetime = $sched->gate_in_timestamp;
                 $parking_time = time() - strtotime($gate_in_datetime);
                 $sched->update(['process_status'=>"incoming_dock_in","status"=> 9,"dock_in_timestamp"=>Carbon::now(),"parking_timestamp"=>$parking_time]);
-                 $parking_->update(['parking_slot'=> $parking_->parking_slot - 1]);
+                $parking_->update(['parking_slot'=> $parking_->parking_slot - 1]);
                 if($sched){
                     $ret = ["success"=>"Successfully Dock-IN"];
                 }else{
@@ -594,7 +594,7 @@ class DashboardController extends Controller
         $date = Carbon::now();
         $datenow = $date->format("Y-m-d"); 
         $count = 0;
-        $incoming = Schedule::where("date_of_delivery", $datenow)->whereNull("process_status")->whereIn("status",[1,2])->get();
+        $incoming = Schedule::where("date_of_delivery", $datenow)->whereNull("process_status")->whereIn("status",[1,2,3,4])->get();
         
         foreach($incoming as $val){
 
@@ -603,9 +603,32 @@ class DashboardController extends Controller
             $end = substr($slotting_, -5);
 
             $dateofdeparture = $val->date_of_delivery . " " . $start;
-            if(time() - strtotime($dateofdeparture) <= 3601){
+            if(strtotime($dateofdeparture) - time() <= 3601){
                 $sched = Schedule::find($val->id);
                 $sched->update(['process_status'=>"incoming","status"=>10]);
+
+            }
+        }
+
+        echo json_encode($incoming); 
+    }
+
+    public function checkIfIncomingDock(Request $request){
+        $date = Carbon::now();
+        $datenow = $date->format("Y-m-d"); 
+        $count = 0;
+        $incoming = Schedule::where("date_of_delivery", $datenow)->whereNull("process_status")->whereIn("status",[1,2,3,4])->get();
+        
+        foreach($incoming as $val){
+
+            $slotting_ = str_replace("|","",$val->slotting_time);
+            $start = substr($slotting_, 0, 5);
+            $end = substr($slotting_, -5);
+
+            $dateofdeparture = $val->date_of_delivery . " " . $start;
+            if(strtotime($dateofdeparture) - time() <= 43200){
+                $sched = Schedule::find($val->id);
+                $sched->update(['process_status'=>"incoming"]);
 
             }
         }

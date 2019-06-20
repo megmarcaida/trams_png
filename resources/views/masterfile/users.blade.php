@@ -25,8 +25,7 @@
                   <tr>
                       <th>Name</th>
                       <th>Email</th>
-                      <th>Password</th>
-                      <th>Role ID</th>
+                      <th>Role</th>
                       <th>Status</th>
                       <th>Options</th>
                   </tr>
@@ -77,7 +76,7 @@
                     </div>
 
                     <div class="form-group">
-                       <label for="name" class="col-sm-12 control-label">*Modules</label>
+                       <label for="name" class="col-sm-12 control-label">*Role</label>
                        <div class="col-sm-12">
                           <select class="form-control" id="role_id" name="role_id">
                                <option value="0">Please select Role</option>
@@ -121,8 +120,7 @@
                },
         "columns": [
             {"data": 'name'},
-            {"data": 'email'},
-            {"data": 'password'},
+            {"data": 'email'},  
             {"data": 'role_id'},
             { "data": "status"},
             { "data": "options" },
