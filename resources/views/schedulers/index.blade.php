@@ -2173,10 +2173,11 @@
 
                      <input type="hidden" value="0" name="dataEditID" id="dataEditID">
 
+                     <!-- First Row -->
                      <div class="row">
 
                         <!-- First Column -->
-                       <div class="col-md-3">
+                       <div class="col-md-4">
                           
                           <!-- PO Number -->
                           <div class="form-group">
@@ -2186,39 +2187,6 @@
                               </div>
                           </div>
 
-                          <!-- Supplier -->
-                          <div class="form-group">
-                             <label for="name" class="col-sm-12 control-label">*Supplier</label>
-                             <div class="col-sm-12">
-                                <select required class="form-control" id="supplier_id" name="supplier_id">
-                                    <option value="0">Please select Supplier</option>
-                                   @foreach($json_data['supplierData']['data'] as $supplier)
-                                     <option value='{{ $supplier->id }}'>{{ $supplier->supplier_name }}</option>
-                                   @endforeach
-                                </select>
-                                <input type="hidden" name="alt_supplier_id" id="alt_supplier_id">
-                              </div>
-                          </div>
-
-                          <!-- Driver -->
-                          <div class="form-group">
-                             <label for="name" class="col-sm-12 control-label">*Driver</label>
-                             <div class="col-sm-12">
-                                <select  class="form-control" id="driver_id" name="driver_id">
-                                  <option value="0">Please select Driver</option>
-                                </select>
-                              </div>
-                          </div>
-
-                          <!-- Assistant -->
-                          <div class="form-group">
-                             <label for="name" class="col-sm-12 control-label">*Assistant</label>
-                             <div class="col-sm-12">
-                                <select  class="form-control" id="assistant_id" name="assistant_id">
-                                  <option value="0">Please select Assistant</option>
-                                </select>
-                              </div>
-                          </div>
 
                           <!-- Truck -->
                           <div class="form-group">
@@ -2230,27 +2198,88 @@
                               </div>
                           </div>
 
-                          <!-- Container No -->
-                          <div class="form-group">
-                              <label for="name" class="col-sm-12 control-label">*Container No.</label>
-                              <div class="col-sm-12">
-                                  <input type="text" class="form-control" id="container_number" name="container_number" placeholder="Enter Container Number" value="" maxlength="100" required="">
+                       </div>
+
+                        <!-- Second Column -->
+                        <div class="col-md-4">
+
+                              <!-- Supplier -->
+                              <div class="form-group">
+                                 <label for="name" class="col-sm-12 control-label">*Supplier</label>
+                                 <div class="col-sm-12">
+                                    <select required class="form-control" id="supplier_id" name="supplier_id">
+                                        <option value="0">Please select Supplier</option>
+                                       @foreach($json_data['supplierData']['data'] as $supplier)
+                                         <option value='{{ $supplier->id }}'>{{ $supplier->supplier_name }}</option>
+                                       @endforeach
+                                    </select>
+                                    <input type="hidden" name="alt_supplier_id" id="alt_supplier_id">
+                                  </div>
                               </div>
-                          </div>
+
+                              <!-- Container No -->
+                              <div class="form-group">
+                                  <label for="name" class="col-sm-12 control-label">*Container No.</label>
+                                  <div class="col-sm-12">
+                                      <input type="text" class="form-control" id="container_number" name="container_number" placeholder="Enter Container Number" value="" maxlength="100" required="">
+                                  </div>
+                              </div>
+
+
+
+                             
+                        </div>
+
+                        <!-- Third Column -->
+                        <div class="col-md-4">
+
+                            <!-- Driver -->
+                            <div class="form-group">
+                               <label for="name" class="col-sm-12 control-label">*Driver</label>
+                               <div class="col-sm-12">
+                                  <select  class="form-control" id="driver_id" name="driver_id">
+                                    <option value="0">Please select Driver</option>
+                                  </select>
+                                </div>
+                            </div>
+
+
+                            <!-- Assistant -->
+                            <div class="form-group">
+                               <label for="name" class="col-sm-12 control-label">*Assistant</label>
+                               <div class="col-sm-12">
+                                  <select  class="form-control" id="assistant_id" name="assistant_id">
+                                    <option value="0">Please select Assistant</option>
+                                  </select>
+                                </div>
+                            </div>
 
                         </div>
 
-                        <!-- Second Column -->
-                        <div class="col-md-3">
-                              <!-- Dock -->
-                              <div class="form-group">
-                                 <label for="name" class="col-sm-12 control-label">*Dock</label>
-                                 <div class="col-sm-12">
-                                    <select required class="form-control" id="dock_id" name="dock_id">
-                                       <option value="0">Please select Dock</option>
-                                    </select>
-                                  </div>
+                        
+                     </div>
+
+                     <!-- Second Row -->
+                     <div class="row">
+                         <!-- First Column -->
+                       <div class="col-md-4">
+                          
+                          <!-- Dock -->
+                          <div class="form-group">
+                             <label for="name" class="col-sm-12 control-label">*Dock</label>
+                             <div class="col-sm-12">
+                                <select required class="form-control" id="dock_id" name="dock_id">
+                                   <option value="0">Please select Dock</option>
+                                </select>
                               </div>
+                          </div>
+
+                       </div>
+
+                        <!-- Second Column -->
+                        <div class="col-md-4">
+
+
 
                               <!-- Date of delivery -->
                               <div class="form-group">
@@ -2258,18 +2287,6 @@
                                 <div class="col-sm-12">
                                   <input type="date" class="form-control datepicker" name="dateOfDelivery" id="dateOfDelivery" required="">
                                 </div>
-                              </div>
-
-                              <!-- Recurrent -->
-                              <div class="form-group">
-                                 <label for="name" class="col-sm-12 control-label">*Recurrence</label>
-                                 <div class="col-sm-12">
-                                    <select class="form-control recurrence" id="recurrence" name="recurrence">
-                                         <option value="">Please select Recurrence</option>
-                                         <option value="Single Event">Single Event</option>
-                                         <option value="Recurrent">Recurrent</option>
-                                    </select>
-                                  </div>
                               </div>
 
                               <!-- Ordering days -->
@@ -2288,6 +2305,25 @@
                                   </div>
                               </div>
 
+                        </div>
+
+                        <!-- Third Column -->
+                        <div class="col-md-4">
+
+                            
+
+                              <!-- Recurrent -->
+                              <div class="form-group">
+                                 <label for="name" class="col-sm-12 control-label">*Recurrence</label>
+                                 <div class="col-sm-12">
+                                    <select class="form-control recurrence" id="recurrence" name="recurrence">
+                                         <option value="">Please select Recurrence</option>
+                                         <option value="Single Event">Single Event</option>
+                                         <option value="Recurrent">Recurrent</option>
+                                    </select>
+                                  </div>
+                              </div>
+
                               <!-- Valid Until -->
                               <div class="form-group r_recurrent_dateend">
                                 <label class="col-sm-12 control-label">*Recurrent Date Valid Until</label>
@@ -2298,12 +2334,14 @@
                                 </div>
                               </div>
 
-                             
                         </div>
 
-                        <!-- Third Column -->
-                        <div class="col-md-6">
-                             <!-- Slotting Time -->
+                     </div>
+
+                     <div class="row">
+                       
+                        <div class="col-md-12">
+                          <!-- Slotting Time -->
                               <div class="form-group">
                                 <label class="col-sm-12 control-label slotting_time">*Slotting Time</label>
                                 <input type="hidden" class="form-control" id="slotting_time" name="slotting_time" required="">
@@ -2314,7 +2352,6 @@
                                         <div class="slot_box" id="slot2">00:30 - 01:00</div>
                                         <div class="slot_box" id="slot3">01:00 - 01:30</div>
                                         <div class="slot_box" id="slot4">01:30 - 02:00</div>
-                                        <br>
                                         <div class="slot_box" id="slot5">02:00 - 02:30</div>
                                         <div class="slot_box" id="slot6">02:30 - 03:00</div>
                                         <div class="slot_box" id="slot7">03:00 - 03:30</div>
@@ -2324,7 +2361,6 @@
                                         <div class="slot_box" id="slot10">04:30 - 05:00</div>
                                         <div class="slot_box" id="slot11">05:00 - 05:30</div>
                                         <div class="slot_box" id="slot12">05:30 - 06:00</div>
-                                        <br>
                                         <div class="slot_box" id="slot13">06:00 - 06:30</div>
                                         <div class="slot_box" id="slot14">06:30 - 07:00</div>
                                         <div class="slot_box" id="slot15">07:00 - 07:30</div>
@@ -2334,7 +2370,6 @@
                                         <div class="slot_box" id="slot18">08:30 - 09:00</div>
                                         <div class="slot_box" id="slot19">09:00 - 09:30</div>
                                         <div class="slot_box" id="slot20">09:30 - 10:00</div>
-                                        <br>
                                         <div class="slot_box" id="slot21">10:00 - 10:30</div>
                                         <div class="slot_box" id="slot22">10:30 - 11:00</div>
                                         <div class="slot_box" id="slot23">11:00 - 11:30</div>
@@ -2344,7 +2379,6 @@
                                         <div class="slot_box" id="slot26">12:30 - 13:00</div>
                                         <div class="slot_box" id="slot27">13:00 - 13:30</div>
                                         <div class="slot_box" id="slot28">13:30 - 14:00</div>
-                                        <br>
                                         <div class="slot_box" id="slot29">14:00 - 14:30</div>
                                         <div class="slot_box" id="slot30">14:30 - 15:00</div>
                                         <div class="slot_box" id="slot31">15:00 - 15:30</div>
@@ -2354,7 +2388,6 @@
                                         <div class="slot_box" id="slot34">16:30 - 17:00</div>
                                         <div class="slot_box" id="slot35">17:00 - 17:30</div>
                                         <div class="slot_box" id="slot36">17:30 - 18:00</div>
-                                        <br>
                                         <div class="slot_box" id="slot37">18:00 - 18:30</div>
                                         <div class="slot_box" id="slot38">18:30 - 19:00</div>
                                         <div class="slot_box" id="slot39">19:00 - 19:30</div>
@@ -2364,7 +2397,6 @@
                                         <div class="slot_box" id="slot42">20:30 - 21:00</div>
                                         <div class="slot_box" id="slot43">21:00 - 21:30</div>
                                         <div class="slot_box" id="slot44">21:30 - 22:00</div>
-                                        <br>
                                         <div class="slot_box" id="slot45">22:00 - 22:30</div>
                                         <div class="slot_box" id="slot46">22:30 - 23:00</div>
                                         <div class="slot_box" id="slot47">23:00 - 23:30</div>
@@ -2373,7 +2405,9 @@
                                     </div>
                                 </div>
                               </div>
+                          
                         </div>
+
                      </div>
 
                     

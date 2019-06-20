@@ -10698,13 +10698,13 @@ a.text-dark:focus {
 }
 
 .slotting_time{
-  width: 486px;
+  width: 100%;
 }
 
 .slotting_time > .slot_box{
   display: inline-block;
   background: #38c172;
-  padding: 20px;
+  padding: 15px;
   margin: -2px;
   cursor: pointer;
 }
@@ -10716,7 +10716,7 @@ a.text-dark:focus {
 
 .occupied_slot_box{
   display: inline-block;
-  padding: 20px;
+  padding: 15px;
   margin: -2px;
   background: red;
   cursor: not-allowed !important;
@@ -10724,7 +10724,7 @@ a.text-dark:focus {
 
 .editable_slot_box{
   display: inline-block;
-  padding: 20px;
+  padding: 15px;
   margin: -2px;
   background: #4dc0b5 !important;
   cursor: pointer !important;
