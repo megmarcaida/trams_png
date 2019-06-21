@@ -139,21 +139,21 @@
                                 </select>
                               </div>
                               <br>
-                             <!--  <div class="col-sm-12">
+                              <div class="col-sm-12">
                                 <a href="#" class="btn btn-primary add_supplier">Add Supplier</a>
                                 <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
-                              </div> -->
+                              </div>
                           </div>
 
 
                           <!-- assistant supplier -->
-                          <!-- <div class="form-group">
+                          <div class="form-group">
                               <label for="name" class="col-sm-12 control-label">*Assistant Suppliers</label>
                               <div class="col-sm-12">
                                   <textarea class="form-control" id="assistant_suppliers" name="supplier_names" readonly="" required=""></textarea>
                                   <input type="hidden" id="supplier_ids" name="supplier_ids">
                               </div>
-                          </div> -->
+                          </div>
 
                         </div> 
 
