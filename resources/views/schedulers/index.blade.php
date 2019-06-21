@@ -1948,7 +1948,7 @@
             }
             else if(c== 4){
                 var ele = document.createElement('input');
-                ele.setAttribute('type', 'number');
+                ele.setAttribute('type', 'text');
                 ele.setAttribute('class', 'quantity');
                 ele.setAttribute('name', 'quantity[]');
                 //ele.setAttribute('onkeyup', 'addRow()');

@@ -280,7 +280,7 @@ class DashboardController extends Controller
 
         $dock = Dock::where('status', 1)->get();
         $dock_id_ = 0;
-        $totalData = Schedule::where("date_of_delivery", $datenow)->whereIn("dock_id",$docks)->where("process_status",$request->process_status)->count();
+        $totalData = Schedule::whereIn("dock_id",$docks)->where("process_status",$request->process_status)->count();
             
         $totalFiltered = $totalData; 
 
@@ -295,7 +295,7 @@ class DashboardController extends Controller
         {   
             
                
-            $Schedules = Schedule::where("date_of_delivery", $datenow)->whereIn("dock_id",$docks)->where("process_status",$request->process_status)
+            $Schedules = Schedule::whereIn("dock_id",$docks)->where("process_status",$request->process_status)
                      ->offset($start)
                      ->limit($limit)
                      ->orderBy($order,$dir)
@@ -306,14 +306,14 @@ class DashboardController extends Controller
         else {
             $search = $request->input('search.value'); 
             
-            $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->OrWhere("date_of_delivery", $datenow)->whereIn ("dock_id",$docks)->where("process_status",$request->process_status)->offset($start)
+            $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->whereIn ("dock_id",$docks)->where("process_status",$request->process_status)->offset($start)
                  ->limit($limit)
                  ->orderBy($order,$dir)
                  ->get();
 
 
 
-            $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->OrWhere("date_of_delivery", $datenow)->whereIn ("dock_id",$docks)->where("process_status",$request->process_status)->count();
+            $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->whereIn ("dock_id",$docks)->where("process_status",$request->process_status)->count();
         }
 
         $data = array();
@@ -326,13 +326,14 @@ class DashboardController extends Controller
             foreach ($Schedules as $Schedule)
             {
                
-                    
+
                 $slotting_ = str_replace("|","",$Schedule->slotting_time);
                     $start = substr($slotting_, 0, 5);
                     $end = substr($slotting_, -5);
 
                 $dateofdeparture = $Schedule->date_of_delivery . " " . $start;
-                if(time() - strtotime($dateofdeparture) > 43188){
+                if(strtotime($dateofdeparture) - time() > 43200){
+                //if(time() - strtotime($dateofdeparture) > 43188){
                     continue;
                 }
 
@@ -617,7 +618,7 @@ class DashboardController extends Controller
         $date = Carbon::now();
         $datenow = $date->format("Y-m-d"); 
         $count = 0;
-        $incoming = Schedule::where("date_of_delivery", $datenow)->whereNull("process_status")->whereIn("status",[1,2,3,4])->get();
+        $incoming = Schedule::whereNull("process_status")->whereIn("status",[1,2,3,4])->get();
         
         foreach($incoming as $val){
 

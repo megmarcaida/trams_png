@@ -131,29 +131,29 @@
                           <div class="form-group">
                              <label for="name" class="col-sm-12 control-label">*Supplier</label>
                              <div class="col-sm-12">
-                                <select  class="form-control" id="supplier_id" name="supplier_id">
+                                <input type="text" readonly="" class="form-control supplier_id">
+                                <select multiple style="height:90px;" class="form-control" id="supplier_id" name="supplier_id">
                                    @foreach($supplierData['data'] as $supplier)
                                      <option value='{{ $supplier->id }}'>{{ $supplier->supplier_name }}</option>
                                    @endforeach
                                 </select>
                               </div>
                               <br>
-                              <div class="col-sm-12">
+                             <!--  <div class="col-sm-12">
                                 <a href="#" class="btn btn-primary add_supplier">Add Supplier</a>
                                 <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
-                              </div>
+                              </div> -->
                           </div>
 
 
                           <!-- assistant supplier -->
-                          <div class="form-group">
+                          <!-- <div class="form-group">
                               <label for="name" class="col-sm-12 control-label">*Assistant Suppliers</label>
                               <div class="col-sm-12">
                                   <textarea class="form-control" id="assistant_suppliers" name="supplier_names" readonly="" required=""></textarea>
-                                  <!-- <input type="text" class="form-control" id="assistant_suppliers" disabled="" required=""> -->
                                   <input type="hidden" id="supplier_ids" name="supplier_ids">
                               </div>
-                          </div>
+                          </div> -->
 
                         </div> 
 
@@ -168,6 +168,19 @@
                               </div>
                           </div>
 
+                          <!-- mobile number -->
+                          <div class="form-group">
+                            <label for="name" class="col-sm-12 control-label">*Mobile Number</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter Mobile Number" value="" maxlength="50" required="">
+                            </div>
+                          </div>
+
+                        </div> 
+
+                        <!-- Third Column -->
+                        <div class="col-4">
+
                           <!-- first name -->
                           <div class="form-group">
                               <label for="name" class="col-sm-12 control-label">*First Name</label>
@@ -175,12 +188,6 @@
                                   <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" value="" maxlength="50" required="">
                               </div>
                           </div>
-
-
-                        </div> 
-
-                        <!-- Third Column -->
-                        <div class="col-4">
 
                           <!-- last name -->
                           <div class="form-group">
@@ -191,13 +198,7 @@
                           </div>
 
 
-                          <!-- mobile number -->
-                          <div class="form-group">
-                            <label for="name" class="col-sm-12 control-label">*Mobile Number</label>
-                            <div class="col-sm-12">
-                                <input type="text" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter Mobile Number" value="" maxlength="50" required="">
-                            </div>
-                          </div>
+                          
 
                           <!-- company id number -->
                           <!-- <div class="form-group">
@@ -803,5 +804,29 @@
     });
 
   });
+
+
+  $('#supplier_id option').mousedown(function(e) {
+      e.preventDefault();
+      var originalScrollTop = $(this).parent().scrollTop();
+      //onsole.log(originalScrollTop);
+      $(this).prop('selected', $(this).prop('selected') ? false : true);
+      var self = this;
+      $(this).parent().focus();
+      setTimeout(function() {
+          $(self).parent().scrollTop(originalScrollTop);
+      }, 0);
+      
+      var data = "";
+      var $el=$("#supplier_id");
+      $el.find('option:selected').each(function(){
+          data += $(this).text() + ",";
+      });
+      //console.log(data)
+      console.log($('.supplier_id').val(data))
+      //return false;
+  });
+
+
 </script>
 @endsection
