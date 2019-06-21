@@ -14,11 +14,11 @@
         <div class="dropdown-container">
           <!-- <h6 class="dropdown-header">Record Maintenance:</h6> -->
           @if(Auth::user()->role_id != 3)  
-          <a class="dropdown-item" href="/trams/public/recordmaintenance/supplier">Supplier</a>
-          <a class="dropdown-item" href="/trams/public/recordmaintenance/truck">Trucks</a>
+          <a class="dropdown-item" href="/recordmaintenance/supplier">Supplier</a>
+          <a class="dropdown-item" href="/recordmaintenance/truck">Trucks</a>
           @endif
-          <a class="dropdown-item" href="/trams/public/recordmaintenance/driver">Driver</a>
-          <a class="dropdown-item" href="/trams/public/recordmaintenance/assistant">Assistant</a>
+          <a class="dropdown-item" href="/recordmaintenance/driver">Driver</a>
+          <a class="dropdown-item" href="/recordmaintenance/assistant">Assistant</a>
           <!-- <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Other Pages:</h6>
           <a class="dropdown-item" href="404.html">404 Page</a>
@@ -34,8 +34,8 @@
         </a>
         <div class="dropdown-container">
           <!-- <h6 class="dropdown-header">Record Maintenance:</h6> -->
-          <a class="dropdown-item" href="/trams/public/masterfile/roles">Roles</a>
-          <a class="dropdown-item" href="/trams/public/masterfile/users">Users</a>
+          <a class="dropdown-item" href="/masterfile/roles">Roles</a>
+          <a class="dropdown-item" href="/masterfile/users">Users</a>
           <!-- <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Other Pages:</h6>
           <a class="dropdown-item" href="404.html">404 Page</a>
@@ -51,9 +51,9 @@
         </a>
         <div class="dropdown-container">
           
-          <a class="dropdown-item" href="/trams/public/scheduler/index">Scheduling</a>
-          <a class="dropdown-item" href="/trams/public/scheduler/slottingschedule">Slotting Scheduling</a>
-          <a class="dropdown-item" href="/trams/public/scheduler/dock">Dock</a>
+          <a class="dropdown-item" href="/scheduler/index">Scheduling</a>
+          <a class="dropdown-item" href="/scheduler/slottingschedule">Slotting Scheduling</a>
+          <a class="dropdown-item" href="/scheduler/dock">Dock</a>
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -63,14 +63,14 @@
         </a>
         <div class="dropdown-container">
           
-          <a class="dropdown-item" href="/trams/public/dashboard/parking">Parking Dashboard</a>
-          <a class="dropdown-item" href="/trams/public/dashboard/executive">Executive Module</a>
-          <a class="dropdown-item" href="/trams/public/dashboard/dock">Dock</a>
-          <a class="dropdown-item" href="/trams/public/dashboard/gate">Gate</a>
-          <a class="dropdown-item" href="/trams/public/dashboard/manual">Manual Process</a>
-          <a class="dropdown-item" href="/trams/public/dashboard/reader">QR Code</a>
-          <a class="dropdown-item" href="/trams/public/others/parking">Parking Module</a>
-          <a class="dropdown-item" href="/trams/public/others/bannedIssueReporting">Banned and Issue Reporting</a>
+          <a class="dropdown-item" href="/dashboard/parking">Parking Dashboard</a>
+          <a class="dropdown-item" href="/dashboard/executive">Executive Module</a>
+          <a class="dropdown-item" href="/dashboard/dock">Dock</a>
+          <a class="dropdown-item" href="/dashboard/gate">Gate</a>
+          <a class="dropdown-item" href="/dashboard/manual">Manual Process</a>
+          <a class="dropdown-item" href="/dashboard/reader">QR Code</a>
+          <a class="dropdown-item" href="/others/parking">Parking Module</a>
+          <a class="dropdown-item" href="/others/bannedIssueReporting">Banned and Issue Reporting</a>
         </div>
       </li>
       <!-- <li class="nav-item">
