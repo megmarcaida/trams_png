@@ -10704,9 +10704,10 @@ a.text-dark:focus {
 .slotting_time > .slot_box{
   display: inline-block;
   background: #38c172;
-  padding: 15px;
+  padding: 14px;
   margin: -2px;
   cursor: pointer;
+  border: #000 solid 1px;
 }
 
 .active_slot_box{
@@ -10716,18 +10717,20 @@ a.text-dark:focus {
 
 .occupied_slot_box{
   display: inline-block;
-  padding: 15px;
+  padding: 14px;
   margin: -2px;
   background: red;
   cursor: not-allowed !important;
+  border: #000 solid 1px;
 }
 
 .editable_slot_box{
   display: inline-block;
-  padding: 15px;
+  padding: 14px;
   margin: -2px;
   background: #4dc0b5 !important;
   cursor: pointer !important;
+  border: #000 solid 1px;
 }
 
 .disableSelect{

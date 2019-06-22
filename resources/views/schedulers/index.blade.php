@@ -2362,9 +2362,9 @@
                                         <div class="slot_box" id="slot19">09:00 - 09:30</div>
                                         <div class="slot_box" id="slot20">09:30 - 10:00</div>
                                         <div class="slot_box" id="slot21">10:00 - 10:30</div>
-                                        <div class="slot_box" id="slot22">10:30 - 11:00</div>
-                                        <div class="slot_box" id="slot23">11:00 - 11:30</div>
-                                        <div class="slot_box" id="slot24">11:30 - 12:00</div>
+                                        <div class="slot_box" style="padding-right:15px !important;" id="slot22">10:30 - 11:00</div>
+                                        <div class="slot_box" style="padding-right:16px !important;" id="slot23">11:00 - 11:30</div>
+                                        <div class="slot_box" style="padding-right:15px !important;" id="slot24">11:30 - 12:00</div>
                                         <br>
                                         <div class="slot_box" id="slot25">12:00 - 12:30</div>
                                         <div class="slot_box" id="slot26">12:30 - 13:00</div>
@@ -2773,9 +2773,9 @@
                               <div class="slot_box" id="slot19">09:00 - 09:30</div>
                               <div class="slot_box" id="slot20">09:30 - 10:00</div>
                               <div class="slot_box" id="slot21">10:00 - 10:30</div>
-                              <div class="slot_box" id="slot22">10:30 - 11:00</div>
-                              <div class="slot_box" id="slot23">11:00 - 11:30</div>
-                              <div class="slot_box" id="slot24">11:30 - 12:00</div>
+                              <div class="slot_box" style="padding-right:16px !important;" id="slot22">10:30 - 11:00</div>
+                              <div class="slot_box" style="padding-right:15px !important;" id="slot23">11:00 - 11:30</div>
+                              <div class="slot_box" style="padding-right:15px !important;" id="slot24">11:30 - 12:00</div>
                               <div class="slot_box" id="slot25">12:00 - 12:30</div>
                               <div class="slot_box" id="slot26">12:30 - 13:00</div>
                               <div class="slot_box" id="slot27">13:00 - 13:30</div>

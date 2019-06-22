@@ -937,7 +937,7 @@ class SchedulerController extends Controller
         $nestedData['slotting_time'] = $schedule->slotting_time;
         $nestedData['container_no'] = $schedule->container_number;
         $nestedData['driver_name'] = $driver_name;
-        $nestedData['truck_details'] =  $truck->model . " " . $truck->brand;
+        $nestedData['truck_details'] =  $truck->brand . " " . $truck->model;
         $nestedData['assistant_name'] = $assistant_name;
         $nestedData['plate_number'] = $truck->plate_number;
         $num = $schedule->id;

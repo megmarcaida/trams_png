@@ -24,7 +24,7 @@
       </div>
     </center>
 
-    <div class="alert alert-success" style="display:none;" id="response"></div>
+    <div style="display:none;" id="response"></div>
     <div class="row">
         <div class="col-xl-6 col-sm-12 mb-3">
           <h3>Incoming</h3>
@@ -33,7 +33,7 @@
                   <thead>
                       <tr>
                           <th>Delivery Ticket No.</th>
-                          <th>Slotting Number</th>
+                          <th>Slotting Schedule</th>
                           <th>Supplier Name</th>
                           <th>Truck</th>
                           <th>Plate Number</th>
@@ -55,7 +55,7 @@
                   <thead>
                       <tr>
                           <th>Delivery Ticket No.</th>
-                          <th>Slotting Number</th>
+                          <th>Slotting Schedule</th>
                           <th>Supplier Name</th>
                           <th>Truck</th>
                           <th>Plate Number</th>
@@ -79,7 +79,7 @@
                   <thead>
                       <tr>
                           <th>Delivery Ticket No.</th>
-                          <th>Slotting Number</th>
+                          <th>Slotting Schedule</th>
                           <th>Supplier Name</th>
                           <th>Truck</th>
                           <th>Plate Number</th>
@@ -357,10 +357,17 @@
             url: "{{ url('changeProcessStatus') }}",
             type: "POST",
             global: false,
-            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:10,process_status:'incoming'},
+            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:10,process_status:'incoming',process_name:"gate-in"},
             success: function (data) {
-              $("#response").show();
-              $("#response").html(JSON.parse(data).message)
+              if(JSON.parse(data).success){
+                $("#response").show();
+                $("#response").html("<div class='alert alert-success'>" + JSON.parse(data).success + "</div>")
+              }
+
+              if(JSON.parse(data).error){
+                $("#response").show();
+                $("#response").html("<div class='alert alert-danger'>" + JSON.parse(data).error + "</div>")
+              }
               $('#ajaxModelView').modal('hide');
               setTimeout(function(){
                 $("#response").hide('slow');
@@ -373,16 +380,23 @@
     });
 
     $('body').on( 'click', '#btn-gate-out', function () {
-            
+        $("#response").empty();
         $.ajax({
             async: false,
             url: "{{ url('changeProcessStatus') }}",
             type: "POST",
             global: false,
-            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:11,process_status:'incoming'},
+            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:11,process_status:'incoming',process_name:"gate-out"},
             success: function (data) {
-              $("#response").show();
-              $("#response").html(JSON.parse(data).message)
+              if(JSON.parse(data).success){
+                $("#response").show();
+                $("#response").html("<div class='alert alert-success'>" + JSON.parse(data).success + "</div>")
+              }
+
+              if(JSON.parse(data).error){
+                $("#response").show();
+                $("#response").html("<div class='alert alert-danger'>" + JSON.parse(data).error + "</div>")
+              }
               $('#ajaxModelView').modal('hide');
               setTimeout(function(){
                 $("#response").hide('slow');

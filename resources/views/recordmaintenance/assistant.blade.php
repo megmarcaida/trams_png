@@ -116,7 +116,7 @@
                     <div class="row">
 
                         <!-- First Column -->
-                        <div class="col-4 ">
+                        <div class="col-6">
 
                           <!-- assistant id -->
                           <div class="form-group assistant_id">
@@ -139,10 +139,10 @@
                                 </select>
                               </div>
                               <br>
-                              <div class="col-sm-12">
+                              <!-- <div class="col-sm-12">
                                 <a href="#" class="btn btn-primary add_supplier">Add Supplier</a>
                                 <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
-                              </div>
+                              </div> -->
                           </div>
 
 
@@ -155,16 +155,11 @@
                               </div>
                           </div>
 
-                        </div> 
-
-                        <!-- Second Column -->
-                        <div class="col-4">
-
-                          <!-- logistics company -->
+                          <!-- first name -->
                           <div class="form-group">
-                              <label for="name" class="col-sm-12 control-label">*Logistics Company</label>
+                              <label for="name" class="col-sm-12 control-label">*First Name</label>
                               <div class="col-sm-12">
-                                  <input type="text" class="form-control" id="logistics_company" name="logistics_company" placeholder="Enter Logistics Company" value="" maxlength="100" required="">
+                                  <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" value="" maxlength="50" required="">
                               </div>
                           </div>
 
@@ -178,14 +173,14 @@
 
                         </div> 
 
-                        <!-- Third Column -->
-                        <div class="col-4">
+                        <!-- Second Column -->
+                        <div class="col-6">
 
-                          <!-- first name -->
+                          <!-- logistics company -->
                           <div class="form-group">
-                              <label for="name" class="col-sm-12 control-label">*First Name</label>
+                              <label for="name" class="col-sm-12 control-label">*Logistics Company</label>
                               <div class="col-sm-12">
-                                  <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" value="" maxlength="50" required="">
+                                  <input type="text" class="form-control" id="logistics_company" name="logistics_company" placeholder="Enter Logistics Company" value="" maxlength="100" required="">
                               </div>
                           </div>
 
@@ -196,6 +191,26 @@
                                   <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" value="" maxlength="50" required="">
                               </div>
                           </div>
+
+                          <!-- date of validity -->
+                          <input type="hidden" name="isApproved" value="0">
+                          @if(Auth::user()->role_id == 3)
+                          <div class="form-group">
+                            <label class="col-sm-12 control-label">*Date of Validity</label>
+                            <div class="col-sm-12">
+                              <div class="col-sm-12">
+                              <input type="date" class="form-control datepicker" name="dateOfSafetyOrientation" id="dateOfSafetyOrientation" required="">
+                              <input type="hidden" id="isApproved" name="isApproved" value="1">
+                              </div>
+                            </div>
+                          </div>
+                           @endif
+
+                        </div> 
+
+                        <!-- Third Column -->
+                        <!-- <div class="col-4"> -->
+
 
 
                           
@@ -230,21 +245,9 @@
                             </div>
                           </div> -->
 
-                          <!-- date of validity -->
-                          <input type="hidden" name="isApproved" value="0">
-                          @if(Auth::user()->role_id == 3)
-                          <div class="form-group">
-                            <label class="col-sm-12 control-label">*Date of Validity</label>
-                            <div class="col-sm-12">
-                              <div class="col-sm-12">
-                              <input type="date" class="form-control datepicker" name="dateOfSafetyOrientation" id="dateOfSafetyOrientation" required="">
-                              <input type="hidden" id="isApproved" name="isApproved" value="1">
-                              </div>
-                            </div>
-                          </div>
-                           @endif
+                          
 
-                        </div> 
+                       <!--  </div>  -->
 
                         <div class="offset-8 col-sm-4">
                            <button type="submit" class="btn btn-primary btn-block" id="saveBtn" value="create">Save changes

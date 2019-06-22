@@ -107,7 +107,7 @@
 
                 timenow = today.getHours() + ":" + today.getMinutes() 
                 //console.log(timenow)
-
+                console.log(item.status)
                 if(item.status == ""){
                     moduleClass.addClass('alert alert-secondary')
                     moduleClass.removeClass('alert-success')
@@ -172,13 +172,13 @@
                   <thead>
                       <tr>
                           <th>Delivery Ticket No.</th>
-                          <th>Slotting Time</th>
+                          <th>Slotting Schedule</th>
                           <th>Supplier</th>
                           <th>Truck</th>
                           <th>Plate Number</th>
                           <th>Container Number</th>
                           <th>Dock</th>
-                          <th>Material List</th>
+                          <th>Status</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -201,7 +201,7 @@
                           <th>Plate Number</th>
                           <th>Container Number</th>
                           <th>Dock</th>
-                          <th>Material List</th>
+                          <th>Status</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -267,7 +267,7 @@
                         // //if(new_first_dock_data != first_data){
                         //   first_data = new_first_dock_data
                         // //}
-                      },60000)
+                      },30000)
                         </script>
                     @endforeach
                     </div>
@@ -282,7 +282,7 @@
 
     <div class="modal fade" id="ajaxModelView" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="width:780px;">
             <div class="modal-header">
                 <h4 class="modal-title" id="modelHeadingView">Delivery ID: <b class="view_delivery_id"></b></h4>
 
@@ -291,50 +291,55 @@
             <div class="modal-body">
                 
                <div class="row">
+
                   <div class="col-md-6">
-                    Delivery ID:
+                    <div class="row">
+                      <div class="col-md-6">
+                        Delivery ID:
+                      </div>
+                      <div class="col-md-6">
+                        <p class="view_delivery_id"></p>
+                      </div>
+
+                      <div class="col-md-6">
+                        Slotting Time:
+                      </div>
+                      <div class="col-md-6">
+                        <p class="view_slotting_time"></p>
+                      </div>
+
+                      <div class="col-md-6">
+                        Supplier:
+                      </div>
+                      <div class="col-md-6">
+                        <p class="view_supplier_name"></p>
+                      </div>
+
+                      <div class="col-md-6">
+                        Truck:
+                      </div>
+                      <div class="col-md-6">
+                        <p class="view_truck"></p>
+                      </div>
+
+                      <div class="col-md-6">
+                        Container Number:
+                      </div>
+                      <div class="col-md-6">
+                        <p class="view_container_no"></p>
+                      </div>
+                    </div>
                   </div>
+
                   <div class="col-md-6">
-                    <p class="view_delivery_id"></p>
+                    <div class="row">
+                      <div class="col-md-12 material_list">
+                      Material List:
+                      <table class="table table-responsive view_material_list"></table>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Slotting Time:
                   </div>
-                  <div class="col-md-6">
-                    <p class="view_slotting_time"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Supplier:
-                  </div>
-                  <div class="col-md-6">
-                    <p class="view_supplier_name"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Truck:
-                  </div>
-                  <div class="col-md-6">
-                    <p class="view_truck"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Container Number:
-                  </div>
-                  <div class="col-md-6">
-                    <p class="view_container_no"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12 material_list">
-                    Material List:
-                    <table class="view_material_list"></table>
-                  </div>
+                  
                 </div>
                 <br>
                 <div class="row">
@@ -344,11 +349,13 @@
                   <div class="col-xl-4 col-sm-12 btn-dock-out">
                     <button id="btn-dock-out" class="btn btn-secondary btn-xs btn-block" type="button">Dock-Out</button>
                   </div>
-                  <div class="col-xl-4 col-sm-12">
+                  <div class="col-xl-4 col-sm-12 btn-change-dock">
                     <button id="btn-change-dock" class="btn btn-secondary btn-xs btn-block" type="button">Change Dock</button>
+                  </div>
+                  <div class="col-xl-4 col-sm-12 btn-overtime">
                     <button id="btn-overtime" class="btn btn-secondary btn-xs btn-block" type="button">Overtime</button>
                   </div>
-                  <div class="col-xl-4 col-sm-12">  
+                  <div class="col-xl-4 col-sm-12 btn-close">  
                     <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
                   </div> 
                 </div>
@@ -389,7 +396,7 @@
             {"data": 'plate_number'},
             {"data": 'container_number'},
             {"data": 'dock'},
-            {"data": 'material_list'}
+            {"data": 'status'},
         ]  
 
     });
@@ -411,7 +418,7 @@
             {"data": 'plate_number'},
             {"data": 'container_number'},
             {"data": 'dock'},
-            {"data": 'material_list'}
+            {"data": 'status'},
         ]  
 
     });
@@ -520,7 +527,7 @@
       }
 
 
-    },60000)
+    },30000)
     //socket
 
      $('.data-table-incoming tbody').on( 'click', 'tr', function () {
@@ -528,13 +535,35 @@
             $(this).removeClass('selected');
         }
         else {
-          console.log($(this).find("td:nth-child(1)"))
-            $('.view_delivery_id').html($(this).find("td:nth-child(1)").first().text())  
-            $('.view_slotting_time').html($(this).find("td:nth-child(2)").first().text())  
-            $('.view_supplier_name').html($(this).find("td:nth-child(3)").first().text()) 
-            $('.view_truck').html($(this).find("td:nth-child(4)").text()) 
-            $('.view_container_no').html($(this).find("td:nth-child(5)").text())
-            $('.view_material_list').html($(this).find("td:nth-child(8)").html())    
+            console.log($(this).find("td:nth-child(1)").first().text())
+             $('.view_delivery_id').empty()
+            $('.view_slotting_time').empty()  
+            $('.view_supplier_name').empty()
+            $('.view_truck').empty()
+            $('.view_container_no').empty()
+            $('.view_material_list').empty()
+            $.ajax({
+                async: false,
+                url: "{{ url('getClickDockData') }}",
+                type: "POST",
+                global: false,
+                data: {delivery_ticket_id:$(this).find("td:nth-child(1)").first().text()},
+                success: function (data) {
+                  console.log(JSON.parse(data))
+                  var data = JSON.parse(data)
+                  $('.view_delivery_id').html(data.id)  
+                  $('.view_slotting_time').html(data.slotting_time)  
+                  $('.view_supplier_name').html(data.supplier_name) 
+                  $('.view_truck').html(data.truck) 
+                  $('.view_container_no').html(data.container_number)
+                  $('.view_material_list').html(data.material_list)
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+
+                
 
 
             $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
@@ -543,8 +572,12 @@
 
 
             $(".btn-dock-in").show();
-            $("#btn-overtime").show();
+            $(".btn-overtime").hide();
+            $(".btn-change-dock").show();
             $(".btn-dock-out").hide();
+            if($(".btn-close").hasClass('offset-8')){
+              $(".btn-close").removeClass('offset-8')
+            }
 
             $('#ajaxModelView').modal({
                 backdrop:'static',
@@ -559,12 +592,34 @@
             $(this).removeClass('selected');
         }
         else {
-            $('.view_delivery_id').html($(this).find("td:nth-child(1)").first().text())  
-            $('.view_slotting_time').html($(this).find("td:nth-child(2)").first().text())  
-            $('.view_supplier_name').html($(this).find("td:nth-child(3)").first().text()) 
-            $('.view_truck').html($(this).find("td:nth-child(4)").text()) 
-            $('.view_container_no').html($(this).find("td:nth-child(5)").text())
-            $('.view_material_list').html($(this).find("td:nth-child(8)").html())    
+
+            $('.view_delivery_id').empty()
+            $('.view_slotting_time').empty()  
+            $('.view_supplier_name').empty()
+            $('.view_truck').empty()
+            $('.view_container_no').empty()
+            $('.view_material_list').empty()
+
+            $.ajax({
+                async: false,
+                url: "{{ url('getClickDockData') }}",
+                type: "POST",
+                global: false,
+                data: {delivery_ticket_id:$(this).find("td:nth-child(1)").first().text()},
+                success: function (data) {
+                  console.log(JSON.parse(data))
+                  var data = JSON.parse(data)
+                  $('.view_delivery_id').html(data.id)  
+                  $('.view_slotting_time').html(data.slotting_time)  
+                  $('.view_supplier_name').html(data.supplier_name) 
+                  $('.view_truck').html(data.truck) 
+                  $('.view_container_no').html(data.container_number)
+                  $('.view_material_list').html(data.material_list)
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });   
 
 
             $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
@@ -572,9 +627,10 @@
             $(this).addClass('selected');
 
             $(".btn-dock-in").hide();
-            $(".btn-dock-out").show();
-            $("#btn-overtime").hide();
-
+            $(".btn-dock-out").hide();
+            $(".btn-change-dock").hide();
+            $(".btn-overtime").hide();
+            $(".btn-close").addClass('offset-8')
             $('#ajaxModelView').modal({
                 backdrop:'static',
                 keyboard: false
@@ -584,13 +640,40 @@
 
     $('body').on( 'click', '.data', function () {
        
-            $('.view_delivery_id').html($(this).find("tr:nth-child(1) > td:nth-child(2)").first().text())  
-            $('.view_slotting_time').html($(this).find("tr:nth-child(2) > td:nth-child(2)").first().text())  
-            $('.view_supplier_name').html($(this).find("tr:nth-child(3) > td:nth-child(2)").first().text()) 
-            $('.view_truck').html($(this).find("tr:nth-child(4) > td:nth-child(2)").text()) 
-            $('.view_container_no').html($(this).find("tr:nth-child(5) > td:nth-child(2)").text())
+             $('.view_delivery_id').empty()
+            $('.view_slotting_time').empty()  
+            $('.view_supplier_name').empty()
+            $('.view_truck').empty()
+            $('.view_container_no').empty()
+            $('.view_material_list').empty()
+            // $('.view_delivery_id').html($(this).find("tr:nth-child(1) > td:nth-child(2)").first().text())  
+            // $('.view_slotting_time').html($(this).find("tr:nth-child(2) > td:nth-child(2)").first().text())  
+            // $('.view_supplier_name').html($(this).find("tr:nth-child(3) > td:nth-child(2)").first().text()) 
+            // $('.view_truck').html($(this).find("tr:nth-child(4) > td:nth-child(2)").text()) 
+            // $('.view_container_no').html($(this).find("tr:nth-child(5) > td:nth-child(2)").text())
             //$('.view_material_list').html($(this).find("td:nth-child(8)").html())    
-            $('.material_list').hide();
+            // $('.material_list').hide();
+
+            $.ajax({
+                async: false,
+                url: "{{ url('getClickDockData') }}",
+                type: "POST",
+                global: false,
+                data: {delivery_ticket_id:$(this).find("tr:nth-child(1) > td:nth-child(2)").first().text()},
+                success: function (data) {
+                  console.log(JSON.parse(data))
+                  var data = JSON.parse(data)
+                  $('.view_delivery_id').html(data.id)  
+                  $('.view_slotting_time').html(data.slotting_time)  
+                  $('.view_supplier_name').html(data.supplier_name) 
+                  $('.view_truck').html(data.truck) 
+                  $('.view_container_no').html(data.container_number)
+                  $('.view_material_list').html(data.material_list)
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });   
 
             $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
             $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
@@ -598,8 +681,11 @@
 
             $(".btn-dock-out").show();
             $(".btn-dock-in").hide();
-            $("#btn-overtime").show();
-
+            $(".btn-change-dock").hide();
+            $(".btn-overtime").show();
+            if($(".btn-close").hasClass('offset-8')){
+              $(".btn-close").removeClass('offset-8')
+            }
             $('#ajaxModelView').modal({
                 backdrop:'static',
                 keyboard: false
@@ -670,11 +756,11 @@
             global: false,
             data: {delivery_ticket_id:$(".view_delivery_id").html(),status:8,process_status:'incoming',process_name:'dock-in'},
             success: function (data) {
-              console.log(data) 
-              if(data.success){
+              console.log(JSON.parse(data)) 
+              if(JSON.parse(data).success){
                   $("#ajaxModelView").modal('hide');
                   $(".response").show();
-                  $(".response").html(data.success)
+                  $(".response").html("<div class='alert alert-success'>" + JSON.parse(data).success + "</div>")
                   setTimeout(function(){
                     $('.response').fadeOut(1000);
                   },2000)
@@ -696,10 +782,10 @@
             global: false,
             data: {delivery_ticket_id:$(".view_delivery_id").html(),status:9,process_status:'incoming',process_name:'dock-out'},
             success: function (data) {
-              if(data.success){
+              if(JSON.parse(data).success){
                   $("#ajaxModelView").modal('hide');
                   $(".response").show();
-                  $(".response").html(data.success)
+                  $(".response").html(JSON.parse(data).success)
                   setTimeout(function(){
                     $('.response').fadeOut(1000);
                   },2000)
