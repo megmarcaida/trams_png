@@ -43,6 +43,7 @@ class CreateSchedulesTable extends Migration
             $table->integer('truck_turnaround_timestamp')->nullable();
             $table->string('recurrent_id')->nullable();
             $table->string('conflict_id')->nullable();
+            $table->string('isDockChange')->nullable();
             $table->timestamps();
         });
     }

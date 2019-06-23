@@ -82,7 +82,10 @@ class DashboardController extends Controller
 
             $date = Carbon::now();
             $datenow = $date->format("M d, Y"); 
-            return view('dashboard/dock')->with(['datenow'=>$datenow, 'docks'=>$docks, 'role_account'=>$role_account_desc]);
+            $dockData['data'] = Dock::whereIn('dock_name',$submodules)->where("status",1)->get();
+
+
+            return view('dashboard/dock')->with(['datenow'=>$datenow, 'docks'=>$docks, 'role_account'=>$role_account_desc,'dockData'=>$dockData]);
         }else if($role_id == "3"){
             $date = Carbon::now();
             $datenow = $date->format("M d, Y");
@@ -173,7 +176,7 @@ class DashboardController extends Controller
                     $end = substr($slotting_, -5);
 
                 $dateofdeparture = $Schedule->date_of_delivery . " " . $end;
-                if(time()-strtotime($dateofdeparture) > 86400){
+                if(time()-strtotime($dateofdeparture) > 86400 || strtotime($dateofdeparture)-time() < 0){
                     continue;
                 }
 
@@ -219,7 +222,12 @@ class DashboardController extends Controller
                         if(time() - strtotime($dateofentry) > 0){
                             $nestedData['status'] = "Delayed";
                         }elseif(time() - strtotime($dateofentry) < 0){
-                            $nestedData['status'] = "For-Entry";
+                            if($Schedule->isDockChange == "1"){
+                                $nestedData['status'] = "Dock Changed - Proceed to " . $Schedule->dock_name;
+                            }else{
+                                $nestedData['status'] = "For-Entry";    
+                            }
+                            
                         }
                         break;
                     case 11:
@@ -233,7 +241,11 @@ class DashboardController extends Controller
                         break;   
                         
                     default:
-                        $nestedData['status'] = "";
+                        if($Schedule->isDockChange == "1"){
+                            $nestedData['status'] = "Dock Changed - Proceed to " . $Schedule->dock_name;
+                        }else{
+                            $nestedData['status'] = "";
+                        }
                         break;
                 }
                 $data[] = $nestedData;
@@ -268,21 +280,15 @@ class DashboardController extends Controller
         $role_id = Auth::user()->role_id;
         $roles = Role::where('id',$role_id)->first();
         $docks = array();
-        switch ($roles['description']) {
-                case 'North':
-                        $docks = array(1,2);
-                    break;
-                case 'South':
-                        $docks = array(3,4,5);
-                    break;
-                
-                default:
-                    
-                    break;
-            }
+        $submodules = array();
+        $submodules = explode("|",$roles['submodules']);
 
 
-        $dock = Dock::where('status', 1)->get();
+        $dock = Dock::whereIn('dock_name',$submodules)->where('status', 1)->get();
+        foreach($dock as $d){
+            array_push($docks, $d->id);
+        }
+
         $dock_id_ = 0;
         $totalData = Schedule::whereIn("dock_id",$docks)->where("process_status",$request->process_status)->count();
             
@@ -419,20 +425,14 @@ class DashboardController extends Controller
         $role_id = Auth::user()->role_id;
         $roles = Role::where('id',$role_id)->first();
         $docks = array();
-        switch ($roles['description']) {
-                case 'North':
-                        $docks = array(1,2);
-                    break;
-                case 'South':
-                        $docks = array(3,4,5);
-                    break;
-                
-                default:
-                    
-                    break;
-            }
+        $submodules = array();
+        $submodules = explode("|",$roles['submodules']);
 
-        $dock = Dock::where('status', 1)->get();
+
+        $dock = Dock::whereIn('dock_name',$submodules)->where('status', 1)->get();
+        foreach($dock as $d){
+            array_push($docks, $d->id);
+        }
         $dock_id_ = 0;
         $count = Schedule::where("date_of_delivery", $datenow)->whereIn("dock_id",$docks)->where("process_status",$request->process_status)->count();
         echo json_encode($count); 
@@ -445,19 +445,6 @@ class DashboardController extends Controller
         $role_id = Auth::user()->role_id;
         $roles = Role::where('id',$role_id)->first();
         $dock_name = $request->module_name;
-
-        // switch ($roles['description']) {
-        //     case 'North':
-        //             $docks = array(1,2);
-        //         break;
-        //     case 'South':
-        //             $docks = array(3,4,5);
-        //         break;
-            
-        //     default:
-                
-        //         break;
-        // }
 
 
         $dock = Dock::where('status', 1)->where("dock_name",$dock_name)->first();
@@ -858,13 +845,13 @@ class DashboardController extends Controller
                         $dock_id_ = $d->id;
                     }
                 }  
-                $Schedules = Schedule::where("date_of_delivery", $datenow)->where("dock_id",$dock_id_)
+                $Schedules = Schedule::where("date_of_delivery", $datenow)->where("dock_id",$dock_id_)->where('status','<>',7)
                          ->offset($start)
                          ->limit($limit)
                          ->orderBy($order,$dir)
                          ->get();
             }else{
-                $Schedules = Schedule::where("date_of_delivery", $datenow)
+                $Schedules = Schedule::where("date_of_delivery", $datenow)->where('status','<>',7)
                          ->offset($start)
                          ->limit($limit)
                          ->orderBy($order,$dir)
@@ -875,7 +862,7 @@ class DashboardController extends Controller
         else {
             $search = $request->input('search.value'); 
             
-            $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->OrWhere("date_of_delivery", $datenow)->offset($start)
+            $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->OrWhere("date_of_delivery", $datenow)->where('status','<>',7)->offset($start)
                  ->limit($limit)
                  ->orderBy($order,$dir)
                  ->get();
@@ -1105,7 +1092,7 @@ class DashboardController extends Controller
         return view('qrcode/reader')->with('datenow',$datenow);
     }
 
-    public function setOvertime(Request $request){
+    public function changeDock(Request $request){
 
         $id=0;
         if(strlen($request->delivery_ticket_id) >= 8 ){
@@ -1116,64 +1103,12 @@ class DashboardController extends Controller
 
         $sched = Schedule::find($id);
         if(!empty($sched)){
-            if($sched->status == 10 && $sched->process_status == "incoming"){
-                $sched->update(['process_status'=>"incoming","status"=> 8,"gate_in_timestamp"=>Carbon::now()]);
-                if($sched){
-                    $ret = "Success";
-                }else{
-                    $ret = "Failed";
-                }
-
-                return json_encode(["message"=>$ret]);
-            }
-
-            if($sched->status == 8 && $sched->process_status == "incoming"){
-                $gate_in_datetime = $sched->gate_in_timestamp;
-                $parking_time = time() - strtotime($gate_in_datetime);
-                $sched->update(['process_status'=>"incoming","status"=> 9,"dock_in_timestamp"=>Carbon::now(),"parking_timestamp"=>$parking_time]);
-                if($sched){
-                    $ret = "Success";
-                }else{
-                    $ret = "Failed";
-                }
-
-                return json_encode(["message"=>$ret]);
-            }
-
-            if($sched->status == 9 && $sched->process_status == "incoming"){
-                $dock_in_datetime = $sched->dock_in_timestamp;
-                $unloading_time = time() - strtotime($dock_in_datetime);
-                $sched->update(['process_status'=>"outgoing","status"=> 11,"dock_out_timestamp"=>Carbon::now(),"unloading_timestamp"=>$unloading_time]);
-                if($sched){
-                    $ret = "Success";
-                }else{
-                    $ret = "Failed";
-                }
-
-                return json_encode(["message"=>$ret]);
-            }
-
-            if($sched->status == 11 && $sched->process_status == "outgoing"){
-                $dock_out_datetime = $sched->dock_out_timestamp;
-                $egress_time = time() - strtotime($dock_out_datetime);
-
-                $gate_in_datetime = $sched->gate_in_timestamp;
-                $truck_turnaround_timestamp = time() - strtotime($gate_in_datetime);
-                
-                $sched->update(['process_status'=>"completed","status"=> 7,"gate_out_timestamp"=>Carbon::now(),"egress_timestamp"=>$egress_time,'truck_turnaround_timestamp' => $truck_turnaround_timestamp]);
-                if($sched){
-                    $ret = "Success";
-                }else{
-                    $ret = "Failed";
-                }
-
-                return json_encode(["message"=>$ret]);
-            }
+            $sched->update(['dock_id'=>$request->dock_id,'dock_name'=>$request->dock_name,'isDockChange'=>'1']);
 
         }
 
         if($sched){
-            $ret = "Success";
+            $ret = "Dock successfully changed.";
         }else{
             $ret = "Failed";
         }

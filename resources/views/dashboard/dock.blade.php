@@ -267,7 +267,7 @@
                         // //if(new_first_dock_data != first_data){
                         //   first_data = new_first_dock_data
                         // //}
-                      },30000)
+                      },5000)
                         </script>
                     @endforeach
                     </div>
@@ -342,6 +342,20 @@
                   
                 </div>
                 <br>
+                <div class="form-group">
+                  <div class="row">
+                     <label for="name" class="col-xl-4 col-sm-12 control-label"><h5>Change Dock:</h5> </label>
+
+                     <div class="col-xl-8 col-sm-12">
+                        <select class="form-control btn-modules-dropdown" id="dropdown-dock">
+                             <option value="">Please select Dock</option>
+                             @foreach($dockData['data'] as $dock)
+                               <option value='{{ $dock->id }}'>{{ $dock->dock_name }}</option>
+                             @endforeach
+                        </select>
+                      </div>
+                    </div>
+                </div>
                 <div class="row">
                   <div class="col-xl-4 col-sm-12 btn-dock-in">
                     <button id="btn-dock-in" class="btn btn-secondary btn-xs btn-block" type="button">Dock-In</button>
@@ -352,9 +366,9 @@
                   <div class="col-xl-4 col-sm-12 btn-change-dock">
                     <button id="btn-change-dock" class="btn btn-secondary btn-xs btn-block" type="button">Change Dock</button>
                   </div>
-                  <div class="col-xl-4 col-sm-12 btn-overtime">
+                  <!-- <div class="col-xl-4 col-sm-12 btn-overtime">
                     <button id="btn-overtime" class="btn btn-secondary btn-xs btn-block" type="button">Overtime</button>
-                  </div>
+                  </div> -->
                   <div class="col-xl-4 col-sm-12 btn-close">  
                     <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
                   </div> 
@@ -426,7 +440,7 @@
     setInterval(function(){
         table_incoming.draw()
         table_outgoing.draw()
-    },10000)
+    },5000)
 
 
 
@@ -527,7 +541,7 @@
       }
 
 
-    },30000)
+    },5000)
     //socket
 
      $('.data-table-incoming tbody').on( 'click', 'tr', function () {
@@ -572,7 +586,7 @@
 
 
             $(".btn-dock-in").show();
-            $(".btn-overtime").hide();
+            //$(".btn-overtime").hide();
             $(".btn-change-dock").show();
             $(".btn-dock-out").hide();
             if($(".btn-close").hasClass('offset-8')){
@@ -629,7 +643,7 @@
             $(".btn-dock-in").hide();
             $(".btn-dock-out").hide();
             $(".btn-change-dock").hide();
-            $(".btn-overtime").hide();
+            //$(".btn-overtime").hide();
             $(".btn-close").addClass('offset-8')
             $('#ajaxModelView').modal({
                 backdrop:'static',
@@ -682,7 +696,7 @@
             $(".btn-dock-out").show();
             $(".btn-dock-in").hide();
             $(".btn-change-dock").hide();
-            $(".btn-overtime").show();
+            //$(".btn-overtime").show();
             if($(".btn-close").hasClass('offset-8')){
               $(".btn-close").removeClass('offset-8')
             }
@@ -729,16 +743,22 @@
         });
     });
 
-  $('body').on( 'click', '#btn-overtime', function () {
-            
+  $('body').on( 'click', '#btn-change-dock', function () {
+        var dock_id = $("#dropdown-dock option:selected").val();
+        var dock_name = $("#dropdown-dock option:selected").text();
         $.ajax({
             async: false,
-            url: "{{ url('setOvertime') }}",
+            url: "{{ url('changeDock') }}",
             type: "POST",
             global: false,
-            data: {delivery_id:$(".view_delivery_id").html()},
+            data: {delivery_ticket_id:$(".view_delivery_id").html(),dock_id:dock_id,dock_name:dock_name},
             success: function (data) {
-              tmp_incoming = data; 
+              $("#ajaxModelView").modal('hide');
+              $(".response").show();
+              $(".response").html("<div class='alert alert-success'>" + JSON.parse(data).message + "</div>")
+              setTimeout(function(){
+                $('.response').fadeOut(1000);
+              },2000)
             },
             error: function (data) {
                 console.log('Error:', data);

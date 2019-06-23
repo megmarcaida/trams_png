@@ -1,7 +1,8 @@
 @extends('layouts.datatableapp')
 
 @section('content')
-
+<link rel="stylesheet" href="{{ asset('css/jquery.dropdown.css') }}">
+<script src="{{ asset('js/jquery.dropdown.js') }}"></script>
 <div class="container-fluid">
 
   <!-- Breadcrumbs-->
@@ -173,8 +174,8 @@
                           <!-- ordering days -->
                           <div class="form-group">
                              <label for="name" class="col-sm-12 control-label">*Ordering Days</label>
-                             <div class="col-sm-12">
-                                <select multiple="true" class="form-control ordering_days" id="ordering_days" name="ordering_days[]">
+                             <div class="col-sm-12 ordering_days_dd">
+                                <select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]">
                                      <option value="Mon">Mon</option>
                                      <option value="Tue">Tue</option>
                                      <option value="Wed">Wed</option>
@@ -189,8 +190,8 @@
                           <!-- module -->
                           <div class="form-group">
                              <label for="name" class="col-sm-12 control-label">*Module</label>
-                             <div class="col-sm-12">
-                                <select multiple="true" class="form-control module" id="modules" name="module[]">
+                             <div class="col-sm-12 modules_dd">
+                                <select multiple="true" class="form-control module" id="modules" style="display: none;" name="module[]">
                                      <option value="PCC">PCC</option>
                                      <option value="Baby Care">Baby Care</option>
                                      <option value="Laundry">Laundry</option>
@@ -482,6 +483,54 @@
           backdrop:'static',
           keyboard: false
         })
+        $('.ordering_days_dd').empty()
+        $('.ordering_days_dd').append('<select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select>')
+        $('.modules_dd').empty()
+        $('.modules_dd').append('<select multiple="true" class="form-control module" id="modules" style="display: none;" name="module[]"><option value="PCC">PCC</option><option value="Baby Care">Baby Care</option><option value="Laundry">Laundry</option><option value="Liquids">Liquids</option><option value="Fem Care">Fem Care</option></select>')
+        $('.ordering_days_dd').dropdown({
+          // read only
+          readOnly: false,
+          // min count
+          minCount: 0,
+          // error message
+          minCountErrorMessage: '',
+          // the maximum number of options allowed to be selected
+          limitCount: Infinity,
+          // error message
+          limitCountErrorMessage: '',
+          // search field
+          input: '<input type="text" maxLength="20" placeholder="Search">',
+          // is search able?
+          searchable: true,
+          // when there's no result
+          searchNoData: '<li style="color:#ddd">No Results</li>',
+          // callback
+          choice: function (event, selectedProp,x) {
+            
+          },
+        });
+        $('.modules_dd').dropdown({
+          // read only
+          readOnly: false,
+          // min count
+          minCount: 0,
+          // error message
+          minCountErrorMessage: '',
+          // the maximum number of options allowed to be selected
+          limitCount: Infinity,
+          // error message
+          limitCountErrorMessage: '',
+          // search field
+          input: '<input type="text" maxLength="20" placeholder="Search">',
+          // is search able?
+          searchable: true,
+          // when there's no result
+          searchNoData: '<li style="color:#ddd">No Results</li>',
+          // callback
+          choice: function (event, selectedProp,x) {
+            
+          },
+        });
     });
     
     $('body').on('click', '.editProduct', function () {
@@ -508,6 +557,11 @@
           var spoc_contact_number_arr = data.spoc_contact_number.split("<br>")
           var spoc_email_address_arr = data.spoc_email_address.split("<br>")
           var spoc_length = spoc_first_name_arr.length - 1;
+
+          $('.ordering_days_dd').empty()
+          $('.ordering_days_dd').append('<select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select>')
+          $('.modules_dd').empty()
+          $('.modules_dd').append('<select multiple="true" class="form-control module" id="modules" style="display: none;" name="module[]"><option value="PCC">PCC</option><option value="Baby Care">Baby Care</option><option value="Laundry">Laundry</option><option value="Liquids">Liquids</option><option value="Fem Care">Fem Care</option></select>')
 
           console.log(spoc_length)
           console.log(ordering_days_arr)
@@ -547,6 +601,51 @@
 
           // $("input[name=delivery_types][value=" + data.delivery_type + "]").prop('checked', 'checked');
           $('#delivery_types').val(data.delivery_type)
+
+          $('.ordering_days_dd').dropdown({
+            // read only
+            readOnly: false,
+            // min count
+            minCount: 0,
+            // error message
+            minCountErrorMessage: '',
+            // the maximum number of options allowed to be selected
+            limitCount: Infinity,
+            // error message
+            limitCountErrorMessage: '',
+            // search field
+            input: '<input type="text" maxLength="20" placeholder="Search">',
+            // is search able?
+            searchable: true,
+            // when there's no result
+            searchNoData: '<li style="color:#ddd">No Results</li>',
+            // callback
+            choice: function (event, selectedProp,x) {
+              
+            },
+          });
+          $('.modules_dd').dropdown({
+            // read only
+            readOnly: false,
+            // min count
+            minCount: 0,
+            // error message
+            minCountErrorMessage: '',
+            // the maximum number of options allowed to be selected
+            limitCount: Infinity,
+            // error message
+            limitCountErrorMessage: '',
+            // search field
+            input: '<input type="text" maxLength="20" placeholder="Search">',
+            // is search able?
+            searchable: true,
+            // when there's no result
+            searchNoData: '<li style="color:#ddd">No Results</li>',
+            // callback
+            choice: function (event, selectedProp,x) {
+              
+            },
+          });
       })
    });
     
@@ -751,5 +850,8 @@
     
      
   });
+
+
+
 </script>
 @endsection

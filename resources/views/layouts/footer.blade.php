@@ -62,7 +62,7 @@
             global: false,
             data: {process_status:"incoming"},
             success: function (data) {
-              console.log(data)
+              //console.log(data)
               
             },
             error: function (data) {
@@ -79,7 +79,7 @@
             global: false,
             data: {process_status:"incoming"},
             success: function (data) {
-              console.log(data.length)
+              //console.log(data.length)
              
             },
             error: function (data) {

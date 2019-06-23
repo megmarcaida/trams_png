@@ -312,9 +312,7 @@ class DriverController extends Controller
         $id = $request->id;
         $date = $request->dateOfSafetyOrientation;
         $date = strtotime($date);
-        $expirationDate = strtotime("+7 day", $date);
-        $expirationDate = date("Y-m-d H:i:s",$expirationDate);
-        Driver::find($id)->update(['dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => 1,"expirationDate"=> $expirationDate]);        
+        Driver::find($id)->update(['dateOfSafetyOrientation' => $request->dateOfSafetyOrientation, 'isApproved' => 1]);        
    
         return response()->json(['success'=>$request->dateOfSafetyOrientation . ' Driver saved successfully.']);
     }
