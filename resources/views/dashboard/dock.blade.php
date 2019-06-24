@@ -163,7 +163,7 @@
     </center>
 
     <div class="row">
-        <div class="col-xl-8 col-sm-4 mb-3">
+        <div class="col-xl-9 col-sm-4 mb-3">
           <div class="response"></div>
           <h3>Incoming</h3>
           <hr>
@@ -209,7 +209,7 @@
               </table>
             </div>
         </div>
-        <div class="col-xl-4 col-sm-2 mb-3">
+        <div class="col-xl-3 col-sm-2 mb-3">
                     
             <h3>Dock</h3>
             <hr>
@@ -226,27 +226,27 @@
                             <table id="{{ str_replace(' ','',$d) }}" class="table table-bordered  {{ str_replace(' ','',$d) }}">
                                 <tbody>
                                     <tr>
-                                      <td>Delivery ID:</td>
+                                      <td style="width: 160px;">Delivery ID:</td>
                                       <td><div class="delivery_id"></div></td>
                                     </tr>
                                     <tr>
-                                      <td>Slotting Time:</td>
+                                      <td style="width: 160px;">Slotting Time:</td>
                                       <td><div class="slotting"></div></td>
                                     </tr>
                                     <tr>
-                                      <td>Supplier:</td>
+                                      <td style="width: 160px;">Supplier:</td>
                                       <td><div class="supplier"></div></td>
                                     </tr>
                                     <tr>
-                                      <td>Truck:</td>
+                                      <td style="width: 160px;">Truck:</td>
                                       <td><div class="truck"></div></td>
                                     </tr>
                                     <tr>
-                                      <td>Plate Number:</td>
+                                      <td style="width: 160px;">Plate Number:</td>
                                       <td><div class="plate_number"></div></td>
                                     </tr>
                                     <tr>
-                                      <td>Container Number:</td>
+                                      <td style="width: 160px;">Container Number:</td>
                                       <td><div class="container_number"></div></td>
                                     </tr>
                                 </tbody>
