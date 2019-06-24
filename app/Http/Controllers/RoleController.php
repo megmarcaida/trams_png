@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Role;
+use App\Dock;
 use Illuminate\Http\Request;
 use Datatables;
 
@@ -31,7 +32,9 @@ class RoleController extends Controller
             return view('masterfile/role');
         }
 
-        return view('masterfile/role');
+        $dockData['data'] = Dock::where("status",1)->get();
+
+        return view('masterfile/role')->with(['dockData'=>$dockData]);
        
     }
 

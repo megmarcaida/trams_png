@@ -68,21 +68,12 @@
                     </div>
 
                      <div class="form-group">
-                       <label for="name" class="col-sm-12 control-label">*Modules</label>
+                       <label for="name" class="col-sm-12 control-label">*Docks</label>
                        <div class="col-sm-12">
                           <select multiple="true" class="form-control" id="submodules" name="submodules[]">
-                               <option value="PCC 1">PCC 1</option>
-                               <option value="PCC 2">PCC 2</option>
-                               <option value="Baby Care 1">Baby Care 1</option>
-                               <option value="Baby Care 2">Baby Care 2</option>
-                               <option value="Baby Care 3">Baby Care 3</option>
-                               <option value="Baby Care Scrap">Baby Care Scrap</option>
-                               <option value="Laundry">Laundry</option>
-                               <option value="Laundry SB">Laundry SB</option>
-                               <option value="Laundry Scrap">Laundry Scrap</option>
-                               <option value="Liquids">Liquids</option>
-                               <option value="Liquids Out Canopy">Liquids Out Canopy</option>
-                               <option value="Fem Care">Fem Care</option>
+                               @foreach($dockData['data'] as $dock)
+                                 <option value='{{ $dock->dock_name }}'>{{ $dock->dock_name }}</option>
+                               @endforeach
                           </select>
                         </div>
                     </div>
