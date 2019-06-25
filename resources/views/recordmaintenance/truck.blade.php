@@ -1,7 +1,8 @@
 @extends('layouts.datatableapp')
 
 @section('content')
-
+<link rel="stylesheet" href="{{ asset('css/jquery.dropdown.css') }}">
+<script src="{{ asset('js/jquery.dropdown.js') }}"></script>
 <div class="container-fluid">
 
   <!-- Breadcrumbs-->
@@ -121,27 +122,29 @@
                     <div class="form-group">
                        <label for="name" class="col-sm-12 control-label">*Supplier</label>
                        <div class="col-sm-12">
-                          <select  class="form-control" id="supplier_id" name="supplier_id">
-                             @foreach($supplierData['data'] as $supplier)
-                               <option value='{{ $supplier->id }}'>{{ $supplier->supplier_name }}</option>
-                             @endforeach
-                          </select>
+                          <div id="truck_supplier_add"></div>
+                          <div class="truck_supplier">
+                            <select  class="form-control" id="supplier_id" name="truck_suppliers[]" multiple>
+                               @foreach($supplierData['data'] as $supplier)
+                                 <option value='{{ $supplier->id }}'>{{ $supplier->supplier_name }}</option>
+                               @endforeach
+                            </select>
+                          </div>
                         </div>
                         <br>
-                        <div class="col-sm-12">
+                        <!-- <div class="col-sm-12">
                           <a href="#" class="btn btn-primary add_supplier">Add Supplier</a>
                           <a href="#" class="btn btn-danger clear_supplier">Clear Supplier</a>
-                        </div>
+                        </div> -->
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*Truck Suppliers</label>
                         <div class="col-sm-12">
                             <textarea class="form-control" name="supplier_names" id="truck_suppliers" readonly="" required=""></textarea>
-                            <!-- <input type="text" class="form-control" id="truck_suppliers" disabled="" required=""> -->
                             <input type="hidden" id="supplier_ids" name="supplier_ids">
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*Trucking Company</label>
@@ -255,7 +258,7 @@
                },
         "columns": [
             { "data": "id" },
-            {"data": 'supplier_ids'},
+            {"data": 'supplier_names'},
             {"data": 'trucking_company'},
             {"data": 'plate_number'},
             {"data": 'brand'},
@@ -297,15 +300,42 @@
     $('#createNewProduct').click(function () {
         $(".truck_id").hide();
         $('#saveBtn').val("create-product");
-        $('#id').val('');
+        $('#id').val("");
+        $("#truck_id").val("")
         $("#truck_suppliers").val("");
         $("#supplier_ids").val("");
 
         $("#types").css('outline','1px solid transparent')   
         $("#modalresponse").hide() 
         //console.log($("#supplier_ids").val());
+
         $('#truckForm').trigger("reset");
         $('#modelHeading').html("Register Truck");
+
+        $('.truck_supplier').remove()
+        $.ajax({
+          type: 'POST', 
+          url: "{{ url('getAllSupplier') }}",
+          dataType: 'json',
+          data:{ _token: "{{csrf_token()}}"},
+          success: function (data) {
+              console.log(data);
+              $('#truck_supplier_add').append('<div class="truck_supplier"><select class="form-control" id="truck_suppliers" style="display:none"  name="truck_suppliers[]" multiple></select></div>')
+              $.each(data, function(index, item) {
+                  $('#truck_suppliers').append('<option value="'+item.id+'">'+item.supplier_name+'</option>')
+              });
+              $('.truck_supplier').dropdown({
+                limitCount: 40,
+                multipleMode: 'label',
+                // callback
+                choice: function (event, selectedProp,x) {
+                  
+                },
+              });
+          },error:function(){ 
+               console.log(data);
+          }
+        });
         $('#ajaxModel').modal({
           backdrop:'static',
           keyboard: false
@@ -338,19 +368,25 @@
           $('#type').val(data[0].type);
 
           var x = data[0].supplier_ids.split("|")
-          
-          x.splice(-1,1)
-          
-          var supplier_trucks = "";
-          $.each( x, function( key, value ) {
-          
-            // var _supplier_name = $("#supplier_id option[value='"+value.trim()+"']").text()
-            supplier_trucks += value + " | ";
-            console.log(value)
+          console.log(data[0].supplier_ids)
+          $.each( x, function( key, e ) {
+            e = e.trim()
+            if(e != ""){
+              console.log(e)
+              $('#truck_suppliers option[value="' + e + '"]').prop('selected', true);
+            }
+            
           });
-
-          $('#truck_suppliers').val(supplier_trucks);
-          $('#supplier_ids').val(data[0].supplier_trucks_ids);
+          $('.truck_supplier').dropdown({
+            limitCount: 40,
+            multipleMode: 'label',
+            // callback
+            choice: function (event, selectedProp,x) {
+              
+            },
+          });
+          //$('#truck_suppliers').val(supplier_trucks);
+          //$('#supplier_ids').val(data[0].supplier_trucks_ids);
           // $("input[name=types][value=" + data[0].type + "]").prop('checked', 'checked');
           // $('#delivery_type').val(data.delivery_type);
           $('#types').val(data[0].type)
@@ -363,7 +399,9 @@
         //var types = $(':radio[name^=types]:checked').length;
          var types = $('#types').children("option:selected").val();
 
-        if($("#trucking_company").val() == "" || $("#plate_number").val() == "" || $("#model").val() == "" || $("#brand").val() == "" || types== "" || $("#truck_suppliers").val() == ""){
+         var suppliers_ = $('#truck_suppliers').children("option:selected").val();
+         console.log(suppliers_)
+        if($("#trucking_company").val() == "" || $("#plate_number").val() == "" || $("#model").val() == "" || $("#brand").val() == "" || types== "" || suppliers_ == undefined){
           $("#modalresponse").show();
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
           $('#modalresponse').fadeIn(1000);
@@ -400,6 +438,11 @@
              $("#types").css('outline','1px solid red')
             else
              $("#types").css('outline','1px solid transparent')
+
+           if(suppliers_ == undefined)
+             $(".truck_supplier").css('outline','1px solid red')
+            else
+             $(".truck_supplier").css('outline','1px solid transparent')
 
            return false;
 
@@ -507,6 +550,7 @@
 
     
      $('.data-table tbody').on( 'click', 'tr', function () {
+            $('.truck_supplier').remove()
             var id = $(this).find("td:nth-child(1)").first().text().trim()
             $.ajax({
               data: {id:id},
@@ -542,6 +586,23 @@
                   console.log('Error:', data);
                   $('#saveBtn').html('Save Changes');
               }
+          });
+
+          $.ajax({
+            type: 'POST', 
+            url: "{{ url('getAllSupplier') }}",
+            dataType: 'json',
+            data:{ _token: "{{csrf_token()}}"},
+            success: function (data) {
+                console.log(data);
+                $('#truck_supplier_add').append('<div class="truck_supplier"><select class="form-control" id="truck_suppliers" style="display:none"  name="truck_suppliers[]" multiple></select></div>')
+                $.each(data, function(index, item) {
+                    $('#truck_suppliers').append('<option value="'+item.id+'">'+item.supplier_name+'</option>')
+                });
+                
+            },error:function(){ 
+                 console.log(data);
+            }
           });
     });
 

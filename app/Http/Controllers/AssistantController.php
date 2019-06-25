@@ -126,7 +126,7 @@ class AssistantController extends Controller
         {
             foreach ($assistants as $assistant)
             {
-                if(time() > strtotime($assistant->expirationDate)){
+                if(time() > strtotime($assistant->dateOfSafetyOrientation)){
                     Assistant::find($assistant->id)->update(["dateOfSafetyOrientation"=>null,"expirationDate"=>null,"isApproved"=>0]);
                 }
 
@@ -192,7 +192,8 @@ class AssistantController extends Controller
     public function store(Request $request)
     {
         $assistant = Assistant::find(ltrim($request->id,0));
-       
+        $supplier_ids='';
+        $supplier_names='';
         if($request->dateOfSafetyOrientation != null){
             
             $date = $request->dateOfSafetyOrientation;
@@ -213,8 +214,14 @@ class AssistantController extends Controller
             }
         }
 
+        foreach ($request->assistant_suppliers as $supplier){
+            $supplier_ids .=  $supplier.'|';
+            $supplier_name = Supplier::find($supplier);
+            $supplier_names .= $supplier_name['supplier_name'] . '|';
+        }
+
         Assistant::updateOrCreate(['id' => ltrim($request->id,0)],
-                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => "", 'valid_id_present' => "",'valid_id_number' => "", 'dateOfSafetyOrientation' => $dateOfSafetyOrientation, 'isApproved' => $isApproved,'expirationDate'=>$expirationDate]);        
+                ['supplier_ids' => $supplier_ids, 'supplier_names' => $supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => "", 'valid_id_present' => "",'valid_id_number' => "", 'dateOfSafetyOrientation' => $dateOfSafetyOrientation, 'isApproved' => $isApproved,'expirationDate'=>$expirationDate]);        
    
         return response()->json(['success'=>'Assistant saved successfully.']);
     }

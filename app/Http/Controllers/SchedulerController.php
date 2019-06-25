@@ -292,8 +292,8 @@ class SchedulerController extends Controller
         $trucks = Truck::where("status","1")->get();
         
 
-        $drivers = Driver::where("status","1")->where('isApproved','1')->get();
-        $assistants = Assistant::where("status","1")->where('isApproved','1')->get();
+        $drivers = Driver::where("status","1")->get();
+        $assistants = Assistant::where("status","1")->get();
         $docks = Dock::where("status","1")->get();
         
         $trucks_suppliers = '';
@@ -937,8 +937,10 @@ class SchedulerController extends Controller
         $nestedData['slotting_time'] = $schedule->slotting_time;
         $nestedData['container_no'] = $schedule->container_number;
         $nestedData['driver_name'] = $driver_name;
+        $nestedData['driver_safety_orientation'] = $driver->dateOfSafetyOrientation;
         $nestedData['truck_details'] =  $truck->brand . " " . $truck->model;
         $nestedData['assistant_name'] = $assistant_name;
+        $nestedData['assistant_safety_orientation'] = $assistant->dateOfSafetyOrientation;
         $nestedData['plate_number'] = $truck->plate_number;
         $num = $schedule->id;
         $number = str_pad($num, 8, "0", STR_PAD_LEFT);

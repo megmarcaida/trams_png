@@ -148,12 +148,24 @@
             <div class="col-md-6" style="line-height: 0px">
               <b><p id="view_driver_name">{{ $json_data['driver_name'] }}</p></b>
             </div>
-        
+            <div class="col-md-6" style="line-height: 0px">
+              Safety Orientation Valid Until:
+            </div>
+            <div class="col-md-6" style="line-height: 0px">
+              <b><p id="view_driver_name">{{ $json_data['driver_safety_orientation'] }}</p></b>
+            </div>
+          
             <div class="col-md-6" style="line-height: 0px">
               Assistant:
             </div>
             <div class="col-md-6" style="line-height: 0px">
               <b><p id="view_assistant">{{ $json_data['assistant_name'] }}</p></b>
+            </div>
+            <div class="col-md-6" style="line-height: 0px">
+              Safety Orientation Valid Until:
+            </div>
+            <div class="col-md-6" style="line-height: 0px">
+              <b><p id="view_driver_name">{{ $json_data['assistant_safety_orientation'] }}</p></b>
             </div>
           </div>
       </div>

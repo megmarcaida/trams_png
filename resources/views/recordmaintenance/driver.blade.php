@@ -119,7 +119,7 @@
             <div class="modal-body">
                 <form id="driverForm" name="driverForm" class="form-horizontal">
                     
-                    <input type="hidden" name="id" id="id">
+                   <!--  <input type="hidden" name="id" id="id"> -->
 
 
                     <div class="row">
@@ -139,9 +139,11 @@
                       <div class="form-group">
                          <label for="name" class="col-sm-12 control-label">*Supplier</label>
                          <div class="col-sm-12">
-                            <input type="text" id="driver_suppliers" name="supplier_names" readonly="" class="form-control supplier_id">
+                            <!-- <input type="text" id="driver_suppliers" name="supplier_names" readonly="" class="form-control supplier_id"> -->
+                            
+                            <div id="driver_supplier_add"></div>
                             <div class="driver_supplier">
-                              <select class="form-control" style="display:none"  name="" multiple>
+                              <select class="form-control" id="driver_suppliers" style="display:none"  name="driver_suppliers" multiple>
                                 @foreach($supplierData['data'] as $supplier)
                                  <option value='{{ $supplier->id }}'>{{ $supplier->supplier_name }}</option>
                                @endforeach
@@ -304,34 +306,38 @@
             <div class="modal-body">
                 
                 <div class="row">
-                        <div class="col-md-6" style="line-height: 0px">
+                        <div class="col-md-6 col-xs-6" style="line-height: 0px">
                           Supplier:
                         </div>
-                        <div class="col-md-6" style="line-height: 0px">
+                        <div class="col-md-6 col-xs-6" style="line-height: 0px">
                           <b><p id="view_supplier_name"></p></b>
                         </div>
+                </div>
+                <div class="row">
                      
-                        <div class="col-md-6" style="line-height: 0px">
+                        <div class="col-md-6 col-xs-6" style="line-height: 0px">
                           Logistic Company:
                         </div>
-                        <div class="col-md-6" style="line-height: 0px">
+                        <div class="col-md-6 col-xs-6" style="line-height: 0px">
                           <b><p id="view_logistics"></p></b>
                         </div>
-                   
-                        <div class="col-md-6" style="line-height: 0px">
+                </div>
+                <div class="row">
+                        <div class="col-md-6 col-xs-6" style="line-height: 0px">
                           Full Name:
                         </div>
-                        <div class="col-md-6" style="line-height: 0px">
+                        <div class="col-md-6 col-xs-6" style="line-height: 0px">
                           <b><p id="view_full_name"></p></b>
                         </div>
-                    
-                        <div class="col-md-6" style="line-height: 0px">
+                </div>
+                <div class="row">
+                        <div class="col-md-6 col-xs-6" style="line-height: 0px">
                           Mobile Number:
                         </div>
-                        <div class="col-md-6" style="line-height: 0px">
+                        <div class="col-md-6 col-xs-6" style="line-height: 0px">
                           <b><p id="view_mobile_no"></p></b>
                         </div>
-                     
+                </div>     
                        <!--  <div class="col-md-6" style="line-height: 0px">
                           Company ID Number:
                         </div>
@@ -345,13 +351,16 @@
                         <div class="col-md-6" style="line-height: 0px">
                           <b><p id="view_license_number"></p></b>
                         </div> -->
-                        <div class="col-md-6" style="line-height: 0px">
+                <div class="row">
+                        <div class="col-md-6 col-xs-6" style="line-height: 0px">
                           Date of Validity:
                         </div>
-                        <div class="col-md-6" style="line-height: 0px">
+                        <div class="col-md-6 col-xs-6" style="line-height: 0px">
                           <b><p id="view_validity_date"></p></b>
                         </div>
                         <br></br>
+                </div>
+                <div class="row">
                           <!-- Date of validity -->
                         @if(Auth::user()->role_id == 3)
                         <div class="col-xl-12 col-sm-12">
@@ -373,7 +382,8 @@
                           <br>
                         </div>
                         @endif
-
+                  </div>
+                  <div class="row">
                         <div class="col-xl-4 col-sm-12">
                           <button id="btn-edit" class="btn btn-primary btn-xs btn-block editProduct" type="button">Edit</button>
                         </div>
@@ -383,6 +393,7 @@
                         <div class="col-xl-4 col-sm-12">  
                           <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
                         </div> 
+                  </div>
                 </div>
             </div>
         </div>
@@ -449,6 +460,31 @@
         $('#license_number').attr('readonly',false);
         $('#logistics_company').attr('readonly',false);
        
+        $('.driver_supplier').remove()
+        $.ajax({
+          type: 'POST', 
+          url: "{{ url('getAllSupplier') }}",
+          dataType: 'json',
+          data:{ _token: "{{csrf_token()}}"},
+          success: function (data) {
+              console.log(data);
+              $('#driver_supplier_add').append('<div class="driver_supplier"><select class="form-control" id="driver_suppliers" style="display:none"  name="driver_suppliers[]" multiple></select></div>')
+              $.each(data, function(index, item) {
+                  $('#driver_suppliers').append('<option value="'+item.id+'">'+item.supplier_name+'</option>')
+              });
+              $('.driver_supplier').dropdown({
+                limitCount: 40,
+                multipleMode: 'label',
+                // callback
+                choice: function (event, selectedProp,x) {
+                  
+                },
+              });
+          },error:function(){ 
+               console.log(data);
+          }
+        });
+        
         $('#ajaxModel').modal({
           backdrop:'static',
           keyboard: false
@@ -569,6 +605,7 @@
       $(".driver_id").show();
       $('.modalresponse').empty();
       $('#driverForm').trigger("reset");
+      
       if(role_id != 3){
         $('#saveBtn').html('Save Changes')
       }else{
@@ -605,31 +642,40 @@
            $('#license_number').val(data.license_number);
 
           var x = data.supplier_ids.split("|")
-          
-          x.splice(-1,1)
-          
-          var supplier_drivers = "";
-          $.each( x, function( key, value ) {
-          
-            var _supplier_name = $("#supplier_id option[value='"+value+"']").text()
-            supplier_drivers += _supplier_name + " | ";
-            //console.log(_supplier_name)
+     
+          $.each( x, function( key, e ) {
+            e = e.trim()
+            if(e != ""){
+              $('#driver_suppliers option[value="' + e + '"]').prop('selected', true);
+            }
+            
           });
+         
 
-          $('#driver_suppliers').val(data.supplier_names);
-          $('#supplier_ids').val(data.supplier_ids);
 
-          console.log(data.dateOfSafetyOrientation)
-          if(data.dateOfSafetyOrientation != null || data.dateOfSafetyOrientation != undefined){
+          //$('#driver_suppliers').val(data.supplier_names);
+          //$('#supplier_ids').val(data.supplier_ids);
 
-            data.dateOfSafetyOrientation = data.dateOfSafetyOrientation.replace(" ","T")
-            document.getElementById("dateOfSafetyOrientation").value = data.dateOfSafetyOrientation;
-
-          }
+          
 
           //console.log(data.dateOfSafetyOrientation)
           
           // $('#delivery_type').val(data.delivery_type);
+          $('.driver_supplier').dropdown({
+            limitCount: 40,
+            multipleMode: 'label',
+            // callback
+            choice: function (event, selectedProp,x) {
+              
+            },
+          });
+
+          //console.log(data.dateOfSafetyOrientation)
+          if(data.dateOfSafetyOrientation != null || data.dateOfSafetyOrientation != undefined){
+
+            data.dateOfSafetyOrientation = data.dateOfSafetyOrientation.replace(" ","T")
+            document.getElementById("dateOfSafetyOrientation").value = data.dateOfSafetyOrientation;
+          }
       })
    });
     
@@ -786,6 +832,7 @@
     });
 
     $('.data-table tbody').on( 'click', 'tr', function () {
+            $('.driver_supplier').remove()
             var id = $(this).find("td:nth-child(1)").first().text().trim()
             $.ajax({
               data: {id:id},
@@ -836,63 +883,80 @@
                   $('#saveBtn').html('Save Changes');
               }
           });
+         
+            $.ajax({
+              type: 'POST', 
+              url: "{{ url('getAllSupplier') }}",
+              dataType: 'json',
+              data:{ _token: "{{csrf_token()}}"},
+              success: function (data) {
+                  console.log(data);
+                  $('#driver_supplier_add').append('<div class="driver_supplier"><select class="form-control" id="driver_suppliers" style="display:none"  name="driver_suppliers[]" multiple></select></div>')
+                  $.each(data, function(index, item) {
+                      $('#driver_suppliers').append('<option value="'+item.id+'">'+item.supplier_name+'</option>')
+                  });
+                  
+              },error:function(){ 
+                   console.log(data);
+              }
+            });
     });
   
   });
 
-var value = ""
-$('.driver_supplier').dropdown({
-  // read only
-  readOnly: false,
-  // min count
-  minCount: 0,
-  // error message
-  minCountErrorMessage: '',
-  // the maximum number of options allowed to be selected
-  limitCount: Infinity,
-  // error message
-  limitCountErrorMessage: '',
-  // search field
-  input: '<input type="text" maxLength="20" placeholder="Search">',
-  // is search able?
-  searchable: true,
-  // when there's no result
-  searchNoData: '<li style="color:#ddd">No Results</li>',
-  // callback
-  choice: function (event, selectedProp,x) {
-    var d_suppliers = $('#supplier_ids').val();
-    var d_driver_suppliers = $('#driver_suppliers').val();
-    if(selectedProp != undefined){
-      console.log(selectedProp)
-        if(selectedProp.selected == true){
-          var _supplier_id = selectedProp.id;
-          var _supplier_name = selectedProp.name;
-          if(!d_suppliers.includes(_supplier_id)){
-              d_suppliers += _supplier_id + '|';
-              d_driver_suppliers += _supplier_name + '|';
-              $('.modalresponse').empty();
-          }else{
-            $('.modalresponse').html("<div class='alert alert-danger'>Supplier already added.</div>")
-          }
-          $('#driver_suppliers').val(d_driver_suppliers);
-          $('#supplier_ids').val(d_suppliers); 
-        }
-        if(selectedProp.selected == false){
-          if(d_suppliers.includes(selectedProp.id+ '|')){
-              console.log(d_suppliers)
-              d_suppliers.replace(selectedProp.id + '|',"");
-              d_driver_suppliers.replace(selectedProp.name + '|',"");
-              $('#driver_suppliers').val(d_driver_suppliers.replace(selectedProp.name + '|',""));
-          $('#supplier_ids').val(d_suppliers.replace(selectedProp.id + '|',""));
-          }
-        }
-    }
-  },
-});
+//var value = ""
+// $('.driver_supplier').dropdown({
+//   // read only
+//   readOnly: false,
+//   // min count
+//   minCount: 0,
+//   // error message
+//   minCountErrorMessage: '',
+//   // the maximum number of options allowed to be selected
+//   limitCount: Infinity,
+//   // error message
+//   limitCountErrorMessage: '',
+//   // search field
+//   input: '<input type="text" maxLength="20" placeholder="Search">',
+//   // is search able?
+//   searchable: true,
+//   // when there's no result
+//   searchNoData: '<li style="color:#ddd">No Results</li>',
+//   // callback
+//   choice: function (event, selectedProp,x) {
+//     var d_suppliers = $('#supplier_ids').val();
+//     var d_driver_suppliers = $('#driver_suppliers').val();
+//     if(selectedProp != undefined){
+//       console.log(selectedProp)
+//         if(selectedProp.selected == true){
+//           var _supplier_id = selectedProp.id;
+//           var _supplier_name = selectedProp.name;
+//           if(!d_suppliers.includes(_supplier_id)){
+//               d_suppliers += _supplier_id + '|';
+//               d_driver_suppliers += _supplier_name + '|';
+//               $('.modalresponse').empty();
+//           }else{
+//             $('.modalresponse').html("<div class='alert alert-danger'>Supplier already added.</div>")
+//           }
+//           $('#driver_suppliers').val(d_driver_suppliers);
+//           $('#supplier_ids').val(d_suppliers); 
+//         }
+//         if(selectedProp.selected == false){
+//           if(d_suppliers.includes(selectedProp.id+ '|')){
+//               console.log(d_suppliers)
+//               d_suppliers.replace(selectedProp.id + '|',"");
+//               d_driver_suppliers.replace(selectedProp.name + '|',"");
+//               $('#driver_suppliers').val(d_driver_suppliers.replace(selectedProp.name + '|',""));
+//           $('#supplier_ids').val(d_suppliers.replace(selectedProp.id + '|',""));
+//           }
+//         }
+//     }
+//   },
+// });
 
-$('div.driver_supplier > a.dropdown-clear-all').on('click',function(){
-  $('#driver_suppliers').val('');
-          $('#supplier_ids').val('');
-});
+// $('div.driver_supplier > a.dropdown-clear-all').on('click',function(){
+//   $('#driver_suppliers').val('');
+//           $('#supplier_ids').val('');
+// });
 </script>
 @endsection

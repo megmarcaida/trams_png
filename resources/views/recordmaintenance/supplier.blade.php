@@ -174,6 +174,7 @@
                           <!-- ordering days -->
                           <div class="form-group">
                              <label for="name" class="col-sm-12 control-label">*Ordering Days</label>
+                             <div id="ordering_days_add"></div>
                              <div class="col-sm-12 ordering_days_dd">
                                 <select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]">
                                      <option value="Mon">Mon</option>
@@ -190,6 +191,7 @@
                           <!-- module -->
                           <div class="form-group">
                              <label for="name" class="col-sm-12 control-label">*Module</label>
+                             <div id="module_add"></div>
                              <div class="col-sm-12 modules_dd">
                                 <select multiple="true" class="form-control module" id="modules" style="display: none;" name="module[]">
                                      <option value="PCC">PCC</option>
@@ -483,49 +485,21 @@
           backdrop:'static',
           keyboard: false
         })
-        $('.ordering_days_dd').empty()
-        $('.ordering_days_dd').append('<select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select>')
-        $('.modules_dd').empty()
-        $('.modules_dd').append('<select multiple="true" class="form-control module" id="modules" style="display: none;" name="module[]"><option value="PCC">PCC</option><option value="Baby Care">Baby Care</option><option value="Laundry">Laundry</option><option value="Liquids">Liquids</option><option value="Fem Care">Fem Care</option></select>')
+        $('.ordering_days_dd').remove()
+        $('#ordering_days_add').append('<div class="col-sm-12 ordering_days_dd"><select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select></div>')
+        $('.modules_dd').remove()
+        $('#module_add').append('<div class="col-sm-12 modules_dd"><select multiple="true" class="form-control module" id="modules" style="display: none;" name="module[]"><option value="PCC">PCC</option><option value="Baby Care">Baby Care</option><option value="Laundry">Laundry</option><option value="Liquids">Liquids</option><option value="Fem Care">Fem Care</option></select></div>')
         $('.ordering_days_dd').dropdown({
-          // read only
-          readOnly: false,
-          // min count
-          minCount: 0,
-          // error message
-          minCountErrorMessage: '',
-          // the maximum number of options allowed to be selected
-          limitCount: Infinity,
-          // error message
-          limitCountErrorMessage: '',
-          // search field
-          input: '<input type="text" maxLength="20" placeholder="Search">',
-          // is search able?
-          searchable: true,
-          // when there's no result
-          searchNoData: '<li style="color:#ddd">No Results</li>',
+          limitCount: 40,
+          multipleMode: 'label',
           // callback
           choice: function (event, selectedProp,x) {
             
           },
         });
         $('.modules_dd').dropdown({
-          // read only
-          readOnly: false,
-          // min count
-          minCount: 0,
-          // error message
-          minCountErrorMessage: '',
-          // the maximum number of options allowed to be selected
-          limitCount: Infinity,
-          // error message
-          limitCountErrorMessage: '',
-          // search field
-          input: '<input type="text" maxLength="20" placeholder="Search">',
-          // is search able?
-          searchable: true,
-          // when there's no result
-          searchNoData: '<li style="color:#ddd">No Results</li>',
+          limitCount: 40,
+          multipleMode: 'label',
           // callback
           choice: function (event, selectedProp,x) {
             
@@ -558,10 +532,10 @@
           var spoc_email_address_arr = data.spoc_email_address.split("<br>")
           var spoc_length = spoc_first_name_arr.length - 1;
 
-          $('.ordering_days_dd').empty()
-          $('.ordering_days_dd').append('<select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select>')
-          $('.modules_dd').empty()
-          $('.modules_dd').append('<select multiple="true" class="form-control module" id="modules" style="display: none;" name="module[]"><option value="PCC">PCC</option><option value="Baby Care">Baby Care</option><option value="Laundry">Laundry</option><option value="Liquids">Liquids</option><option value="Fem Care">Fem Care</option></select>')
+          $('.ordering_days_dd').remove()
+          $('#ordering_days_add').append('<div class="col-sm-12 ordering_days_dd"><select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select></div>')
+          $('.modules_dd').remove()
+          $('#module_add').append('<div class="col-sm-12 modules_dd"><select multiple="true" class="form-control module" id="modules" style="display: none;" name="module[]"><option value="PCC">PCC</option><option value="Baby Care">Baby Care</option><option value="Laundry">Laundry</option><option value="Liquids">Liquids</option><option value="Fem Care">Fem Care</option></select></div>')
 
           console.log(spoc_length)
           console.log(ordering_days_arr)
@@ -603,49 +577,21 @@
           $('#delivery_types').val(data.delivery_type)
 
           $('.ordering_days_dd').dropdown({
-            // read only
-            readOnly: false,
-            // min count
-            minCount: 0,
-            // error message
-            minCountErrorMessage: '',
-            // the maximum number of options allowed to be selected
-            limitCount: Infinity,
-            // error message
-            limitCountErrorMessage: '',
-            // search field
-            input: '<input type="text" maxLength="20" placeholder="Search">',
-            // is search able?
-            searchable: true,
-            // when there's no result
-            searchNoData: '<li style="color:#ddd">No Results</li>',
-            // callback
-            choice: function (event, selectedProp,x) {
-              
-            },
-          });
-          $('.modules_dd').dropdown({
-            // read only
-            readOnly: false,
-            // min count
-            minCount: 0,
-            // error message
-            minCountErrorMessage: '',
-            // the maximum number of options allowed to be selected
-            limitCount: Infinity,
-            // error message
-            limitCountErrorMessage: '',
-            // search field
-            input: '<input type="text" maxLength="20" placeholder="Search">',
-            // is search able?
-            searchable: true,
-            // when there's no result
-            searchNoData: '<li style="color:#ddd">No Results</li>',
-            // callback
-            choice: function (event, selectedProp,x) {
-              
-            },
-          });
+          limitCount: 40,
+          multipleMode: 'label',
+          // callback
+          choice: function (event, selectedProp,x) {
+            
+          },
+        });
+        $('.modules_dd').dropdown({
+          limitCount: 40,
+          multipleMode: 'label',
+          // callback
+          choice: function (event, selectedProp,x) {
+            
+          },
+        });
       })
    });
     
@@ -673,6 +619,7 @@
             modules.push($(this).val());
         });
 
+        
 
         if($("#vendor_code").val() == "" || $("#supplier_name").val() == "" || delivery_types.length==0 || ordering_days.length == 0 || modules.length == 0){
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
@@ -695,20 +642,20 @@
             //   $(".delivery_type").css('color','black')
 
             
-            if(delivery_types == 0)
+            if(delivery_types.length == 0)
               $(".delivery_type").css('outline','1px red solid')
             else
               $(".delivery_type").css('outline','1px black solid')
 
-            if(ordering_days == 0)
-              $(".ordering_days").css('outline','1px red solid')
+            if(ordering_days.length == 0)
+              $("#ordering_days").css('outline','1px red solid')
             else
-              $(".ordering_days").css('outline','1px black solid')
-
-            if(modules == 0)
-              $(".module").css('outline','1px red solid')
+              $("#ordering_days").css('outline','1px black solid')
+            console.log(ordering_days.length)
+            if(modules.length == 0)
+              $("#modules").css('outline','1px red solid')
             else
-              $(".module").css('outline','1px black solid')
+              $("#modules").css('outline','1px black solid')
 
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){

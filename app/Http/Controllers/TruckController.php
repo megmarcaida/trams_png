@@ -44,7 +44,7 @@ class TruckController extends Controller
 
         $columns = array( 
                             0 =>'trucking_company', 
-                            1 => 'supplier_ids',
+                            1 => 'supplier_names',
                             2 =>'plate_number',
                             3 => 'brand',
                             4 => 'model',
@@ -170,8 +170,8 @@ class TruckController extends Controller
                 $num = $truck->id;
                 $number = str_pad($num, 8, "0", STR_PAD_LEFT);
                 $nestedData['id'] = $number;
-                $nestedData['supplier_ids'] =  $trucks_suppliers;
-                // $nestedData['supplier_name'] = substr(strip_tags($post->supplier_name),0,50)."...";
+                $nestedData['supplier_ids'] =  $truck->supplier_ids;
+                $nestedData['supplier_names'] = $trucks_suppliers;
                 $nestedData['trucking_company'] = $truck->trucking_company;
                 $nestedData['plate_number'] = $truck->plate_number;
                 $nestedData['brand'] = $truck->brand;
@@ -217,13 +217,19 @@ class TruckController extends Controller
         $isExistPlateNumber = Truck::where("plate_number",$request->plate_number)->first();
 
         $isExist = Truck::find($request->id);
-
+        $supplier_ids='';
+        $supplier_names='';
+        foreach ($request->truck_suppliers as $supplier){
+            $supplier_ids .=  $supplier.'|';
+            $supplier_name = Supplier::find($supplier);
+            $supplier_names .= $supplier_name['supplier_name'] . '|';
+        }
         if($isExistPlateNumber && !$isExist){
             $ret = ['error'=>'Plate Number already exists.'];
         }else{
             $ret = ['success'=>'Truck saved successfully.'];
             Truck::updateOrCreate(['id' => $request->id],
-                ['supplier_ids' => $request->supplier_ids,'supplier_names' => $request->supplier_names, 'trucking_company' => $request->trucking_company, 'plate_number' => $request->plate_number, 'brand' => $request->brand, 'model' => $request->model, 'type' => $request->types]);  
+                ['supplier_ids' => $supplier_ids,'supplier_names' => $supplier_names, 'trucking_company' => $request->trucking_company, 'plate_number' => $request->plate_number, 'brand' => $request->brand, 'model' => $request->model, 'type' => $request->types]);  
         }        
    
         return response()->json($ret);
@@ -261,9 +267,9 @@ class TruckController extends Controller
             $num = $truck['id'];
             $number = str_pad($num, 8, "0", STR_PAD_LEFT);
             $nestedData['id'] = $number;
-            $nestedData['supplier_ids'] =  $trucks_suppliers;
+            $nestedData['supplier_ids'] =  $truck['supplier_ids'];
             $nestedData['supplier_trucks_ids'] =  $trucks_id;
-            // $nestedData['supplier_name'] = substr(strip_tags($post->supplier_name),0,50)."...";
+            $nestedData['supplier_names'] = $trucks_suppliers;
             $nestedData['trucking_company'] = $truck['trucking_company'];
             $nestedData['plate_number'] = $truck['plate_number'];
             $nestedData['brand'] = $truck['brand'];

@@ -163,7 +163,7 @@
     </center>
 
     <div class="row">
-        <div class="col-xl-9 col-sm-4 mb-3">
+        <div class="col-xl-10 col-sm-4 mb-3">
           <div class="response"></div>
           <h3>Incoming</h3>
           <hr>
@@ -176,7 +176,6 @@
                           <th>Supplier</th>
                           <th>Truck</th>
                           <th>Plate Number</th>
-                          <th>Container Number</th>
                           <th>Dock</th>
                           <th>Status</th>
                       </tr>
@@ -199,7 +198,6 @@
                           <th>Supplier</th>
                           <th>Truck</th>
                           <th>Plate Number</th>
-                          <th>Container Number</th>
                           <th>Dock</th>
                           <th>Status</th>
                       </tr>
@@ -209,8 +207,7 @@
               </table>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-2 mb-3">
-                    
+        <div class="col-xl-2 col-sm-2 mb-3">
             <h3>Dock</h3>
             <hr>
             <input type="hidden" id="module_account" value="{{ $role_account }}">
@@ -222,8 +219,8 @@
                     </div>
                     @foreach($dock['details'] as $d)
                         
-                        <div class="card data">
-                            <table id="{{ str_replace(' ','',$d) }}" class="table table-bordered  {{ str_replace(' ','',$d) }}">
+                        <div class="card data" style="font-size: 16px;padding: 10px;">
+                            <table id="{{ str_replace(' ','',$d) }}" class="table-borderless {{ str_replace(' ','',$d) }}">
                                 <tbody>
                                     <tr>
                                       <td style="width: 160px;">Delivery ID:</td>
@@ -242,11 +239,11 @@
                                       <td><div class="truck"></div></td>
                                     </tr>
                                     <tr>
-                                      <td style="width: 160px;">Plate Number:</td>
+                                      <td style="width: 160px;">Plate No:</td>
                                       <td><div class="plate_number"></div></td>
                                     </tr>
                                     <tr>
-                                      <td style="width: 160px;">Container Number:</td>
+                                      <td style="width: 160px;">Container No:</td>
                                       <td><div class="container_number"></div></td>
                                     </tr>
                                 </tbody>
@@ -408,7 +405,6 @@
             {"data": 'supplier_name'},
             {"data": 'truck'},
             {"data": 'plate_number'},
-            {"data": 'container_number'},
             {"data": 'dock'},
             {"data": 'status'},
         ]  
@@ -430,7 +426,6 @@
             {"data": 'supplier_name'},
             {"data": 'truck'},
             {"data": 'plate_number'},
-            {"data": 'container_number'},
             {"data": 'dock'},
             {"data": 'status'},
         ]  

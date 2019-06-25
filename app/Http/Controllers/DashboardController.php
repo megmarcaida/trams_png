@@ -191,7 +191,7 @@ class DashboardController extends Controller
                 $nestedData['slotting_time'] = date('M d, Y', strtotime($Schedule->date_of_delivery)) . " " . $start . " - " . $end;
                 $nestedData['supplier_name'] = $suppliers['supplier_name'];
                 $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
-                $nestedData['plate_number'] = $truck['plate_number'];
+                $nestedData['plate_number'] = $truck['plate_number'] . " (" . $Schedule->container_number .")";
                 $nestedData['container_number'] = $Schedule->container_number;
                 $nestedData['dock'] = $Schedule->dock_name;
                 
@@ -358,7 +358,7 @@ class DashboardController extends Controller
                 $nestedData['slotting_time'] = date('M d, Y', strtotime($Schedule->date_of_delivery)) . " | " . $start . " - " . $end;
                 $nestedData['supplier_name'] = $suppliers['supplier_name'];
                 $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
-                $nestedData['plate_number'] = $truck['plate_number'];
+                $nestedData['plate_number'] = $truck['plate_number'] . " (" . $Schedule->container_number . ")";
                 $nestedData['container_number'] = $Schedule->container_number;
                 $mat_list = explode("-;-", $Schedule->material_list);
                
@@ -449,8 +449,7 @@ class DashboardController extends Controller
 
         $dock = Dock::where('status', 1)->where("dock_name",$dock_name)->first();
     
-        $schedules = Schedule::where("dock_id",$dock['id'])->where("process_status",$request->process_status)->where("status",$request->status)->orderBy("slotting_time")
-                     ->first();
+        $schedules = Schedule::where("dock_id",$dock['id'])->where("process_status",$request->process_status)->where("status",$request->status)->orderBy("slotting_time")->first();
 
         $data = array();
         $trucks_suppliers='';
@@ -765,7 +764,7 @@ class DashboardController extends Controller
                 $nestedData['slotting_time'] = $start . " " . $end;
                 $nestedData['supplier_name'] = $suppliers['supplier_name'];
                 $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
-                $nestedData['plate_number'] = $truck['plate_number'];
+                $nestedData['plate_number'] = $truck['plate_number'] . " (" . $Schedule->container_number . ")";
                 $nestedData['container_number'] = $Schedule->container_number;
                 $nestedData['dock'] = $Schedule->dock_name;
                 
@@ -897,7 +896,7 @@ class DashboardController extends Controller
                 $nestedData['slotting_time'] = $start . " " . $end;
                 $nestedData['supplier_name'] = $suppliers['supplier_name'];
                 $nestedData['truck'] = $truck['brand'] . " " . $truck['model'];
-                $nestedData['plate_number'] = $truck['plate_number'];
+                $nestedData['plate_number'] = $truck['plate_number'] . " (" . $Schedule->container_number . ")";
                 $nestedData['container_number'] = $Schedule->container_number;
                 $nestedData['dock'] = $Schedule->dock_name;
                 

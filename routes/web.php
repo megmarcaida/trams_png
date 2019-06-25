@@ -30,6 +30,7 @@ Route::post('deactivateOrActivateSupplier', 'SupplierController@deactivateOrActi
 Route::get('exportSupplier', 'SupplierController@export')->name('exportSupplier');
 Route::post('importSupplier', 'SupplierController@import')->name('importSupplier');
 Route::post('getSupplier', 'SupplierController@getSupplier')->name('getSupplier');
+Route::post('getAllSupplier', 'SupplierController@getAllSupplier')->name('getAllSupplier');
 #End Supplier Route
 
 

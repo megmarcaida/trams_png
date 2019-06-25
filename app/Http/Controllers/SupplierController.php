@@ -349,5 +349,11 @@ class SupplierController extends Controller
 
         return json_encode($supplier);
     }
+
+    public function getAllSupplier(Request $request){
+        $supplier = Supplier::where("status","<>","0")->get();
+
+        return json_encode($supplier);
+    }
    
 }

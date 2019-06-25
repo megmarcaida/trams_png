@@ -42,7 +42,6 @@
                           <th>Supplier Name</th>
                           <th>Truck</th>
                           <th>Plate Number</th>
-                          <th>Container Number</th>
                           <th>Dock</th>
                           <th>Status</th>
                       </tr>
@@ -121,7 +120,6 @@
             {"data": 'supplier_name'},
             {"data": 'truck'},
             {"data": 'plate_number'},
-            {"data": 'container_number'},
         ],
         'columnDefs': [ {
         'targets': [0,1,2,3,4,5], // column index (start from 0)

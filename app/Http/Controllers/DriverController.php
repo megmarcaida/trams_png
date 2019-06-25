@@ -230,7 +230,8 @@ class DriverController extends Controller
     public function store(Request $request)
     {
         $driver = Driver::find(ltrim($request->id,0));
-       
+        $supplier_ids='';
+        $supplier_names='';
         if($request->dateOfSafetyOrientation != null){
             
             $date = $request->dateOfSafetyOrientation;
@@ -252,9 +253,15 @@ class DriverController extends Controller
             }
         }
 
+        foreach ($request->driver_suppliers as $supplier){
+            $supplier_ids .=  $supplier.'|';
+            $supplier_name = Supplier::find($supplier);
+            $supplier_names .= $supplier_name['supplier_name'] . '|';
+        }
+
         
         Driver::updateOrCreate(['id' => ltrim($request->id,0)],
-                ['supplier_ids' => $request->supplier_ids, 'supplier_names' => $request->supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => "", 'license_number' => "", 'dateOfSafetyOrientation' => $dateOfSafetyOrientation, 'isApproved' => $isApproved, "expirationDate"=>$expirationDate]);   
+                ['supplier_ids' => $supplier_ids, 'supplier_names' => $supplier_names, 'logistics_company' => $request->logistics_company, 'first_name' => $request->first_name, 'mobile_number' => $request->mobile_number, 'last_name' => $request->last_name, 'full_name' => $request->first_name . " " .$request->last_name, 'company_id_number' => "", 'license_number' => "", 'dateOfSafetyOrientation' => $dateOfSafetyOrientation, 'isApproved' => $isApproved, "expirationDate"=>$expirationDate]);   
         $ret = ['success'=>'Driver saved successfully.'];     
         
         return response()->json($ret);

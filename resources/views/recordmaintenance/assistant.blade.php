@@ -132,7 +132,8 @@
                           <div class="form-group">
                              <label for="name" class="col-sm-12 control-label">*Supplier</label>
                              <div class="col-sm-12">
-                                <input type="text" id="assistant_suppliers" name="supplier_names" readonly="" class="form-control supplier_id">
+                                <!-- <input type="text" id="assistant_suppliers" name="supplier_names" readonly="" class="form-control supplier_id"> -->
+                                <div id="assistant_supplier_add"></div>
                                 <div class="assistant_supplier">
                                   <select class="form-control" style="display:none"  name="" multiple>
                                     @foreach($supplierData['data'] as $supplier)
@@ -472,6 +473,31 @@
         $('#valid_id_number').attr('readonly',false);
         $('#valid_id_present').attr('readonly',false);
         $('#logistics_company').attr('readonly',false);
+
+        $('.assistant_supplier').remove()
+        $.ajax({
+          type: 'POST', 
+          url: "{{ url('getAllSupplier') }}",
+          dataType: 'json',
+          data:{ _token: "{{csrf_token()}}"},
+          success: function (data) {
+              console.log(data);
+              $('#assistant_supplier_add').append('<div class="assistant_supplier"><select class="form-control" id="assistant_suppliers" style="display:none"  name="assistant_suppliers[]" multiple></select></div>')
+              $.each(data, function(index, item) {
+                  $('#assistant_suppliers').append('<option value="'+item.id+'">'+item.supplier_name+'</option>')
+              });
+              $('.assistant_supplier').dropdown({
+                limitCount: 40,
+                multipleMode: 'label',
+                // callback
+                choice: function (event, selectedProp,x) {
+                  
+                },
+              });
+          },error:function(){ 
+               console.log(data);
+          }
+        });
         $('#ajaxModel').modal({
           backdrop:'static',
           keyboard: false
@@ -628,19 +654,26 @@
            $('#valid_id_number').val(data.valid_id_number);
 
           var x = data.supplier_ids.split("|")
-          
-          x.splice(-1,1)
-          
-          var supplier_assistant = "";
-          $.each( x, function( key, value ) {
-          
-            var _supplier_name = $("#supplier_id option[value='"+value+"']").text()
-            supplier_assistant += _supplier_name + " | ";
-            //console.log(_supplier_name)
+     
+          $.each( x, function( key, e ) {
+            e = e.trim()
+            if(e != ""){
+              $('#assistant_suppliers option[value="' + e + '"]').prop('selected', true);
+            }
+            
           });
 
-          $('#assistant_suppliers').val(data.supplier_names);
-          $('#supplier_ids').val(data.supplier_ids);
+          // $('#assistant_suppliers').val(data.supplier_names);
+          // $('#supplier_ids').val(data.supplier_ids);
+          $('.assistant_supplier').dropdown({
+            limitCount: 40,
+            multipleMode: 'label',
+            // callback
+            choice: function (event, selectedProp,x) {
+              
+            },
+          });
+
           if(data.dateOfSafetyOrientation != null || data.dateOfSafetyOrientation != undefined){
 
             data.dateOfSafetyOrientation = data.dateOfSafetyOrientation.replace(" ","T")
@@ -795,6 +828,7 @@
     });
 
     $('.data-table tbody').on( 'click', 'tr', function () {
+            $('.assistant_supplier').remove()
             var id = $(this).find("td:nth-child(1)").first().text().trim()
             $.ajax({
               data: {id:id},
@@ -842,6 +876,22 @@
                   $('#saveBtn').html('Save Changes');
               }
           });
+
+          $.ajax({
+            type: 'POST', 
+            url: "{{ url('getAllSupplier') }}",
+            dataType: 'json',
+            data:{ _token: "{{csrf_token()}}"},
+            success: function (data) {
+                console.log(data);
+                $('#assistant_supplier_add').append('<div class="assistant_supplier"><select class="form-control" id="assistant_suppliers" style="display:none"  name="assistant_suppliers[]" multiple></select></div>')
+                $.each(data, function(index, item) {
+                    $('#assistant_suppliers').append('<option value="'+item.id+'">'+item.supplier_name+'</option>')
+                });
+            },error:function(){ 
+                 console.log(data);
+            }
+          });
     });
 
   });
@@ -875,59 +925,59 @@
   //     //return false;
   // });
 
-var value = ""
-$('.assistant_supplier').dropdown({
-  // read only
-  readOnly: false,
-  // min count
-  minCount: 0,
-  // error message
-  minCountErrorMessage: '',
-  // the maximum number of options allowed to be selected
-  limitCount: Infinity,
-  // error message
-  limitCountErrorMessage: '',
-  // search field
-  input: '<input type="text" maxLength="20" placeholder="Search">',
-  // is search able?
-  searchable: true,
-  // when there's no result
-  searchNoData: '<li style="color:#ddd">No Results</li>',
-  // callback
-  choice: function (event, selectedProp,x) {
-    var d_suppliers = $('#supplier_ids').val();
-    var d_driver_suppliers = $('#assistant_suppliers').val();
-    if(selectedProp != undefined){
-      console.log(selectedProp)
-        if(selectedProp.selected == true){
-          var _supplier_id = selectedProp.id;
-          var _supplier_name = selectedProp.name;
-          if(!d_suppliers.includes(_supplier_id)){
-              d_suppliers += _supplier_id + '|';
-              d_driver_suppliers += _supplier_name + '|';
-              $('.modalresponse').empty();
-          }else{
-            $('.modalresponse').html("<div class='alert alert-danger'>Supplier already added.</div>")
-          }
-          $('#assistant_suppliers').val(d_driver_suppliers);
-          $('#supplier_ids').val(d_suppliers); 
-        }
-        if(selectedProp.selected == false){
-          if(d_suppliers.includes(selectedProp.id+ '|')){
-              console.log(d_suppliers)
-              d_suppliers.replace(selectedProp.id + '|',"");
-              d_driver_suppliers.replace(selectedProp.name + '|',"");
-              $('#assistant_suppliers').val(d_driver_suppliers.replace(selectedProp.name + '|',""));
-          $('#supplier_ids').val(d_suppliers.replace(selectedProp.id + '|',""));
-          }
-        }
-    }
-  },
-});
+// var value = ""
+// $('.assistant_supplier').dropdown({
+//   // read only
+//   readOnly: false,
+//   // min count
+//   minCount: 0,
+//   // error message
+//   minCountErrorMessage: '',
+//   // the maximum number of options allowed to be selected
+//   limitCount: Infinity,
+//   // error message
+//   limitCountErrorMessage: '',
+//   // search field
+//   input: '<input type="text" maxLength="20" placeholder="Search">',
+//   // is search able?
+//   searchable: true,
+//   // when there's no result
+//   searchNoData: '<li style="color:#ddd">No Results</li>',
+//   // callback
+//   choice: function (event, selectedProp,x) {
+//     var d_suppliers = $('#supplier_ids').val();
+//     var d_driver_suppliers = $('#assistant_suppliers').val();
+//     if(selectedProp != undefined){
+//       console.log(selectedProp)
+//         if(selectedProp.selected == true){
+//           var _supplier_id = selectedProp.id;
+//           var _supplier_name = selectedProp.name;
+//           if(!d_suppliers.includes(_supplier_id)){
+//               d_suppliers += _supplier_id + '|';
+//               d_driver_suppliers += _supplier_name + '|';
+//               $('.modalresponse').empty();
+//           }else{
+//             $('.modalresponse').html("<div class='alert alert-danger'>Supplier already added.</div>")
+//           }
+//           $('#assistant_suppliers').val(d_driver_suppliers);
+//           $('#supplier_ids').val(d_suppliers); 
+//         }
+//         if(selectedProp.selected == false){
+//           if(d_suppliers.includes(selectedProp.id+ '|')){
+//               console.log(d_suppliers)
+//               d_suppliers.replace(selectedProp.id + '|',"");
+//               d_driver_suppliers.replace(selectedProp.name + '|',"");
+//               $('#assistant_suppliers').val(d_driver_suppliers.replace(selectedProp.name + '|',""));
+//           $('#supplier_ids').val(d_suppliers.replace(selectedProp.id + '|',""));
+//           }
+//         }
+//     }
+//   },
+// });
 
-$('div.assistant_supplier > a.dropdown-clear-all').on('click',function(){
-  $('#assistant_suppliers').val('');
-          $('#supplier_ids').val('');
-});
+// $('div.assistant_supplier > a.dropdown-clear-all').on('click',function(){
+//   $('#assistant_suppliers').val('');
+//           $('#supplier_ids').val('');
+// });
 </script>
 @endsection
