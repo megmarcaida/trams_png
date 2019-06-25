@@ -1,7 +1,7 @@
  <!-- Sidebar -->
     <ul class="sidebar navbar-nav toggled">
       <li class="nav-item active">
-        <a class="nav-link" href="">
+        <a class="nav-link" href="/">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span>
         </a>
