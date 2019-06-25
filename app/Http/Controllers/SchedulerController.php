@@ -1004,7 +1004,7 @@ class SchedulerController extends Controller
                 break;
             
             default:
-                # code...
+                $status = "";
                 break;
         }
         $nestedData['status'] = $status;

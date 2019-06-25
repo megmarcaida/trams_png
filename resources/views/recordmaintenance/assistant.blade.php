@@ -309,28 +309,31 @@
                   <div class="col-md-6" style="line-height: 0px">
                     <b><p id="view_supplier_name"></p></b>
                   </div>
-               
+               </div>
+               <div class="row">
                   <div class="col-md-6" style="line-height: 0px">
                     Logistic Company:
                   </div>
                   <div class="col-md-6" style="line-height: 0px">
                     <b><p id="view_logistics"></p></b>
                   </div>
-             
+                </div>
+                <div class="row">
                   <div class="col-md-6" style="line-height: 0px">
                     Full Name:
                   </div>
                   <div class="col-md-6" style="line-height: 0px">
                     <b><p id="view_full_name"></p></b>
                   </div>
-              
+                </div>
+                <div class="row">
                   <div class="col-md-6" style="line-height: 0px">
                     Mobile Number:
                   </div>
                   <div class="col-md-6" style="line-height: 0px">
                     <b><p id="view_mobile_no"></p></b>
                   </div>
-               
+                </div>
                   <!-- <div class="col-md-6" style="line-height: 0px">
                     Company ID Number:
                   </div>
@@ -352,6 +355,7 @@
                   <div class="col-md-6" style="line-height: 0px">
                     <b><p id="view_valid_id_number"></p></b>
                   </div> -->
+                <div class="row">  
                   <div class="col-md-6" style="line-height: 0px">
                     Date of Validity:
                   </div>
@@ -359,6 +363,31 @@
                     <b><p id="view_validity_date"></p></b>
                   </div>
                   <br></br>
+                </div>
+                <div class="row">
+                    <!-- Date of validity -->
+                  @if(Auth::user()->role_id == 3)
+                  <div class="col-xl-12 col-sm-12">
+                    <input type="hidden" name="isApproved" value="0">
+                    <div class="form-group">
+                      <label class="col-sm-12 control-label">*Date of Validity</label>
+                      <div class="col-xl-12 col-sm-12">
+                        <div class="row">
+                          <div class="col-xl-8 col-sm-12">
+                            <input type="date" class="form-control datepicker" name="dateOfSafetyOrientation_approved" id="dateOfSafetyOrientation_approved" required="">
+                            <input type="hidden" id="isApproved" name="isApproved" value="1">
+                          </div>
+                          <div class="col-xl-4 col-sm-12">
+                            <button id="btn-approved" class="btn btn-primary btn-xs btn-block completeAssistantRegistration" type="button">Approve</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                  </div>
+                  @endif
+                </div>
+                <div class="row">
                   <div class="col-xl-4 col-sm-12">
                     <button id="btn-edit" class="btn btn-primary btn-xs btn-block editProduct" type="button">Edit</button>
                   </div>
@@ -508,20 +537,19 @@
 
   $('body').on('click', '.completeAssistantRegistration', function (e) {
 
-      var dateOfSafetyOrientation = $('#dateOfSafetyOrientation'+ $(this).attr("data-id"));
-      console.log(dateOfSafetyOrientation)
+      var dateOfSafetyOrientation = $('#dateOfSafetyOrientation_approved');
+      //console.log(dateOfSafetyOrientation)
 
       if(dateOfSafetyOrientation.val() == ""){
           $(".modalresponse").html("<div class='alert alert-danger'>Please fill in the Date of Safety Orientation fields.</div>")
-          dateOfSafetyOrientation.css("outline","red 2px solid")
+          dateOfSafetyOrientation.css("border","red 2px solid")
           $('#modalresponse').fadeIn(1000);
           setTimeout(function(){
             $('#modalresponse').fadeOut(1000);
           },2000)
       }else{
-        //console.log($('#assistantRegistration').serialize())
         $.ajax({
-              data: $('#assistantRegistration'+ $(this).attr("data-id")).serialize(),
+              data: {id:$(this).attr("data-id"),dateOfSafetyOrientation:dateOfSafetyOrientation.val()},
               url: "{{ url('completeAssistantRegistration') }}",
               type: "POST",
               dataType: 'json',
@@ -531,6 +559,7 @@
                   setTimeout(function(){
                     $('#response').hide("slow");
                   },3000)
+                  $("#ajaxModelView").modal("hide");
                   table.draw();
                   loadViewPending();
               },
@@ -610,7 +639,7 @@
             //console.log(_supplier_name)
           });
 
-          $('#assistant_suppliers').val(supplier_assistant);
+          $('#assistant_suppliers').val(data.supplier_names);
           $('#supplier_ids').val(data.supplier_ids);
           if(data.dateOfSafetyOrientation != null || data.dateOfSafetyOrientation != undefined){
 
@@ -787,6 +816,7 @@
                   $("#btn-edit").attr("data-id",data.id)
                   $("#btn-deactivate").attr("data-id",data.id)
                   
+                  $("#btn-approved").attr("data-id",data.id)
                   if(data.status == "1"){
                     $("#btn-deactivate").html("Deactivate")
                   }else{
