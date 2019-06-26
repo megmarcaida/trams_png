@@ -1469,25 +1469,25 @@
             }
           }else if(recurrence.val() == "Single Event"){
              
-              if($('.gcas').val() == "" || $('.quantity').val() == "" || $('.description').val() == ""){
+              // if($('.gcas').val() == "" || $('.quantity').val() == "" || $('.description').val() == ""){
 
-                  $("#modalresponse").show();
-                  $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+              //     $("#modalresponse").show();
+              //     $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
-                  $('#modalresponse').fadeIn(1000);
-                  setTimeout(function(){
-                    $('#modalresponse').fadeOut(1000);
-                  },2000)
+              //     $('#modalresponse').fadeIn(1000);
+              //     setTimeout(function(){
+              //       $('#modalresponse').fadeOut(1000);
+              //     },2000)
 
-                  $(".gcas").css('border','1px solid red')
-                  $(".description").css('border','1px solid red')
-                  $(".quantity").css('border','1px solid red')
-                  return false;
-              }else{
-                  $(".gcas").css('border','1px solid black')
-                  $(".description").css('border','1px solid black')
-                  $(".quantity").css('border','1px solid black')
-              }
+              //     $(".gcas").css('border','1px solid red')
+              //     $(".description").css('border','1px solid red')
+              //     $(".quantity").css('border','1px solid red')
+              //     return false;
+              // }else{
+              //     $(".gcas").css('border','1px solid black')
+              //     $(".description").css('border','1px solid black')
+              //     $(".quantity").css('border','1px solid black')
+              // }
           }
         
 
