@@ -41,7 +41,17 @@ class SchedulerController extends Controller
     public function scheduling(Request $request)
     {
         $supplierData['data'] = Supplier::where("status",1)->get();
-        $dockData['data'] = Dock::where("status",1)->get();
+        $role_id = Auth::user()->role_id;
+        $roles =  Role::where('id',$role_id)->first();
+        $sub_m = explode("|", $roles['submodules']);
+        $dock_names = array();
+        foreach($sub_m as $submodules){
+            if($submodules != ""){
+                array_push($dock_names, $submodules);
+            }
+        }
+        $dockData['data'] = Dock::whereIn("dock_name",$dock_names)->get();
+        //$dockData['data'] = Dock::where("status",1)->get();
 
         $json_data = array( 
                 "supplierData" => $supplierData, 
