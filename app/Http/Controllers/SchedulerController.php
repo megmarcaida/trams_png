@@ -548,7 +548,7 @@ class SchedulerController extends Controller
 
                 $checkIfFinalized = Schedule::find($request->schedule_id);
                 $date_yesterday = date('d.m.Y',strtotime("-1 days"));
-                $timestamp = $checkIfFinalized->updated_at;
+                $timestamp = $checkIfFinalized->created_at;
                 $timestamp = date('d.m.Y',strtotime($timestamp));
                 
                 if($timestamp === $date_yesterday){
