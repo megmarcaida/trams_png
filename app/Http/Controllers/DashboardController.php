@@ -176,7 +176,8 @@ class DashboardController extends Controller
                     $end = substr($slotting_, -5);
 
                 $dateofdeparture = $Schedule->date_of_delivery . " " . $end;
-                if(time()-strtotime($dateofdeparture) > 86400 || strtotime($dateofdeparture)-time() < 0){
+                if(time()-strtotime($dateofdeparture) > 43200 || time()-strtotime($dateofdeparture) < -43200 ){
+                //if(time()-strtotime($dateofdeparture) > 86400 || strtotime($dateofdeparture)-time() < 0){
                     continue;
                 }
 
@@ -342,8 +343,8 @@ class DashboardController extends Controller
                     $end = substr($slotting_, -5);
 
                 $dateofdeparture = $Schedule->date_of_delivery . " " . $end;
-                if(time()-strtotime($dateofdeparture) > 43200){
-                //if(time() - strtotime($dateofdeparture) > 43188){
+                //before                                         // after
+                if(time()-strtotime($dateofdeparture) > 43200 || time()-strtotime($dateofdeparture) < -43200 ){
                     continue;
                 }
 
@@ -1272,10 +1273,11 @@ class DashboardController extends Controller
                     $start = substr($slotting_, 0, 5);
                     $end = substr($slotting_, -5);
 
-                $dateofdeparture = $Schedule->date_of_delivery . " " . $start;
+                $dateofdeparture = $Schedule->date_of_delivery . " " . $end;
 
                 if($request->process_status == "incoming"){
-                    if(strtotime($dateofdeparture) - time() > 43200 || strtotime($dateofdeparture) - time() < 0){
+                    if(time()-strtotime($dateofdeparture) > 43200 || time()-strtotime($dateofdeparture) < -43200 ){
+                    //if(strtotime($dateofdeparture) - time() > 43200 || strtotime($dateofdeparture) - time() < 0){
                     //if(time() - strtotime($dateofdeparture) > 43188){
                         continue;
                     }
