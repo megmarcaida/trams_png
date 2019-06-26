@@ -1,6 +1,8 @@
 @extends('layouts.schedulingapp')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/jquery.dropdown.css') }}">
+<script src="{{ asset('js/jquery.dropdown.js') }}"></script>
 <script src="{{ asset('js/jquery.qrcode.js') }}"></script>
 <script src="{{ asset('js/qrcode.js') }}" ></script>
 <script type="text/javascript">
@@ -168,8 +170,21 @@
                 $(".r_ordering_days").css('display','block')
               }
               var ordering_days_arr = data.ordering_days.split("|")
+              
+              $('.ordering_days_dd').remove()
+              $('#ordering_days_add').append('<div class="col-sm-12 ordering_days_dd"><select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select></div>')
+
               $.each(ordering_days_arr, function(i,e){
                 $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
+              });
+              
+              $('.ordering_days_dd').dropdown({
+                limitCount: 40,
+                multipleMode: 'label',
+                // callback
+                choice: function (event, selectedProp,x) {
+                  
+                },
               });
 
               $('#cont').html('');
@@ -311,99 +326,113 @@
 
 
           $('#scheduleForm').trigger("reset");      
-          
-          $.get("{{ route('ajaxschedules.index') }}" +'/' + id +'/edit', function (data) {
-              $('#modelHeading').html("Edit Schedule");
-              $('#saveBtn').val("edit-user");
-              $('#ajaxModel').modal({
-                backdrop:'static',
-                keyboard: false
-              })
-              //console.log(data.date_of_delivery)
-              $('#schedule_id').val(data.id);
-              $('#po_number').val(data.po_number);
-              $('#supplier_id').val(data.supplier_id);
-              $('#alt_supplier_id').val(data.supplier_id);
-              $('#dock_id').val(data.dock_id);
+          setTimeout(function(){
+            $.get("{{ route('ajaxschedules.index') }}" +'/' + id +'/edit', function (data) {
+                $('#modelHeading').html("Edit Schedule");
+                $('#saveBtn').val("edit-user");
+                $('#ajaxModel').modal({
+                  backdrop:'static',
+                  keyboard: false
+                })
+                //console.log(data.date_of_delivery)
+                $('#schedule_id').val(data.id);
+                $('#po_number').val(data.po_number);
+                $('#supplier_id').val(data.supplier_id);
+                $('#alt_supplier_id').val(data.supplier_id);
+                $('#dock_id').val(data.dock_id);
 
-              $('#dateOfDelivery').val(data.date_of_delivery);
+                $('#dateOfDelivery').val(data.date_of_delivery);
 
-              $('#recurrent_dateend').val(data.recurrent_dateend);
+                $('#recurrent_dateend').val(data.recurrent_dateend);
 
-              $('#truck_id').val(data.truck_id);
+                $('#truck_id').val(data.truck_id);
 
-              $('#driver_id').val(data.driver_id);
+                $('#driver_id').val(data.driver_id);
 
-              $('#assistant_id').val(data.assistant_id);
+                $('#assistant_id').val(data.assistant_id);
 
-              $('#container_number').val(data.container_number);
+                $('#container_number').val(data.container_number);
 
-              $("#recurrence").val(data.recurrence)
-              if(data.recurrence == "Recurrent"){
-                $(".r_ordering_days").css('display','block')
-              }
-              var ordering_days_arr = data.ordering_days.split("|")
-              $.each(ordering_days_arr, function(i,e){
-                $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
-              });
+                $("#recurrence").val(data.recurrence)
+                if(data.recurrence == "Recurrent"){
+                  $(".r_ordering_days").css('display','block')
+                }
+                var ordering_days_arr = data.ordering_days.split("|")
+                 $('.ordering_days_dd').remove()
+                $('#ordering_days_add').append('<div class="col-sm-12 ordering_days_dd"><select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select></div>')
 
-              $('#cont').html('');
-              createTable();
-              //console.log(data.material_list  + "Test")
-              if(data.material_list == 0){
-                  addRow('','','')
-              }
-              $.each(data.material_list.gcas, function(index, item) {
-                  if(item != ""){
-
-                    addRow(item,data.material_list.description[index],data.material_list.quantity[index])
-                  }else{
-                    console.log(data.material_list.gcas.length)
-                    if(data.material_list.gcas.length==2){
-                      addRow("","","")
-                    }
-                  }
-              });
-
-              $("#slotting_time").val(data.slotting_time_text);
-
-               $('div.occupied_slot_box').addClass("slot_box");
-
-
-              //refresh slot box
-              $('div.slot_box').removeClass("occupied_slot_box");
-              $('div.slot_box').removeClass("active_slot_box");
-              var date_of_delivery = $('#dateOfDelivery').val();
-              $.ajax({
-                  url: "{{ url('getSlottingTime') }}",
-                  type: "POST",
-                  data: {date_of_delivery:date_of_delivery},
-                  success: function (data) {
-                      $.each(JSON.parse(data), function(index, item) {
-                        $.each(item.slotting_time, function(i, slot) {
-                          if(slot != ""){
-                            $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
-                            $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
-                          }
-                        });
-                      });
+                $.each(ordering_days_arr, function(i,e){
+                  $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
+                });
+                
+                $('.ordering_days_dd').dropdown({
+                  limitCount: 40,
+                  multipleMode: 'label',
+                  // callback
+                  choice: function (event, selectedProp,x) {
+                    
                   },
-                  error: function (data) {
-                      //console.log('Error:', data);
-                  }
-              });
-              //refresh slot box
+                });
 
+                $('#cont').html('');
+                createTable();
+                //console.log(data.material_list  + "Test")
+                if(data.material_list == 0){
+                    addRow('','','')
+                }
+                $.each(data.material_list.gcas, function(index, item) {
+                    if(item != ""){
 
-              $.each(data.slotting_time, function(index, slot) {
-                  //console.log(slot)
-                    if(slot != ""){
-                      $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
-                      $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
-                      $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                      addRow(item,data.material_list.description[index],data.material_list.quantity[index])
+                    }else{
+                      console.log(data.material_list.gcas.length)
+                      if(data.material_list.gcas.length==2){
+                        addRow("","","")
+                      }
                     }
                 });
-          })
+
+                $("#slotting_time").val(data.slotting_time_text);
+
+                 $('div.occupied_slot_box').addClass("slot_box");
+
+
+                //refresh slot box
+                $('div.slot_box').removeClass("occupied_slot_box");
+                $('div.slot_box').removeClass("active_slot_box");
+                var date_of_delivery = $('#dateOfDelivery').val();
+                $.ajax({
+                    url: "{{ url('getSlottingTime') }}",
+                    type: "POST",
+                    data: {date_of_delivery:date_of_delivery},
+                    success: function (data) {
+                        $.each(JSON.parse(data), function(index, item) {
+                          $.each(item.slotting_time, function(i, slot) {
+                            if(slot != ""){
+                              $('div.slot_box:contains("'+slot+'")').addClass("occupied_slot_box");
+                              $('div.slot_box:contains("'+slot+'")').removeClass("slot_box");
+                            }
+                          });
+                        });
+                    },
+                    error: function (data) {
+                        //console.log('Error:', data);
+                    }
+                });
+                //refresh slot box
+
+
+                $.each(data.slotting_time, function(index, slot) {
+                    //console.log(slot)
+                      if(slot != ""){
+                        $('div.slot_box:contains("'+slot+'")').addClass("slot_box");
+                        $('div.slot_box:contains("'+slot+'")').addClass("editable_slot_box");
+                        $('div.editable_slot_box:contains("'+slot+'")').removeClass("occupied_slot_box");
+                      }
+                  });
+            })
+
+          },100)
 
           // change the border color just for fun
           //info.el.style.borderColor = 'red';
@@ -830,6 +859,17 @@
               $('#recurrence').css("outline","solid 1px transparent")
               $('.slotting_time').css("color","black")
 
+              $('.ordering_days_dd').remove()
+              $('#ordering_days_add').append('<div class="col-sm-12 ordering_days_dd"><select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select></div>')
+              $('.ordering_days_dd').dropdown({
+                limitCount: 40,
+                multipleMode: 'label',
+                // callback
+                choice: function (event, selectedProp,x) {
+                  
+                },
+              });
+
               $('#cont').html('');
               $('document').ready(function(){
                 createTable();
@@ -1148,8 +1188,20 @@
                   // $.each( ordering_days_arr, function( key, value ) {
                   //   $("input[value='" + $.trim(value) + "']").prop('checked', true);
                   // });
+                  $('.ordering_days_dd').remove()
+                  $('#ordering_days_add').append('<div class="col-sm-12 ordering_days_dd"><select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select></div>')
+
                   $.each(ordering_days_arr, function(i,e){
-                    $("#submodules option[value='" + $.trim(e) + "']").prop("selected", true);
+                    $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
+                  });
+
+                  $('.ordering_days_dd').dropdown({
+                    limitCount: 40,
+                    multipleMode: 'label',
+                    // callback
+                    choice: function (event, selectedProp,x) {
+                      
+                    },
                   });
 
                   $('#cont').html('');
@@ -1291,15 +1343,29 @@
 
                         $('#container_number').val(data.container_number);
 
-                        $('#btnPrintVoucher').hide();
+                        $('#btnPrintVoucher').show();
 
                         $("#recurrence").val(data.recurrence)
                         if(data.recurrence == "Recurrent"){
                           $(".r_ordering_days").css('display','block')
                         }
+
+                        $('.ordering_days_dd').remove()
+                        $('#ordering_days_add').append('<div class="col-sm-12 ordering_days_dd"><select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select></div>')
+                        
                         var ordering_days_arr = data.ordering_days.split("|")
                         $.each(ordering_days_arr, function(i,e){
                           $("#ordering_days option[value='" + $.trim(e) + "']").prop("selected", true);
+                        });
+
+
+                        $('.ordering_days_dd').dropdown({
+                          limitCount: 40,
+                          multipleMode: 'label',
+                          // callback
+                          choice: function (event, selectedProp,x) {
+                            
+                          },
                         });
 
                         $('#cont').html('');
@@ -2283,8 +2349,9 @@
                               <!-- Ordering days -->
                               <div class="form-group r_ordering_days">
                                  <label for="name" class="col-sm-12 control-label">*Ordering Days</label>
-                                 <div class="col-sm-12">
-                                    <select multiple="true" class="form-control ordering_days" id="ordering_days" name="ordering_days[]">
+                                 <div id="ordering_days_add"></div>
+                                 <div class="col-sm-12 ordering_days_dd">
+                                    <select multiple="true" class="form-control ordering_days" id="ordering_days" style="display: none;" name="ordering_days[]">
                                          <option value="Mon">Mon</option>
                                          <option value="Tue">Tue</option>
                                          <option value="Wed">Wed</option>

@@ -653,7 +653,7 @@ class SchedulerController extends Controller
                     $count = 0;
                     foreach($dates as $date){
 
-                        $checkConflict = $this->checkIfConflictsDate($date,$request->slotting_time_unavailability);
+                        $checkConflict = $this->checkIfConflictsDate($date,$request->slotting_time_unavailability,$request->dock_id);
                         if($checkConflict > 0){
                             $nestedData['id'] = $checkConflict;
                             $return_conflicts[] = $nestedData;
@@ -671,7 +671,7 @@ class SchedulerController extends Controller
                 $ret = ['success'=>'Schedule saved successfully.']; 
             }else{
 
-                $checkConflict = $this->checkIfConflictsDate($request->dateOfUnavailability,$request->slotting_time_unavailability);
+                $checkConflict = $this->checkIfConflictsDate($request->dateOfUnavailability,$request->slotting_time_unavailability,$request->dock_id);
 
                 if($checkConflict > 0){
                     return response()->json(["success"=>"The dock unavailabilities has conflict with this Delivery ID Number: " . $checkConflict]);
@@ -835,8 +835,9 @@ class SchedulerController extends Controller
         return response()->json($scheduleData);
     }
 
-    public function checkIfConflictsDate($dateOfDelivery,$slotting_time){
-        $schedules = Schedule::where("date_of_delivery",$dateOfDelivery)->where("status","<>",0)->get();
+    public function checkIfConflictsDate($dateOfDelivery,$slotting_time,$dock_id){
+
+        $schedules = Schedule::where('dock_id',$dock_id)->where("date_of_delivery",$dateOfDelivery)->where("status","<>",0)->get();
         $slotting_time = explode("|", $slotting_time);
         $ret = 0;
         foreach($schedules as $schedule){
@@ -1222,7 +1223,7 @@ class SchedulerController extends Controller
 
                     foreach($dates as $date) {
                         //check if has conflict on date
-                        $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time);
+                        $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time,$request->dock_id);
 
                         if($hasConflict > 0){
                             
@@ -1310,7 +1311,7 @@ class SchedulerController extends Controller
 
                 foreach($dates as $date) {
                     //check if has conflict on date
-                    $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time);
+                    $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time,$request->dock_id);
 
                     if($hasConflict > 0){
                         
@@ -1497,7 +1498,7 @@ class SchedulerController extends Controller
 
             foreach($dates as $date) {
                 //check if has conflict on date
-                $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time);
+                $hasConflict = $this->checkIfConflictsDate($date,$request->slotting_time,$request->dock_id);
 
                 if($hasConflict > 0){
                     

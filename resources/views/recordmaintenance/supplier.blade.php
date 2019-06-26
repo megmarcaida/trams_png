@@ -577,13 +577,13 @@
           $('#delivery_types').val(data.delivery_type)
 
           $('.ordering_days_dd').dropdown({
-          limitCount: 40,
-          multipleMode: 'label',
-          // callback
-          choice: function (event, selectedProp,x) {
-            
-          },
-        });
+            limitCount: 40,
+            multipleMode: 'label',
+            // callback
+            choice: function (event, selectedProp,x) {
+              
+            },
+          });
         $('.modules_dd').dropdown({
           limitCount: 40,
           multipleMode: 'label',
