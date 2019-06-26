@@ -69,7 +69,7 @@
     function new_first_dock(module_name) {
       var tmp_incoming = null;
 
-      var module_class = module_name.toUpperCase().replace(/ /g,'')
+      var module_class = module_name.replace(/ /g,'')
       
       var del_id = $('#'+module_class+' > tbody > tr > td > div.delivery_id')
       var slotting = $('#'+module_class+' > tbody > tr > td > div.slotting')
