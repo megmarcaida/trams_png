@@ -525,17 +525,15 @@ class SchedulerController extends Controller
             if(isset($request->gcas)){
                 foreach($request->gcas as $_gcas){
                     $gcas .= $_gcas ."|";
+
+                foreach($request->description as $_description){
+                    $description .= $_description ."|";
+                }
+
+                foreach($request->quantity as $_quantity){
+                    $quantity .= $_quantity ."|";
                 }
             }
-
-            foreach($request->description as $_description){
-                $description .= $_description ."|";
-            }
-
-            foreach($request->quantity as $_quantity){
-                $quantity .= $_quantity ."|";
-            }
-
             $material_list = $gcas . "-;-" . $description . "-;-" . $quantity; 
             
             $ordering_days='';
