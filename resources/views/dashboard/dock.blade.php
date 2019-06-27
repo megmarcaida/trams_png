@@ -146,7 +146,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="float-left">
-                    Dashboard / General Dashboard
+                    Dashboard / Dock Dashboard
                 </div>
             </div>
         </div>
@@ -163,19 +163,19 @@
     </center>
 
     <div class="row">
-        <div class="col-xl-10 col-sm-4 mb-3">
+        <div class="col-xl-6 col-sm-4 mb-3">
           <div class="response"></div>
           <h3>Incoming</h3>
           <hr>
             <div class="table table-responsive">
-              <table class="table table-bordered table-striped data-table-incoming" style="height: 250px;">
+              <table class="table table-bordered table-striped data-table-incoming" style="height: 170px;font-size:12px;">
                   <thead>
                       <tr>
-                          <th>Delivery Ticket No.</th>
+                          <th style="width: 120px;">Delivery Ticket No.</th>
                           <th>Slotting Schedule</th>
                           <th>Supplier</th>
                           <th>Truck</th>
-                          <th>Plate Number</th>
+                          <th>Plate No.</th>
                           <th>Dock</th>
                           <th>Status</th>
                       </tr>
@@ -190,14 +190,14 @@
           <h3>Outgoing</h3>
           <hr>
             <div class="table table-responsive">
-              <table class="table table-bordered table-striped data-table-outgoing" style="height: 250px;">
+              <table class="table table-bordered table-striped data-table-outgoing" style="height: 170px;font-size:12px;">
                   <thead>
                       <tr>
                           <th>Delivery Ticket No.</th>
                           <th>Slotting Time</th>
                           <th>Supplier</th>
                           <th>Truck</th>
-                          <th>Plate Number</th>
+                          <th>Plate No.</th>
                           <th>Dock</th>
                           <th>Status</th>
                       </tr>
@@ -207,7 +207,7 @@
               </table>
             </div>
         </div>
-        <div class="col-xl-2 col-sm-2 mb-3">
+        <div class="col-xl-6 col-sm-2 mb-3">
             <h3>Dock</h3>
             <hr>
             <input type="hidden" id="module_account" value="{{ $role_account }}">
@@ -217,9 +217,10 @@
                     <div class="text-center">
                         <h4><b><!-- {{ $dock['title'] }} --> </b></h4>
                     </div>
+                    <div class="row">
                     @foreach($dock['details'] as $d)
-                        
-                        <div class="card data" style="font-size: 16px;padding: 10px;">
+                        <div class="col-xl-6 col-sm-6">
+                        <div class="card data" style="font-size: 13px;padding: 10px;">
                             <table id="{{ str_replace(' ','',$d) }}" class="table-borderless {{ str_replace(' ','',$d) }}">
                                 <tbody>
                                     <tr>
@@ -266,7 +267,10 @@
                         // //}
                       },5000)
                         </script>
+
+                      </div>
                     @endforeach
+                    </div>
                     </div>
                 </div>
                 @endforeach
@@ -407,7 +411,10 @@
             {"data": 'plate_number'},
             {"data": 'dock'},
             {"data": 'status'},
-        ]  
+        ],
+        "displayLength":25, 
+        "bLengthChange": false, 
+        "bFilter": false,   
 
     });
 
@@ -428,7 +435,10 @@
             {"data": 'plate_number'},
             {"data": 'dock'},
             {"data": 'status'},
-        ]  
+        ],
+        "displayLength":25  ,
+        "bLengthChange": false, 
+        "bFilter": false, 
 
     });
 
