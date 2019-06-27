@@ -10,6 +10,7 @@ use App\Driver;
 use App\Assistant;
 use App\Dock_Unavailability;
 use App\Role;
+use App\Reason;
 use DateTime;
 use Auth;
 use Illuminate\Http\Request;
@@ -51,11 +52,15 @@ class SchedulerController extends Controller
             }
         }
         $dockData['data'] = Dock::whereIn("dock_name",$dock_names)->get();
+        $reasonCancellation['data'] = Reason::where("tagging","Cancellation")->get();
+        $reasonReschedule['data'] = Reason::where("tagging","Reschedule")->get();
         //$dockData['data'] = Dock::where("status",1)->get();
 
         $json_data = array( 
                 "supplierData" => $supplierData, 
-                "dockData"     => $dockData   
+                "dockData"     => $dockData,
+                "reasonCancellation"     => $reasonCancellation,
+                "reasonReschedule"     => $reasonReschedule     
         );
         return view('schedulers/index')->with("json_data",$json_data);
     }
@@ -762,7 +767,7 @@ class SchedulerController extends Controller
     public function destroy($id,$status)
     {
         Schedule::find($id)->update(['status' => 0]);
-        return response()->json(['success'=>'Supplier deactivated successfully.']);
+        return response()->json(['success'=>'Schedule deactivated successfully.']);
     }
 
     public function deactivateOrActivateSchedule(Request $request)

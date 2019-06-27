@@ -1743,26 +1743,37 @@
         var isRecurrent = $('#isRecurrent').val(); 
         $('#response').show();
         if (confirm("Are you want to proceed?")){
-            $.ajax({
-                url: "{{ url('deactivateOrActivateSchedule') }}",
-                type: "POST",
-                data: {id:id, reason:reason, isRecurrent:isRecurrent},
-                success: function (data) {
-                    $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
-                    var current_module = $("#current_module").val()
-                    testCalendar(current_module)
-                    $('#ajaxModelDelete').modal('hide');
-                    if($('#dataEditID').val() != ''){
-                      $("#modelViewErrorRecurrent").modal({
-                        backdrop:'static',
-                        keyboard: false
-                      })
+
+            if(reason == ""){
+
+                 $('#responseCancel').show();    
+                 $('#responseCancel').html("<div class='alert alert-danger'>Please select reason.</div>")
+                 setTimeout(function(){
+                  $('#responseCancel').fadeOut(1000);
+                },2000)
+            }else{
+                  $.ajax({
+                    url: "{{ url('deactivateOrActivateSchedule') }}",
+                    type: "POST",
+                    data: {id:id, reason:reason, isRecurrent:isRecurrent},
+                    success: function (data) {
+                        $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                        var current_module = $("#current_module").val()
+                        testCalendar(current_module)
+                        $('#ajaxModelDelete').modal('hide');
+                        if($('#dataEditID').val() != ''){
+                          $("#modelViewErrorRecurrent").modal({
+                            backdrop:'static',
+                            keyboard: false
+                          })
+                        }
+                    },
+                    error: function (data) {
+                        //console.log('Error:', data);
                     }
-                },
-                error: function (data) {
-                    //console.log('Error:', data);
-                }
-            });
+                });
+            }
+            
 
         } 
     });
@@ -2584,7 +2595,14 @@
                 <p id="enter_reason">Enter reason for deleting schedules</p>
                 <div class="row">
                   <div class="col-xl-12">
-                    <textarea class="form-control" id="reason"></textarea>
+                    <div id="responseCancel"></div>
+                    <!-- <textarea class="form-control" id="reason"></textarea> -->
+                    <select  class="form-control" id="reason" name="reason">
+                       <option value="">Please select Reason</option>
+                       @foreach($json_data['reasonCancellation']['data'] as $reasonCancel)
+                         <option value='{{ $reasonCancel->reason_name }}'>{{ $reasonCancel->reason_name }}</option>
+                       @endforeach
+                    </select>
                     <input type="hidden" id="isRecurrent">
                     <br>
                     <button id="delete_schedule" class="btn btn-primary btn-block">Cancel Schedule</button>
