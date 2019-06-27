@@ -203,3 +203,11 @@ Route::get('exportBannedIssue', 'BannedIssueController@export')->name('exportBan
 Route::post('importBannedIssue', 'BannedIssueController@import')->name('importBannedIssue');
 Route::post('getBannedIssue', 'BannedIssueController@getBannedIssue')->name('getBannedIssue');
 #End BannedIssue Route
+
+#Reason  Routes
+Route::get('/masterfile/reasons', ['middleware' => 'auth', 'uses' => 'ReasonController@index']);
+Route::resource('ajaxreasons','ReasonController');
+Route::post('allreasons', 'ReasonController@allReason' )->name('allreasons');
+Route::post('deactivateOrActivateReason', 'ReasonController@deactivateOrActivateReason')->name('deactivateOrActivateReason');
+Route::post('getReason', 'ReasonController@getReason')->name('getReason');
+#End Reason Route

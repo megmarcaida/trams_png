@@ -244,7 +244,7 @@
         $('#saveBtn').val("create-product");
         $('#supplier_id').val('');
         $('#bannedIssueForm').trigger("reset");
-        $('#modelHeading').html("Register Supplier");
+        $('#modelHeading').html("Register Banned Issue");
         $('#ajaxModel').modal({
           backdrop:'static',
           keyboard: false
