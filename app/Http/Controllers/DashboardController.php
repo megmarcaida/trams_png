@@ -521,7 +521,7 @@ class DashboardController extends Controller
         if(!empty($sched)){
 
             //Gate-IN
-            if($sched->status == 10 && $sched->process_status == "incoming" && $process_name == "gate-in"){
+            if(($sched->status == 10 || $sched->status == 1 || $sched->status == 2 || $sched->status == 3 || $sched->status == 4) && $sched->process_status == "incoming" && $process_name == "gate-in"){
                 
                 if($parking_->parking_slot == $parking_->parking_area){
                     return json_encode(["message"=>"Parking is Full"]);
