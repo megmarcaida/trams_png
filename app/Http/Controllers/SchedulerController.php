@@ -522,8 +522,10 @@ class SchedulerController extends Controller
             $quantity = '';
             $material_list = '';
 
-            foreach($request->gcas as $_gcas){
-                $gcas .= $_gcas ."|";
+            if(isset($request->gcas)){
+                foreach($request->gcas as $_gcas){
+                    $gcas .= $_gcas ."|";
+                }
             }
 
             foreach($request->description as $_description){
