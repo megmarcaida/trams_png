@@ -641,9 +641,19 @@
               slotting_time.val(x)
               slotting_time_unavailability.val(y)
            }else{
-              $(this).addClass('active_slot_box');
-              slotting_time.val(slotting_time.val() + value + "|")
-              slotting_time_unavailability.val(slotting_time_unavailability.val() + value + "|")
+              if(slotting_time.val() > value){
+                $("#modalresponse").show();
+                $("#modalresponse").html("<div class='alert alert-danger'>Please arrange the slotting time in ascending order.</div>")
+
+                $('#modalresponse').fadeIn(1000);
+                setTimeout(function(){
+                  $('#modalresponse').fadeOut(1000);
+                },2000)
+              }else{
+                $(this).addClass('active_slot_box');
+                slotting_time.val(slotting_time.val() + value + "|")
+                slotting_time_unavailability.val(slotting_time_unavailability.val() + value + "|")
+              }
            }
          
           
