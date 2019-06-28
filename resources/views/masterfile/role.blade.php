@@ -1,6 +1,8 @@
 @extends('layouts.datatableapp')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/jquery.dropdown.css') }}">
+<script src="{{ asset('js/jquery.dropdown.js') }}"></script>
 
 <div class="container-fluid">
 
@@ -69,7 +71,8 @@
 
                      <div class="form-group">
                        <label for="name" class="col-sm-12 control-label">*Docks</label>
-                       <div class="col-sm-12">
+                       <div id="submodules_dd_add"></div>
+                       <div class="col-sm-12 submodules_dd">
                           <select multiple="true" class="form-control" id="submodules" name="submodules[]">
                                @foreach($dockData['data'] as $dock)
                                  <option value='{{ $dock->dock_name }}'>{{ $dock->dock_name }}</option>
@@ -151,6 +154,32 @@
         $('#saveBtn').val("create-product");
         $('#id').val('');
         $('#roleForm').trigger("reset");
+
+        $('.submodules_dd').remove()
+        $.ajax({
+          type: 'POST', 
+          url: "{{ url('getAllDock') }}",
+          dataType: 'json',
+          data:{ _token: "{{csrf_token()}}"},
+          success: function (data) {
+              console.log(data);
+              $('#submodules_dd_add').append('<div class="col-sm-12 submodules_dd"><select class="form-control" id="submodules" style="display:none"  name="submodules[]" multiple></select></div>')
+              $.each(data, function(index, item) {
+                  $('#submodules').append('<option value="'+item.dock_name+'">'+item.dock_name+'</option>')
+              });
+              $('.submodules_dd').dropdown({
+                limitCount: 40,
+                multipleMode: 'label',
+                // callback
+                choice: function (event, selectedProp,x) {
+                  
+                },
+              });
+          },error:function(){ 
+               console.log(data);
+          }
+        });
+
         $('#modelHeading').html("Register Role");
         $('#ajaxModel').modal({
           backdrop:'static',
@@ -180,6 +209,15 @@
           console.log(newdata)
           $.each(newdata, function(i,e){
               $("#submodules option[value='" + e + "']").prop("selected", true);
+          });
+
+          $('.submodules_dd').dropdown({
+            limitCount: 40,
+            multipleMode: 'label',
+            // callback
+            choice: function (event, selectedProp,x) {
+              
+            },
           });
         
       })
@@ -254,6 +292,7 @@
     });
 
     $('.data-table tbody').on( 'click', 'tr', function () {
+            $('.submodules_dd').remove()
             var id = $(this).find("td:nth-child(1)").first().text().trim()
             $.ajax({
               data: {id:id},
@@ -289,6 +328,23 @@
                   console.log('Error:', data);
                   $('#saveBtn').html('Save Changes');
               }
+          });
+
+          $.ajax({
+            type: 'POST', 
+            url: "{{ url('getAllDock') }}",
+            dataType: 'json',
+            data:{ _token: "{{csrf_token()}}"},
+            success: function (data) {
+                console.log(data);
+                $('#submodules_dd_add').append('<div class="col-xl-12 col-sm-12 submodules_dd"><select class="form-control" id="submodules" style="display:none"  name="submodules[]" multiple></select></div>')
+                $.each(data, function(index, item) {
+                    $('#submodules').append('<option value="'+item.dock_name+'">'+item.dock_name+'</option>')
+                });
+                
+            },error:function(){ 
+                 console.log(data);
+            }
           });
     });
 

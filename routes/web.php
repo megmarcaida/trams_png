@@ -98,6 +98,7 @@ Route::post('singleEventInsert', 'SchedulerController@singleEventInsert' )->name
 Route::post('recurrentEventInsert', 'SchedulerController@recurrentEventInsert' )->name('recurrentEventInsert');
 Route::post('recurrentEventInsertInitial', 'SchedulerController@recurrentEventInsertInitial' )->name('recurrentEventInsertInitial');
 Route::post('checkIfNoShowSchedule', 'SchedulerController@checkIfNoShowSchedule')->name('checkIfNoShowSchedule');
+Route::post('getAllSchedules', 'SchedulerController@getAllSchedules')->name('getAllSchedules');
 #END SCHEDULER
 
 #Docker
@@ -111,6 +112,7 @@ Route::get('exportDocker', 'DockController@export')->name('exportDocker');
 Route::post('importDocker', 'DockController@import')->name('importDocker');
 Route::post('getDock', 'DockController@getDock')->name('getDock');
 Route::post('getUserType', 'DockController@getUserType')->name('getUserType');
+Route::post('getAllDock', 'DockController@getAllDock')->name('getAllDock');
 #END Docker
 
 

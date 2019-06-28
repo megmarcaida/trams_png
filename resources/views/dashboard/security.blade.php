@@ -32,12 +32,11 @@
               <table class="table table-bordered table-striped data-table-incoming">
                   <thead>
                       <tr>
-                          <th>Delivery Ticket No.</th>
-                          <th>Slotting Schedule</th>
+                          <th>Delivery No.</th>
+                          <th>Schedule</th>
                           <th>Supplier Name</th>
                           <th>Truck</th>
-                          <th>Plate Number</th>
-                          <th>Container Number</th>
+                          <th>Plate No.</th>
                           <th>Dock</th>
                           <th>Status</th>
                       </tr>
@@ -54,12 +53,11 @@
               <table class="table table-bordered table-striped data-table-outgoing">
                   <thead>
                       <tr>
-                          <th>Delivery Ticket No.</th>
-                          <th>Slotting Schedule</th>
+                          <th>Delivery No.</th>
+                          <th>Schedule</th>
                           <th>Supplier Name</th>
                           <th>Truck</th>
-                          <th>Plate Number</th>
-                          <th>Container Number</th>
+                          <th>Plate No.</th>
                           <th>Dock</th>
                           <th>Status</th>
                       </tr>
@@ -83,7 +81,6 @@
                           <th>Supplier Name</th>
                           <th>Truck</th>
                           <th>Plate Number</th>
-                          <th>Container Number</th>
                           <th>Dock</th>
                           <th>Status</th>
                       </tr>
@@ -200,7 +197,6 @@
             {"data": 'supplier_name'},
             {"data": 'truck'},
             {"data": 'plate_number'},
-            {"data": 'container_number'},
             {"data": 'dock'},
             {"data": 'status'},
         ],
@@ -231,7 +227,6 @@
             {"data": 'supplier_name'},
             {"data": 'truck'},
             {"data": 'plate_number'},
-            {"data": 'container_number'},
             {"data": 'dock'},
             {"data": 'status'},
         ],
@@ -257,7 +252,6 @@
             {"data": 'supplier_name'},
             {"data": 'truck'},
             {"data": 'plate_number'},
-            {"data": 'container_number'},
             {"data": 'dock'},
             {"data": 'status'},
         ]  

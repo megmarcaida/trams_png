@@ -10873,3 +10873,7 @@ tr.even,tr.odd{
   font-size:30px;
   color:#092322;
 }
+
+.dataTables_wrapper{
+  font-size: 13px !important;
+}

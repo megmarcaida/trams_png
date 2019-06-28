@@ -206,4 +206,10 @@ class DockController extends Controller
 
         return json_encode($roles);
     }
+
+    public function getAllDock(Request $request){
+        $dock = Dock::where("status","<>","0")->get();
+
+        return json_encode($dock);
+    }
 }

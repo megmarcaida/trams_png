@@ -1,6 +1,8 @@
 @extends('layouts.datatableapp')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/jquery.dropdown.css') }}">
+<script src="{{ asset('js/jquery.dropdown.js') }}"></script>
 
 <div class="container-fluid">
 
@@ -19,17 +21,18 @@
       <div class="row">
         <div class="col-xl-6">
           <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Banned and Issue</a>
-          <a class="btn btn-warning" href="{{ route('exportSupplier') }}">Export Banned and Issue Data</a>
+          <!-- <a class="btn btn-warning" href="{{ route('exportSupplier') }}">Export Banned and Issue Data</a> -->
         </div>
         <div class="col-xl-3">  
-          <form action="{{ route('importSupplier') }}" method="POST" enctype="multipart/form-data">
+          <!-- <form action="{{ route('importSupplier') }}" method="POST" enctype="multipart/form-data">
               @csrf
               <input type="file" name="file" class="form-control">
               <br>
               <button class="btn btn-success text-right">Import Banned and Issue Data</button>
-          </form>    
+          </form> -->    
         </div>
       </div>
+      <br>
          <div id="response">
           @if(session()->has('import_message'))
             <div class="alert alert-success">
@@ -42,7 +45,7 @@
               <thead>
                   <tr>
                       <th>ID</th>
-                      <th>Name</th>
+                      <th>Delivery No</th>
                       <th>Location</th>
                       <th>Date</th>
                       <th>Nature of Violation</th>
@@ -78,9 +81,10 @@
 
 
                     <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Name</label>
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" value="" maxlength="50" required="">
+                       <label for="name" class="col-sm-12 control-label">*Delivery No.</label>
+                       <div id="delivery_dd_add"></div>
+                       <div class="col-sm-12 delivery_dd">
+                          <select class="form-control" id="delivery_id"></select>
                         </div>
                     </div>
 
@@ -94,23 +98,18 @@
                     <div class="form-group">
                       <label class="col-sm-12 control-label violation">*Nature of Violation</label>
                       <div class="col-sm-12">
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="violation" class="violation" value="Local">
-                          <label class="form-check-label" for="inlineRadio1">Warning</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="violation" class="violation" value="Imported">
-                          <label class="form-check-label" for="inlineRadio1">Ban</label>
-                        </div>
+                        <select class="form-control violation" id="violation" name="violation">
+                          <option value=''>Please select Nature of Violation</option>
+                          <option value='Warning'>Warning</option>
+                          <option value='Ban'>Ban</option>
+                        </select>
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-sm-12 control-label">*Date and Time</label>
                       <div class="col-sm-12">
-                        <div class="col-sm-12">
                         <input type="date" class="form-control datepicker" name="date_time" id="date_time" required="">
-                        </div>
                       </div>
                     </div>
 
@@ -144,7 +143,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">View Assistant</h4>
+                <h4 class="modal-title">View Issue</h4>
 
                 <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
@@ -153,7 +152,7 @@
                 <div class="row">
 
                   <div class="col-md-6" style="line-height: 0px">
-                    Name:
+                    Delivery No.:
                   </div>
                   <div class="col-md-6" style="line-height: 0px">
                     <b><p id="view_name"></p></b>
@@ -244,6 +243,33 @@
         $('#saveBtn').val("create-product");
         $('#supplier_id').val('');
         $('#bannedIssueForm').trigger("reset");
+
+        $('.delivery_dd').remove()
+        $.ajax({
+          type: 'POST', 
+          url: "{{ url('getAllSchedules') }}",
+          dataType: 'json',
+          data:{ _token: "{{csrf_token()}}"},
+          success: function (data) {
+              console.log(data);
+              $('#delivery_dd_add').append('<div class="col-sm-12 delivery_dd"><select class="form-control" multiple id="delivery_id" style="display:none"  name="name"></select></div>')
+              $.each(data, function(index, item) {
+                  $('#delivery_id').append('<option value="'+item.delivery_id+'">'+item.delivery_id+'</option>')
+              });
+              $('.delivery_dd').dropdown({
+                limitCount: 1,
+                multipleMode: 'label',
+                // callback
+                choice: function (event, selectedProp,x) {
+                  
+                },
+              });
+          },error:function(){ 
+               console.log(data);
+          }
+        });
+
+
         $('#modelHeading').html("Register Banned Issue");
         $('#ajaxModel').modal({
           backdrop:'static',
@@ -257,19 +283,30 @@
       var bannedissue_id = $(this).data('id');
       console.log(bannedissue_id)
       $.get("{{ route('ajaxBannedIssue.index') }}" +'/' + bannedissue_id +'/edit', function (data) {
-          $('#modelHeading').html("Edit Product");
+          $('#modelHeading').html("Edit Issue");
           $('#saveBtn').val("edit-user");
           $('#ajaxModel').modal({
             backdrop:'static',
             keyboard: false
           })
           $('#bannedissue_id').val(data.id);
-          $('#name').val(data.name);
+          $('#delivery_id').val(data.name);
           $('#location').val(data.location);
           $('#reason').val(data.reason);
           $('#additional_information').val(data.additional_information);
          
-          $("input[name=violation][value=" + data.violation + "]").prop('checked', 'checked');
+          $("#violation").val(data.violation)
+
+
+          $('.delivery_dd').dropdown({
+            limitCount: 1,
+            multipleMode: 'label',
+            // callback
+            choice: function (event, selectedProp,x) {
+              
+            },
+          });
+
           $('#date_time').val(data.date_time);
       })
    });
@@ -278,9 +315,9 @@
         
       //console.log($("#delivery_type").prop('checked'));
 
-        var violation = $(':radio[name^=violation]:checked').length;
+        var violation = $("#violation option:selected").val()
 
-        if($("#name").val() == "" || $("#location").val() == "" || $("#reason").val() == "" || $("#date_time").val() == "" || $("#additional_information").val() == "" || violation == 0){
+        if($("#name").val() == "" || $("#location").val() == "" || $("#reason").val() == "" || $("#date_time").val() == "" || $("#additional_information").val() == "" || violation == ""){
           $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
 
             if($("#name").val() == "")
@@ -308,7 +345,7 @@
             else
               $("#additional_information").css('outline','1px black solid')
 
-             if(violation == 0)
+             if(violation == "")
               $(".violation").css('color','red')
             else
               $(".violation").css('color','black')
@@ -377,6 +414,7 @@
     });
 
     $('.data-table tbody').on( 'click', 'tr', function () {
+            $('.delivery_dd').remove()
             var id = $(this).find("td:nth-child(1)").first().text().trim()
             $.ajax({
               data: {id:id},
@@ -420,6 +458,22 @@
                   console.log('Error:', data);
                   $('#saveBtn').html('Save Changes');
               }
+          });
+
+          $.ajax({
+            type: 'POST', 
+            url: "{{ url('getAllSchedules') }}",
+            dataType: 'json',
+            data:{ _token: "{{csrf_token()}}"},
+            success: function (data) {
+                console.log(data);
+                $('#delivery_dd_add').append('<div class="col-sm-12 delivery_dd"><select class="form-control" multiple id="delivery_id" style="display:none"  name="name"></select></div>')
+                $.each(data, function(index, item) {
+                    $('#delivery_id').append('<option value="'+item.delivery_id+'">'+item.delivery_id+'</option>')
+                });
+            },error:function(){ 
+                 console.log(data);
+            }
           });
     });
 

@@ -17,7 +17,7 @@ class CreateBannedissues extends Migration
             $table->bigIncrements('id');
             $table->string('name',255)->nullable();
             $table->string('location',255)->nullable();
-            $table->datetime('date_time')->nullable();
+            $table->date('date_time')->nullable();
             $table->string('violation',255)->nullable();
             $table->string('reason',255)->nullable();
             $table->string('additional_information',255)->default('')->nullable();

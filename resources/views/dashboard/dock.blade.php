@@ -171,8 +171,8 @@
               <table class="table table-bordered table-striped data-table-incoming" style="height: 170px;font-size:12px;">
                   <thead>
                       <tr>
-                          <th style="width: 120px;">Delivery Ticket No.</th>
-                          <th>Slotting Schedule</th>
+                          <th style="width: 120px;">Delivery No.</th>
+                          <th>Schedule</th>
                           <th>Supplier</th>
                           <th>Truck</th>
                           <th>Plate No.</th>
@@ -193,8 +193,8 @@
               <table class="table table-bordered table-striped data-table-outgoing" style="height: 170px;font-size:12px;">
                   <thead>
                       <tr>
-                          <th>Delivery Ticket No.</th>
-                          <th>Slotting Time</th>
+                          <th>Delivery No.</th>
+                          <th>Schedule</th>
                           <th>Supplier</th>
                           <th>Truck</th>
                           <th>Plate No.</th>
@@ -224,7 +224,7 @@
                             <table id="{{ str_replace(' ','',$d) }}" class="table-borderless {{ str_replace(' ','',$d) }}">
                                 <tbody>
                                     <tr>
-                                      <td style="width: 160px;">Delivery ID:</td>
+                                      <td style="width: 160px;">Delivery No:</td>
                                       <td><div class="delivery_id"></div></td>
                                     </tr>
                                     <tr>

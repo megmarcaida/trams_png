@@ -1600,4 +1600,24 @@ class SchedulerController extends Controller
 
         return json_encode($ret);
     }
+
+    public function getAllSchedules(Request $request){
+        $schedules = Schedule::where("status","<>","0")->get();
+        if(!empty($schedules))
+        {
+            foreach ($schedules as $schedule)
+            {
+                $num = $schedule->id;
+                $number = str_pad($num, 8, "0", STR_PAD_LEFT);
+                $nestedData['delivery_id'] = $number;
+
+                
+                $data[] = $nestedData;
+             
+
+            }
+
+        }
+        return json_encode($data);
+    }
 }
