@@ -247,7 +247,39 @@
             {"data": 'plate_number'},
             {"data": 'dock'},
             {"data": 'status'},
-        ]  
+        ],
+        "createdRow": function( row, data, dataIndex){
+            if( data.status ==  'For-Entry'){
+                $(row).addClass('greenClass');
+            }
+
+            if( data.status ==  'For-Gate-Out'){
+                $(row).addClass('blueClass');
+            }
+
+            if(data.status == 'In Process'){
+              $(row).addClass('greenClass');
+            }
+
+            if(data.status == 'Completed'){
+              $(row).addClass('blueClass');
+            }
+            if(data.status == 'Parking'){
+              $(row).addClass('greenClass');
+            }
+            if(data.status == 'Delayed'){
+              $(row).addClass('yellowClass');
+            }
+            if(data.status == 'Dock'){
+              $(row).addClass('greenClass');
+            }
+            if(data.status == 'Overtime'){
+              $(row).addClass('redClass');
+            }
+            if(data.status == 'Over Staying'){
+              $(row).addClass('redClass');
+            }
+        }     
 
     });
 

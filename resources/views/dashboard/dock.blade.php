@@ -168,10 +168,10 @@
           <h3>Incoming</h3>
           <hr>
             <div class="table table-responsive">
-              <table class="table table-bordered table-striped data-table-incoming" style="height: 170px;font-size:12px;">
+              <table class="table table-bordered table-striped data-table-incoming" style="font-size:12px;">
                   <thead>
                       <tr>
-                          <th style="width: 120px;">Delivery No.</th>
+                          <th style="width: 100px;">Delivery No.</th>
                           <th>Schedule</th>
                           <th>Supplier</th>
                           <th>Truck</th>
@@ -190,7 +190,7 @@
           <h3>Outgoing</h3>
           <hr>
             <div class="table table-responsive">
-              <table class="table table-bordered table-striped data-table-outgoing" style="height: 170px;font-size:12px;">
+              <table class="table table-bordered table-striped data-table-outgoing" style="font-size:12px;">
                   <thead>
                       <tr>
                           <th>Delivery No.</th>
@@ -414,7 +414,39 @@
         ],
         "displayLength":25, 
         "bLengthChange": false, 
-        "bFilter": false,   
+        "bFilter": false,
+        "createdRow": function( row, data, dataIndex){
+            if( data.status ==  'For-Entry'){
+                $(row).addClass('greenClass');
+            }
+
+            if( data.status ==  'For-Gate-Out'){
+                $(row).addClass('blueClass');
+            }
+
+            if(data.status == 'In Process'){
+              $(row).addClass('greenClass');
+            }
+
+            if(data.status == 'Completed'){
+              $(row).addClass('blueClass');
+            }
+            if(data.status == 'Parking'){
+              $(row).addClass('greenClass');
+            }
+            if(data.status == 'Delayed'){
+              $(row).addClass('yellowClass');
+            }
+            if(data.status == 'Dock'){
+              $(row).addClass('greenClass');
+            }
+            if(data.status == 'Overtime'){
+              $(row).addClass('redClass');
+            }
+            if(data.status == 'Over Staying'){
+              $(row).addClass('redClass');
+            }
+        }   
 
     });
 
@@ -438,7 +470,20 @@
         ],
         "displayLength":25  ,
         "bLengthChange": false, 
-        "bFilter": false, 
+        "bFilter": false,
+        "createdRow": function( row, data, dataIndex){
+            if( data.status ==  'For-Entry'){
+                $(row).addClass('greenClass');
+            }
+
+            if( data.status ==  'For-Gate-Out'){
+                $(row).addClass('blueClass');
+            }
+
+            if(data.status == 'In Process'){
+              $(row).addClass('greenClass');
+            }
+        } 
 
     });
 

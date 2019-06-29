@@ -203,7 +203,39 @@
         'columnDefs': [ {
         'targets': [0,1,2,3,4,5], // column index (start from 0)
         'orderable': false, // set orderable false for selected columns
-        }]    
+        }],
+        "createdRow": function( row, data, dataIndex){
+            if( data.status ==  'For-Entry'){
+                $(row).addClass('greenClass');
+            }
+
+            if( data.status ==  'For-Gate-Out'){
+                $(row).addClass('blueClass');
+            }
+
+            if(data.status == 'In Process'){
+              $(row).addClass('greenClass');
+            }
+
+            if(data.status == 'Completed'){
+              $(row).addClass('blueClass');
+            }
+            if(data.status == 'Parking'){
+              $(row).addClass('greenClass');
+            }
+            if(data.status == 'Delayed'){
+              $(row).addClass('yellowClass');
+            }
+            if(data.status == 'Dock'){
+              $(row).addClass('greenClass');
+            }
+            if(data.status == 'Overtime'){
+              $(row).addClass('redClass');
+            }
+            if(data.status == 'Over Staying'){
+              $(row).addClass('redClass');
+            }
+        }       
 
     });
 

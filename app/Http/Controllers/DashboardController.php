@@ -203,18 +203,18 @@ class DashboardController extends Controller
                     case 8:
                         $dateofdockin = $Schedule->date_of_delivery . " " . $start;
                         if(time() - strtotime($dateofdockin) < 1){
-                            $nestedData['status'] = "Parking";
+                            $nestedData['status'] = "Parking"; //
                         }elseif(time() - strtotime($dateofdockin) > 0){
-                            $nestedData['status'] = "Delayed";
+                            $nestedData['status'] = "Delayed"; //yellow
                         }
                         break;
                     
                     case 9:
                         $dateofdockout = $Schedule->date_of_delivery . " " . $end;
                         if(time() - strtotime($dateofdockout) < 1){
-                            $nestedData['status'] = "Dock";
+                            $nestedData['status'] = "Dock"; //grey
                         }elseif(time() - strtotime($dateofdockout) > 0){
-                            $nestedData['status'] = "Overtime";
+                            $nestedData['status'] = "Overtime"; //red
                         }
                         break;
 
@@ -226,7 +226,7 @@ class DashboardController extends Controller
                             if($Schedule->isDockChange == "1"){
                                 $nestedData['status'] = "Dock Changed - Proceed to " . $Schedule->dock_name;
                             }else{
-                                $nestedData['status'] = "For-Entry";    
+                                $nestedData['status'] = "For-Entry";    //green
                             }
                             
                         }
@@ -237,7 +237,7 @@ class DashboardController extends Controller
                             $nestedData['status'] = "For-Gate-Out";
                         }elseif(time() - strtotime($dateofgateout) > 0){
 
-                        $nestedData['status'] = "Over Staying";
+                        $nestedData['status'] = "Over Staying"; //red
                         }
                         break;   
                         
@@ -387,18 +387,20 @@ class DashboardController extends Controller
                 $nestedData['dock'] = $Schedule->dock_name;
                 switch ($Schedule->status) {
                     case 8:
-                        $nestedData['status'] = "In Process";
+                        $nestedData['status'] = "In Process"; // green
                         break;
                     case 10:
                         $dateofentry = $Schedule->date_of_delivery . " " . $start;
-                        if(strtotime($dateofentry) - time() <= 3601){
-                            $nestedData['status'] = "For-Entry";
+                        if(strtotime($dateofentry) - time() <= 3601 && strtotime($dateofentry) - time() > 0){
+                            $nestedData['status'] = "For-Entry";//green
+                        }elseif(time() - strtotime($dateofentry) > 0){
+                            $nestedData['status'] =  "Delayed";
                         }else{
                             $nestedData['status'] = "";
                         }
                         break;
                     case 11:
-                        $nestedData['status'] = "For-Gate-Out";
+                        $nestedData['status'] = "For-Gate-Out";//complete
                         break;   
                         
                     default:
@@ -901,10 +903,11 @@ class DashboardController extends Controller
                 $nestedData['container_number'] = $Schedule->container_number;
                 $nestedData['dock'] = $Schedule->dock_name;
                 
+                $dateofdockin = $Schedule->date_of_delivery . " " . $start;
+                $dateofdockout = $Schedule->date_of_delivery . " " . $end;
+                $dateofgateout = $Schedule->date_of_delivery . " " . $end;
                  switch ($Schedule->status) {
                     case 1:
-                        $dateofdockin = $Schedule->date_of_delivery . " " . $start;
-                        $dateofdockout = $Schedule->date_of_delivery . " " . $end;
                         if(time() - strtotime($dateofdockin) > 0 && time() - strtotime($dateofdockout) < 1){
                             $nestedData['status'] = "For Dock-In";
                         }else{
@@ -912,15 +915,18 @@ class DashboardController extends Controller
                         }
                         break;
                     case 9:
-                        $dateofdockout = $Schedule->date_of_delivery . " " . $end;
                         if(time() - strtotime($dateofdockout) < 1){
                             $nestedData['status'] = "UNLOADING";
                         }elseif(time() - strtotime($dateofdockout) > 0){
                             $nestedData['status'] = "Overtime";
                         }
-                        break;  
+                        break;
+                    case 10:
+                        if(time() - strtotime($dateofdockin) > 0){
+                            $nestedData['status'] = "Delayed"; //yellow
+                        }
+                    break;  
                     case 11:
-                        $dateofgateout = $Schedule->date_of_delivery . " " . $end;
                         if(time() - strtotime($dateofgateout) < 1){
                             $nestedData['status'] = "For-Gate-Out";
                         }elseif(time() - strtotime($dateofgateout) > 0){
@@ -1057,8 +1063,10 @@ class DashboardController extends Controller
                         break;
                     case 10:
                         $dateofentry = $Schedule->date_of_delivery . " " . $start;
-                        if(strtotime($dateofentry) - time() <= 3601){
+                        if(strtotime($dateofentry) - time() <= 3601 && strtotime($dateofentry) - time() > 0){
                             $nestedData['status'] = "For-Entry";
+                        }elseif(time() - strtotime($dateofentry) > 0){
+                            $nestedData['status'] =  "Delayed";
                         }else{
                             $nestedData['status'] = "";
                         }
@@ -1307,7 +1315,7 @@ class DashboardController extends Controller
                     case 10:
                         $dateofentry = $Schedule->date_of_delivery . " " . $start;
                         if(strtotime($dateofentry) - time() <= 3601){
-                            $nestedData['status'] = "For-Entry " .  (strtotime($dateofentry) - time());
+                            $nestedData['status'] = "For-Entry";
                         }else{
                             $nestedData['status'] = "";
                         }

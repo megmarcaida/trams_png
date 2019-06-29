@@ -16,6 +16,7 @@ class RolesTableSeeder extends Seeder
             ['id' => 2, 'name' => 'North Dock Officer', 'description' => 'North'],
             ['id' => 3, 'name' => 'Security Officer', 'description' => 'Security Officer'],
             ['id' => 4, 'name' => 'South Dock Officer', 'description' => 'South'],
+            ['id' => 5, 'name' => 'SNO', 'description' => 'SNO'],
         ];
 
         DB::table('roles')->insert($roles);

@@ -10877,3 +10877,23 @@ tr.even,tr.odd{
 .dataTables_wrapper{
   font-size: 13px !important;
 }
+
+.greenClass{
+  background-color: #2E8B57 !important;
+  color:#fff;
+}
+
+.blueClass{
+  background-color: #1E90FF !important;
+  color:#fff;
+}
+
+.redClass{
+  background-color: #EF3340 !important;
+  color:#fff;
+}
+
+.yellowClass{
+  background-color: #FFFF00 !important;
+  color:#000;
+}
