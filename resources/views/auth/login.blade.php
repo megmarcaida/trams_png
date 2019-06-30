@@ -4,10 +4,13 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            <div class="page-header" style="margin: 100px 0 100px 0;">
+                <h3 class="text-center">Truck Reservation and Movement System</h3>
+            </div>
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+                <div class="card-header text-center">Log In</div>
 
-                <div class="card-body">
+                <div class="card-body" style="margin: 50px 0 50px 0;">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
@@ -38,15 +41,15 @@
                                 @endif
                             </div>
                         </div>
-                        <div style="text-align: center;margin: 50px;font-size:20px;">
+                        <!-- <div style="text-align: center;margin: 50px;font-size:20px;">
                         <code>Email: admin@trams.com Password: admin123</code>
                         <br>
                         <code>Email: northdock@trams.com Password: northdock</code><br>
                         <code>Email: southdock@trams.com Password: southdock</code><br>
                         <code>Email: security@trams.com Password: security123</code>
-                        </div>
+                        </div> -->
 
-                        <div class="form-group row">
+                        <!-- <div class="form-group row">
                             <div class="col-md-6 offset-md-4">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
@@ -56,7 +59,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">
@@ -65,9 +68,9 @@
                                 </button>
 
                                 @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
+                                   <!--  <a class="btn btn-link" href="{{ route('password.request') }}">
                                         {{ __('Forgot Your Password?') }}
-                                    </a>
+                                    </a> -->
                                 @endif
                             </div>
                         </div>

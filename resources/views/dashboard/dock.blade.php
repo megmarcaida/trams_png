@@ -87,9 +87,6 @@
       plate_number.html('')
       container_number.html('')
 
-      moduleClass.addClass('alert alert-secondary')
-      moduleClass.removeClass('alert-success')
-      moduleClass.removeClass('alert-danger')
       $.ajax({
           async: false,
           url: "{{ url('getFirstDockData') }}",
@@ -108,22 +105,20 @@
                 timenow = today.getHours() + ":" + today.getMinutes() 
                 //console.log(timenow)
                 console.log(item.status)
+
+                moduleClass.removeClass('greenClass')
+                moduleClass.removeClass('yellowClass')
+                moduleClass.removeClass('redClass')
                 if(item.status == ""){
-                    moduleClass.addClass('alert alert-secondary')
-                    moduleClass.removeClass('alert-success')
-                    moduleClass.removeClass('alert-danger')
+                    moduleClass.addClass('')
                 }else if(item.status == "Dock"){
-                    moduleClass.addClass('alert alert-success')
-                    moduleClass.removeClass('alert-secondary')
-                    moduleClass.removeClass('alert-danger')
+                    moduleClass.addClass('greenClass')
+                }else if(item.status == "Above75Percent"){
+                    moduleClass.addClass('yellowClass')
                 }else if(item.status == "Overtime"){
-                    moduleClass.addClass('alert alert-danger')
-                    moduleClass.removeClass('alert-secondary')
-                    moduleClass.removeClass('alert-success')
+                    moduleClass.addClass('redClass')
                 }else{
-                    moduleClass.addClass('alert alert-secondary')
-                    moduleClass.removeClass('alert-success')
-                    moduleClass.removeClass('alert-danger')
+                    moduleClass.addClass('')
                 }
 
                 // if(timenow > item.endtime){

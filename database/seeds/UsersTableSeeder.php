@@ -17,6 +17,7 @@ class UsersTableSeeder extends Seeder
             ['id' => 2, 'name' => 'Trams North Dock Officer', 'email' => 'northdock@trams.com', 'password' => bcrypt('northdock'), 'role_id' => 2],
             ['id' => 3, 'name' => 'Trams Security Officer', 'email' => 'security@trams.com', 'password' => bcrypt('security123'), 'role_id' => 3],
             ['id' => 4, 'name' => 'Trams South Dock Officer', 'email' => 'southdock@trams.com', 'password' => bcrypt('southdock'), 'role_id' => 4],
+            ['id' => 5, 'name' => 'Trams SNO', 'email' => 'sno@trams.com', 'password' => bcrypt('sno123'), 'role_id' => 5],
         ];
 
         DB::table('users')->insert($users);

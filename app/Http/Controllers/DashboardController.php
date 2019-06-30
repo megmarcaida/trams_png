@@ -26,7 +26,7 @@ class DashboardController extends Controller
             $date = Carbon::now();
             $datenow = $date->format("M d, Y"); 
             return view('dashboard/general')->with('datenow',$datenow);
-        }else if($role_id != "1" && $role_id != "3"){
+        }else if($role_id != "1" && $role_id != "3" && $role_id != "5"){
             $submodules = array();
             $role_account = Role::where('id',$role_id)->first();
             $sub_docks = explode("|",$role_account->submodules);
@@ -90,6 +90,10 @@ class DashboardController extends Controller
             $date = Carbon::now();
             $datenow = $date->format("M d, Y");
             return view('dashboard/security')->with(['datenow'=>$datenow]);
+        }else if($role_id == "5"){
+            $date = Carbon::now();
+            $datenow = $date->format("M d, Y");
+            return view('dashboard/sno')->with(['datenow'=>$datenow]);
         }else{
 
             return view('home');
@@ -452,7 +456,7 @@ class DashboardController extends Controller
 
         $dock = Dock::where('status', 1)->where("dock_name",$dock_name)->first();
     
-        $schedules = Schedule::where("dock_id",$dock['id'])->where("process_status",$request->process_status)->where("status",$request->status)->orderBy("slotting_time")->first();
+        $schedules = Schedule::where("dock_id",$dock['id'])->where("process_status",$request->process_status)->whereIn("status",[5,9])->orderBy("slotting_time")->first();
 
         $data = array();
         $trucks_suppliers='';
@@ -479,11 +483,26 @@ class DashboardController extends Controller
             $nestedData['container_number'] = $schedules['container_number'];
             $nestedData['dock'] = $schedules['dock_name'];
             $nestedData['isDocked'] = $schedules->isDocked;
-
+            $dateofdockin = $schedules->date_of_delivery . " " . $start;
             $dateofdockout = $schedules->date_of_delivery . " " . $end;
-            if(time() - strtotime($dateofdockout) < 1){
+            $totalTime = (strtotime($dateofdockout) - strtotime($dateofdockin));
+            $currentTimeCount = (strtotime($dateofdockout) - time());
+            $seventyFivePercent = (($totalTime * 75) / 100);
+            $twentyFivePercent = $totalTime - $seventyFivePercent;
+
+            // if(time() - strtotime($dateofdockout) < 1){
+            //     $nestedData['status'] = "Dock" ;
+            // }elseif(time() - strtotime($dateofdockout) > 0){
+            //     $nestedData['status'] = "Overtime";
+            // }else{
+            //     $nestedData['status'] = "";
+            // }
+
+            if($currentTimeCount < $seventyFivePercent && $currentTimeCount > $twentyFivePercent){
                 $nestedData['status'] = "Dock";
-            }elseif(time() - strtotime($dateofdockout) > 0){
+            }elseif($currentTimeCount <= $twentyFivePercent && $currentTimeCount > 0){
+                $nestedData['status'] = "Above75Percent";
+            }elseif($currentTimeCount < 0){
                 $nestedData['status'] = "Overtime";
             }else{
                 $nestedData['status'] = "";

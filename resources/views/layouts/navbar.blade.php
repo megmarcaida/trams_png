@@ -13,11 +13,10 @@
 
     <!-- Navbar -->
     <ul class="navbar-nav ml-auto ml-md-0 mr-md-3 my-2 my-md-0">
-      <li class="nav-item dropdown no-arrow mx-1">
+      <!-- <li class="nav-item dropdown no-arrow mx-1">
         <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Notifications
           <i class="fas fa-bell fa-fw"></i>
-          <!-- <span class="badge badge-danger">9+</span> -->
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
           <a class="dropdown-item text-dark" href="#">Action</a>
@@ -30,7 +29,6 @@
         <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Settings
           <i class="fas fa-cog fa-fw"></i>
-          <!-- <span class="badge badge-danger">7</span> -->
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messagesDropdown">
           <a class="dropdown-item text-dark" href="#">Action</a>
@@ -38,7 +36,7 @@
           <div class="dropdown-divider navbar-font-black"></div>
           <a class="dropdown-item text-dark" href="#">Something else here</a>
         </div>
-      </li>
+      </li> -->
       <li class="nav-item dropdown no-arrow">
           <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                   {{ Auth::user()->name }} <span class="caret"></span>

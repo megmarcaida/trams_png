@@ -6,13 +6,14 @@
           <span>Dashboard</span>
         </a>
       </li>
+      @if(Auth::user()->role_id != 5)
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-btn" href="#">
           <i class="fas fa-fw fa-folder"></i>
           <span>Record Maintenance</span>
         </a>
         <div class="dropdown-container">
-          <!-- <h6 class="dropdown-header">Record Maintenance:</h6> -->
+          <!-- <h6 class="dropdown-header">Record Maintenance:</h6> -->  
           @if(Auth::user()->role_id != 3)  
           <a class="dropdown-item" href="/recordmaintenance/supplier">Supplier</a>
           <a class="dropdown-item" href="/recordmaintenance/truck">Trucks</a>
@@ -25,8 +26,9 @@
           <a class="dropdown-item" href="blank.html">Blank Page</a> -->
         </div>
       </li>
+      @endif
 
-      @if(Auth::user()->role_id != 3 && Auth::user()->role_id != 2 && Auth::user()->role_id != 4)  
+      @if(Auth::user()->role_id != 3 && Auth::user()->role_id != 2 && Auth::user()->role_id != 4 && Auth::user()->role_id != 5)  
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-btn" href="#">
           <i class="fas fa-fw fa-folder"></i>
@@ -45,7 +47,7 @@
       </li>
       @endif
      
-     @if(Auth::user()->role_id != 3)   
+     @if(Auth::user()->role_id != 3 && Auth::user()->role_id != 5)   
      <li class="nav-item dropdown">
         <a class="nav-link dropdown-btn" href="#">
           <i class="fas fa-fw fa-folder"></i>

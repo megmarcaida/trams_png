@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="float-left">
-                    Dashboard / Security Dashboard
+                    Dashboard / SNO Dashboard
                 </div>
             </div>
         </div>
@@ -153,11 +153,9 @@
                 <br>
                 <div class="row">
                   <div class="col-xl-4 col-sm-12">
-                    <button id="btn-gate-in" class="btn btn-secondary btn-xs btn-block" type="button">Gate-In</button>
-                    <button id="btn-gate-out" class="btn btn-secondary btn-xs btn-block" type="button">Gate-Out</button>
                   </div>
                   <div class="col-xl-4 col-sm-12">
-                    <button id="btn-register" class="btn btn-secondary btn-xs btn-block" type="button">Register</button>
+                   
                   </div>
                   <div class="col-xl-4 col-sm-12">  
                     <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
@@ -265,39 +263,7 @@
         'columnDefs': [ {
         'targets': [0,1,2,3,4,5], // column index (start from 0)
         'orderable': false, // set orderable false for selected columns
-        }],
-        "createdRow": function( row, data, dataIndex){
-            if( data.status ==  'For-Entry'){
-                $(row).addClass('greenClass');
-            }
-
-            if( data.status ==  'For-Gate-Out'){
-                $(row).addClass('blueClass');
-            }
-
-            if(data.status == 'In Process'){
-              $(row).addClass('greenClass');
-            }
-
-            if(data.status == 'Completed'){
-              $(row).addClass('blueClass');
-            }
-            if(data.status == 'Parking'){
-              $(row).addClass('greenClass');
-            }
-            if(data.status == 'Delayed'){
-              $(row).addClass('yellowClass');
-            }
-            if(data.status == 'Dock'){
-              $(row).addClass('greenClass');
-            }
-            if(data.status == 'Overtime'){
-              $(row).addClass('redClass');
-            }
-            if(data.status == 'Over Staying'){
-              $(row).addClass('redClass');
-            }
-        }    
+        }]    
 
     });
 
@@ -318,39 +284,7 @@
             {"data": 'plate_number'},
             {"data": 'dock'},
             {"data": 'status'},
-        ],
-        "createdRow": function( row, data, dataIndex){
-            if( data.status ==  'For-Entry'){
-                $(row).addClass('greenClass');
-            }
-
-            if( data.status ==  'For-Gate-Out'){
-                $(row).addClass('blueClass');
-            }
-
-            if(data.status == 'In Process'){
-              $(row).addClass('greenClass');
-            }
-
-            if(data.status == 'Completed'){
-              $(row).addClass('blueClass');
-            }
-            if(data.status == 'Parking'){
-              $(row).addClass('greenClass');
-            }
-            if(data.status == 'Delayed'){
-              $(row).addClass('yellowClass');
-            }
-            if(data.status == 'Dock'){
-              $(row).addClass('greenClass');
-            }
-            if(data.status == 'Overtime'){
-              $(row).addClass('redClass');
-            }
-            if(data.status == 'Over Staying'){
-              $(row).addClass('redClass');
-            }
-        }  
+        ]  
 
     });
 
@@ -429,9 +363,6 @@
             $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
 
-            $("#btn-gate-in").hide();
-            $("#btn-gate-out").show();
-            $("#btn-register").hide();
 
             $('#ajaxModelView').modal({
                 backdrop:'static',
@@ -440,68 +371,6 @@
         }
     });
 
-   $('body').on( 'click', '#btn-gate-in', function () {
-            
-        $.ajax({
-            async: false,
-            url: "{{ url('changeProcessStatus') }}",
-            type: "POST",
-            global: false,
-            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:10,process_status:'incoming',process_name:"gate-in"},
-            success: function (data) {
-              if(JSON.parse(data).success){
-                $("#response").show();
-                $("#response").html("<div class='alert alert-success'>" + JSON.parse(data).success + "</div>")
-              }
-
-              if(JSON.parse(data).error){
-                $("#response").show();
-                $("#response").html("<div class='alert alert-danger'>" + JSON.parse(data).error + "</div>")
-              }
-              $('#ajaxModelView').modal('hide');
-              setTimeout(function(){
-                $("#response").hide('slow');
-              },5000)
-            },
-            error: function (data) {
-                console.log('Error:', data);
-            }
-        });
-    });
-
-    $('body').on( 'click', '#btn-gate-out', function () {
-        $("#response").empty();
-        $.ajax({
-            async: false,
-            url: "{{ url('changeProcessStatus') }}",
-            type: "POST",
-            global: false,
-            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:11,process_status:'incoming',process_name:"gate-out"},
-            success: function (data) {
-              if(JSON.parse(data).success){
-                $("#response").show();
-                $("#response").html("<div class='alert alert-success'>" + JSON.parse(data).success + "</div>")
-              }
-
-              if(JSON.parse(data).error){
-                $("#response").show();
-                $("#response").html("<div class='alert alert-danger'>" + JSON.parse(data).error + "</div>")
-              }
-              $('#ajaxModelView').modal('hide');
-              setTimeout(function(){
-                $("#response").hide('slow');
-              },5000)
-            },
-            error: function (data) {
-                console.log('Error:', data);
-            }
-        });
-    });
-
-    $('body').on('click','#btn-register',function(){
-      window.location='scheduler/slottingschedule'
-    });
-     
   });
 
   $('.table-click').on('click',function(){

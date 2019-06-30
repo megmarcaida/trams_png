@@ -202,8 +202,11 @@
           $('#description').val(data.description);
           $('#name').val(data.name);
 
-          var data_ = data.submodules
-          var newdata = data_.split("|")
+          if(data.submodules != undefined){
+              
+            var data_ = data.submodules
+            var newdata = data_.split("|")
+          }
            
           
           console.log(newdata)
