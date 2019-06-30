@@ -110,7 +110,9 @@
                 moduleClass.removeClass('yellowClass')
                 moduleClass.removeClass('redClass')
                 if(item.status == ""){
-                    moduleClass.addClass('')
+                    moduleClass.removeClass('redClass')
+                    moduleClass.removeClass('greenClass')
+                    moduleClass.removeClass('yellowClass')
                 }else if(item.status == "Dock"){
                     moduleClass.addClass('greenClass')
                 }else if(item.status == "Above75Percent"){
@@ -118,7 +120,9 @@
                 }else if(item.status == "Overtime"){
                     moduleClass.addClass('redClass')
                 }else{
-                    moduleClass.addClass('')
+                    moduleClass.removeClass('redClass')
+                    moduleClass.removeClass('greenClass')
+                    moduleClass.removeClass('yellowClass')
                 }
 
                 // if(timenow > item.endtime){

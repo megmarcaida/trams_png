@@ -1228,6 +1228,7 @@
                   });
 
                   $("#slotting_time").val(data.slotting_time_text);
+                  $("#check_slotting_time").val(data.slotting_time_text);
 
                    $('div.occupied_slot_box').addClass("slot_box");
 
@@ -1518,214 +1519,234 @@
         var trucktype = $("#truck_id > option:selected").data('type');  
 
 
-        if(recurrence.val() == "Recurrent"){
-            $(".gcas").css('border','1px solid black')
-            $(".description").css('border','1px solid black')
-            $(".quantity").css('border','1px solid black')
-
-             if($("#recurrent_dateend").val() == "")
-             $("#recurrent_dateend").css('outline','1px solid red')
-            else
-             $("#recurrent_dateend").css('outline','1px solid transparent')
-
-            if(ordering_days == 0){
-              $("#modalresponse").show();
-              $(".ordering_days").css('color','red')
-                $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
-
-              $('#modalresponse').fadeIn(1000);
-              setTimeout(function(){
-                $('#modalresponse').fadeOut(1000);
-              },2000)
-
-              return false;
-            }
-            else{
-              $(".ordering_days").css('color','black')
-            }
-          }else if(recurrence.val() == "Single Event"){
-             
-              // if($('.gcas').val() == "" || $('.quantity').val() == "" || $('.description').val() == ""){
-
-              //     $("#modalresponse").show();
-              //     $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
-
-              //     $('#modalresponse').fadeIn(1000);
-              //     setTimeout(function(){
-              //       $('#modalresponse').fadeOut(1000);
-              //     },2000)
-
-              //     $(".gcas").css('border','1px solid red')
-              //     $(".description").css('border','1px solid red')
-              //     $(".quantity").css('border','1px solid red')
-              //     return false;
-              // }else{
-              //     $(".gcas").css('border','1px solid black')
-              //     $(".description").css('border','1px solid black')
-              //     $(".quantity").css('border','1px solid black')
-              // }
-          }
-        
-
-        if($("#po_number").val() == "" || $("#supplier_id").val() == "0" || $("#dock_id").val() ==  "" || $("#truck_id").val() == "" || $("#driver_id").val() == "" || $("#assistant_id").val() == "" || $("#recurrence").val() == "" || $("#dateOfDelivery").val() == "" || $("#slotting_time").val() == ""){
-          $("#modalresponse").show();
-          $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
-
-          $('#modalresponse').fadeIn(1000);
-          setTimeout(function(){
-            $('#modalresponse').fadeOut(1000);
-          },2000)
-
-          console.log("Recurrent:" + $("#recurrence").val())
-          if($("#recurrence").val() == "")
-            $("#recurrence").css('outline','1px solid red')
-          else
-            $("#recurrence").css('outline','1px solid transparent')
-
-           if($("#po_number").val() == "")
-             $("#po_number").css('outline','1px solid red')
-           else
-             $("#po_number").css('outline','1px solid transparent')
-
-           if($("#supplier_id").val() == "0")
-             $("#supplier_id").css('outline','1px solid red')
-           else
-             $("#supplier_id").css('outline','1px solid transparent')
-
-           if($("#dock_id").val() == "0")
-             $("#dock_id").css('outline','1px solid red')
-           else
-             $("#dock_id").css('outline','1px solid transparent')
-
-           if($("#truck_id").val() == "0" || $("#truck_id").val() == "" || $("#truck_id").val() == null)
-             $("#truck_id").css('outline','1px solid red')
-           else
-             $("#truck_id").css('outline','1px solid transparent')
-
-            if($("#driver_id").val() == "0" || $("#driver_id").val() == "" || $("#driver_id").val() == null)
-             $("#driver_id").css('outline','1px solid red')
-            else
-             $("#driver_id").css('outline','1px solid transparent')
-
-            if($("#assistant_id").val() == "0" || $("#assistant_id").val() == "" || $("#assistant_id").val() == null)
-             $("#assistant_id").css('outline','1px solid red')
-            else
-             $("#assistant_id").css('outline','1px solid transparent')
-
-           if($("#dateOfDelivery").val() == "")
-             $("#dateOfDelivery").css('outline','1px solid red')
-            else
-             $("#dateOfDelivery").css('outline','1px solid transparent')
-
-           
-
-
-           if(trucktype == "Containerized"){
-
-             if($("#container_number").val() == ""){
-
-               $("#container_number").css('outline','1px solid red')
-             }
-              else{
-               $("#container_number").css('outline','1px solid transparent')
-              }
-           }
-
-
-           if($("#slotting_time").val() == "")
-            $(".slotting_time").css('color','red')
-           else
-            $(".slotting_time").css('color','black')
-
-
-          
-
-          return false;
-        }else{
-
-            e.preventDefault();
-            $(this).html('Sending..');
-        
-            //console.log($('#scheduleForm').serialize())
-            var isEditingRecurrent = $("#isEditingRecurrent").val()
-            var isEditingSingle = $("#isEditingSingle").val()
-
-            var url_ = ""
-            console.log("isEditedFinalized:" +isEditingRecurrent)
-            console.log("isEditingSingle:" + isEditingSingle )
-            if(recurrence.val() == "Recurrent"){
-              if(isEditingRecurrent == "0" && isEditingSingle == "0") {
-                url_ = "{{ url('recurrentEventInsertInitial') }}"
-              }
-              else if(isEditingRecurrent == "1"){
-                url_ = "{{ url('recurrentEventInsert') }}"
-              }
-              else if(isEditingSingle == "1") {
-                url_ = "{{ url('singleEventInsert') }}"
-              }
-            }
-            else {
-              url_ = "{{ route('ajaxschedules.store') }}"
-            }
-            $.ajax({
-              data: $('#scheduleForm').serialize(),
-              url: url_,
-              type: "POST",
-              dataType: 'json',
-              success: function (data) {
-                console.log(data)
-                 if(data.conflict != undefined && data.conflict != null){
-                  console.log(data)
-                  $('#modelViewErrorRecurrent').modal({
-                    backdrop:'static',
-                    keyboard: false
-                  })
-                  $('#ajaxModel').modal('hide');
-                  if(data.conflict.length > 0 ){
-                      $("#modelViewErrorRecurrent > .modal-dialog > .modal-content").css('width','960px');
-                      $("#modelViewErrorRecurrent > .modal-dialog > .modal-content").css('margin-left','-220px');
-                      $.each(data.conflict, function(index, sched) {
-                        $(".error_recurrent").append("<div class='row'><div class='col-md-3'><p>"+sched.date_of_delivery+"</p><p>"+sched.slotting_time+"</p><p>"+sched.supplier_name+"</p><p>Delivery ID:"+ sched.id +"</p><p> CONFLICT WITH: Delivery ID: "+sched.conflict_id+"</p></div><div class='col-md-3'><button class='btn btn-primary btn-block edit_single_event' data-edit-id='"+sched.id+"'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div><div class='col-md-3'><p>Delivery ID:"+sched.conflict_id+"</p><p> CONFLICT WITH: Delivery ID: "+sched.id+"</p></div><div class='col-md-3'><button class='btn btn-primary btn-block edit_single_event' data-edit-id='"+sched.conflict_id+"'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.conflict_id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div></div>")
-                    });
-                  }
-                  
-                 }else{
-                   $('#response').show();
-                   $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
-                    $('#scheduleForm').trigger("reset");
-                    $('#ajaxModel').modal('hide');
-                    setTimeout(function(){
-                      $('#response').hide("slow");
-                    },2000)
-                    
-                    if(data.data != null){
-
-                      $.each(data.data, function(key,value){   
-                          window.open("printVoucher/"+value.id,"_blank")
-                      });
-                    }else{
-                      window.open("printVoucher/"+data.id,"_blank")
-                    }
-
-                     var current_module = $("#current_module").val()
-                     testCalendar(current_module)
-                     $('#saveBtn').html('Save Changes');
-                 }
-
-                 console.log($('#dataEditID').val())
-                 if($('#dataEditID').val() != '0' && $('#dataEditID').val() != ''){
-                    $("#modelViewErrorRecurrent").modal({
+        //isReschedule Edit
+        var check_slotting_time_resched = $("#check_slotting_time").val();
+        var slotting_time_resched = $('#slotting_time').val();
+        console.log(slotting_time_resched)
+        console.log(check_slotting_time_resched)
+        if(check_slotting_time_resched != slotting_time_resched){
+          $('#isEditingSchedule').val('1')
+          $('#reason_reschedule').show();
+          $('#reason_modal').hide();
+          $('#recurrence_modal').hide();
+          $('#ajaxModelDelete').modal({
                       backdrop:'static',
                       keyboard: false
                     })
-                 }
-              },
-              error: function (data) {
-                  console.log('Error:', data);
-                  $('#saveBtn').html('Save Changes');
+          $('#ajaxModel').modal('hide')
+          e.preventDefault();
+        }else{
+          $('#isEditingSchedule').val('0')
+          if(recurrence.val() == "Recurrent"){
+              $(".gcas").css('border','1px solid black')
+              $(".description").css('border','1px solid black')
+              $(".quantity").css('border','1px solid black')
+
+               if($("#recurrent_dateend").val() == "")
+               $("#recurrent_dateend").css('outline','1px solid red')
+              else
+               $("#recurrent_dateend").css('outline','1px solid transparent')
+
+              if(ordering_days == 0){
+                $("#modalresponse").show();
+                $(".ordering_days").css('color','red')
+                  $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+
+                $('#modalresponse').fadeIn(1000);
+                setTimeout(function(){
+                  $('#modalresponse').fadeOut(1000);
+                },2000)
+
+                return false;
               }
-            });
+              else{
+                $(".ordering_days").css('color','black')
+              }
+            }else if(recurrence.val() == "Single Event"){
+               
+                // if($('.gcas').val() == "" || $('.quantity').val() == "" || $('.description').val() == ""){
+
+                //     $("#modalresponse").show();
+                //     $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+
+                //     $('#modalresponse').fadeIn(1000);
+                //     setTimeout(function(){
+                //       $('#modalresponse').fadeOut(1000);
+                //     },2000)
+
+                //     $(".gcas").css('border','1px solid red')
+                //     $(".description").css('border','1px solid red')
+                //     $(".quantity").css('border','1px solid red')
+                //     return false;
+                // }else{
+                //     $(".gcas").css('border','1px solid black')
+                //     $(".description").css('border','1px solid black')
+                //     $(".quantity").css('border','1px solid black')
+                // }
+            }
+          
+
+          if($("#po_number").val() == "" || $("#supplier_id").val() == "0" || $("#dock_id").val() ==  "" || $("#truck_id").val() == "" || $("#driver_id").val() == "" || $("#assistant_id").val() == "" || $("#recurrence").val() == "" || $("#dateOfDelivery").val() == "" || $("#slotting_time").val() == ""){
+            $("#modalresponse").show();
+            $("#modalresponse").html("<div class='alert alert-danger'>Please fill in the required fields.</div>")
+
+            $('#modalresponse').fadeIn(1000);
+            setTimeout(function(){
+              $('#modalresponse').fadeOut(1000);
+            },2000)
+
+            console.log("Recurrent:" + $("#recurrence").val())
+            if($("#recurrence").val() == "")
+              $("#recurrence").css('outline','1px solid red')
+            else
+              $("#recurrence").css('outline','1px solid transparent')
+
+             if($("#po_number").val() == "")
+               $("#po_number").css('outline','1px solid red')
+             else
+               $("#po_number").css('outline','1px solid transparent')
+
+             if($("#supplier_id").val() == "0")
+               $("#supplier_id").css('outline','1px solid red')
+             else
+               $("#supplier_id").css('outline','1px solid transparent')
+
+             if($("#dock_id").val() == "0")
+               $("#dock_id").css('outline','1px solid red')
+             else
+               $("#dock_id").css('outline','1px solid transparent')
+
+             if($("#truck_id").val() == "0" || $("#truck_id").val() == "" || $("#truck_id").val() == null)
+               $("#truck_id").css('outline','1px solid red')
+             else
+               $("#truck_id").css('outline','1px solid transparent')
+
+              if($("#driver_id").val() == "0" || $("#driver_id").val() == "" || $("#driver_id").val() == null)
+               $("#driver_id").css('outline','1px solid red')
+              else
+               $("#driver_id").css('outline','1px solid transparent')
+
+              if($("#assistant_id").val() == "0" || $("#assistant_id").val() == "" || $("#assistant_id").val() == null)
+               $("#assistant_id").css('outline','1px solid red')
+              else
+               $("#assistant_id").css('outline','1px solid transparent')
+
+             if($("#dateOfDelivery").val() == "")
+               $("#dateOfDelivery").css('outline','1px solid red')
+              else
+               $("#dateOfDelivery").css('outline','1px solid transparent')
+
+             
+
+
+             if(trucktype == "Containerized"){
+
+               if($("#container_number").val() == ""){
+
+                 $("#container_number").css('outline','1px solid red')
+               }
+                else{
+                 $("#container_number").css('outline','1px solid transparent')
+                }
+             }
+
+
+             if($("#slotting_time").val() == "")
+              $(".slotting_time").css('color','red')
+             else
+              $(".slotting_time").css('color','black')
+
+
+            
+
+            return false;
+          }else{
+
+              e.preventDefault();
+              $(this).html('Sending..');
+          
+              //console.log($('#scheduleForm').serialize())
+              var isEditingRecurrent = $("#isEditingRecurrent").val()
+              var isEditingSingle = $("#isEditingSingle").val()
+
+              var url_ = ""
+              console.log("isEditedFinalized:" +isEditingRecurrent)
+              console.log("isEditingSingle:" + isEditingSingle )
+              if(recurrence.val() == "Recurrent"){
+                if(isEditingRecurrent == "0" && isEditingSingle == "0") {
+                  url_ = "{{ url('recurrentEventInsertInitial') }}"
+                }
+                else if(isEditingRecurrent == "1"){
+                  url_ = "{{ url('recurrentEventInsert') }}"
+                }
+                else if(isEditingSingle == "1") {
+                  url_ = "{{ url('singleEventInsert') }}"
+                }
+              }
+              else {
+                url_ = "{{ route('ajaxschedules.store') }}"
+              }
+              $.ajax({
+                data: $('#scheduleForm').serialize(),
+                url: url_,
+                type: "POST",
+                dataType: 'json',
+                success: function (data) {
+                  console.log(data)
+                   if(data.conflict != undefined && data.conflict != null){
+                    console.log(data)
+                    $('#modelViewErrorRecurrent').modal({
+                      backdrop:'static',
+                      keyboard: false
+                    })
+                    $('#ajaxModel').modal('hide');
+                    if(data.conflict.length > 0 ){
+                        $("#modelViewErrorRecurrent > .modal-dialog > .modal-content").css('width','960px');
+                        $("#modelViewErrorRecurrent > .modal-dialog > .modal-content").css('margin-left','-220px');
+                        $.each(data.conflict, function(index, sched) {
+                          $(".error_recurrent").append("<div class='row'><div class='col-md-3'><p>"+sched.date_of_delivery+"</p><p>"+sched.slotting_time+"</p><p>"+sched.supplier_name+"</p><p>Delivery ID:"+ sched.id +"</p><p> CONFLICT WITH: Delivery ID: "+sched.conflict_id+"</p></div><div class='col-md-3'><button class='btn btn-primary btn-block edit_single_event' data-edit-id='"+sched.id+"'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div><div class='col-md-3'><p>Delivery ID:"+sched.conflict_id+"</p><p> CONFLICT WITH: Delivery ID: "+sched.id+"</p></div><div class='col-md-3'><button class='btn btn-primary btn-block edit_single_event' data-edit-id='"+sched.conflict_id+"'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.conflict_id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div></div>")
+                      });
+                    }
+                    
+                   }else{
+                     $('#response').show();
+                     $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                      $('#scheduleForm').trigger("reset");
+                      $('#ajaxModel').modal('hide');
+                      setTimeout(function(){
+                        $('#response').hide("slow");
+                      },2000)
+                      
+                      if(data.data != null){
+
+                        $.each(data.data, function(key,value){   
+                            window.open("printVoucher/"+value.id,"_blank")
+                        });
+                      }else{
+                        window.open("printVoucher/"+data.id,"_blank")
+                      }
+
+                       var current_module = $("#current_module").val()
+                       testCalendar(current_module)
+                       $('#saveBtn').html('Save Changes');
+                   }
+
+                   console.log($('#dataEditID').val())
+                   if($('#dataEditID').val() != '0' && $('#dataEditID').val() != ''){
+                      $("#modelViewErrorRecurrent").modal({
+                        backdrop:'static',
+                        keyboard: false
+                      })
+                   }
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                    $('#saveBtn').html('Save Changes');
+                }
+              });
           }
+
+        }
     });
 
     $('body').on('click', '#delete_single_event', function (e) {
@@ -1751,6 +1772,7 @@
         var id = $('#selected_schedule').val(); 
         var reason = $('#reason').val(); 
         var isRecurrent = $('#isRecurrent').val(); 
+        var isEditingSchedule = $('#isEditingSchedule').val();
         $('#response').show();
         if (confirm("Are you want to proceed?")){
 
@@ -1762,6 +1784,8 @@
                   $('#responseCancel').fadeOut(1000);
                 },2000)
             }else{
+
+              
                   $.ajax({
                     url: "{{ url('deactivateOrActivateSchedule') }}",
                     type: "POST",
@@ -1782,11 +1806,124 @@
                         //console.log('Error:', data);
                     }
                 });
+              
+                  
             }
             
 
         } 
     });
+
+    $('body').on('click', '#edit_schedule', function (e) {
+        var id = $('#selected_schedule').val(); 
+        var reason = $('#reason_edit').val(); 
+        var isRecurrent = $('#isRecurrent').val(); 
+        var isEditingSchedule = $('#isEditingSchedule').val();
+        $('#response').show();
+        if (confirm("Are you want to proceed?")){
+
+            if(reason == ""){
+
+                 $('#responseCancel').show();    
+                 $('#responseCancel').html("<div class='alert alert-danger'>Please select reason.</div>")
+                 setTimeout(function(){
+                  $('#responseCancel').fadeOut(1000);
+                },2000)
+            }else{
+                  var url_ = "{{ route('ajaxschedules.store') }}"
+                  $.ajax({
+                    data: $('#scheduleForm').serialize(),
+                    url: url_,
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (data) {
+                      console.log(data)
+                       if(data.conflict != undefined && data.conflict != null){
+                        console.log(data)
+                        $('#modelViewErrorRecurrent').modal({
+                          backdrop:'static',
+                          keyboard: false
+                        })
+                        $('#ajaxModel').modal('hide');
+                        if(data.conflict.length > 0 ){
+                            $("#modelViewErrorRecurrent > .modal-dialog > .modal-content").css('width','960px');
+                            $("#modelViewErrorRecurrent > .modal-dialog > .modal-content").css('margin-left','-220px');
+                            $.each(data.conflict, function(index, sched) {
+                              $(".error_recurrent").append("<div class='row'><div class='col-md-3'><p>"+sched.date_of_delivery+"</p><p>"+sched.slotting_time+"</p><p>"+sched.supplier_name+"</p><p>Delivery ID:"+ sched.id +"</p><p> CONFLICT WITH: Delivery ID: "+sched.conflict_id+"</p></div><div class='col-md-3'><button class='btn btn-primary btn-block edit_single_event' data-edit-id='"+sched.id+"'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div><div class='col-md-3'><p>Delivery ID:"+sched.conflict_id+"</p><p> CONFLICT WITH: Delivery ID: "+sched.id+"</p></div><div class='col-md-3'><button class='btn btn-primary btn-block edit_single_event' data-edit-id='"+sched.conflict_id+"'>Edit Schedule</button><button data-supplier_id='"+sched.supplier_id+"' data-id='"+sched.conflict_id+"' class='btn btn-danger btn-block btncancelSchedule_reccurent'>Cancel Schedule</button></div></div>")
+                          });
+                        }
+                        
+                       }else{
+                         $('#response').show();
+                         $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                          $('#scheduleForm').trigger("reset");
+                          $('#ajaxModel').modal('hide');
+                          setTimeout(function(){
+                            $('#response').hide("slow");
+                          },2000)
+                          
+                          if(data.data != null){
+
+                            $.each(data.data, function(key,value){   
+                                window.open("printVoucher/"+value.id,"_blank")
+                            });
+                          }else{
+                            window.open("printVoucher/"+data.id,"_blank")
+                          }
+
+                           var current_module = $("#current_module").val()
+                           testCalendar(current_module)
+                           $('#saveBtn').html('Save Changes');
+                       }
+
+                       console.log($('#dataEditID').val())
+                       if($('#dataEditID').val() != '0' && $('#dataEditID').val() != ''){
+                          $("#modelViewErrorRecurrent").modal({
+                            backdrop:'static',
+                            keyboard: false
+                          })
+                       }
+
+                       $.ajax({
+                          url: "{{ url('updateSchedule') }}",
+                          type: "POST",
+                          data: {id:id, reason:reason, isRecurrent:isRecurrent},
+                          success: function (data) {
+                              $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
+                              var current_module = $("#current_module").val()
+                              testCalendar(current_module)
+                              $('#ajaxModelDelete').modal('hide');
+                              if($('#dataEditID').val() != ''){
+                                $("#modelViewErrorRecurrent").modal({
+                                  backdrop:'static',
+                                  keyboard: false
+                                })
+                              }
+                          },
+                          error: function (data) {
+                              //console.log('Error:', data);
+                          }
+                      });
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                        $('#saveBtn').html('Save Changes');
+                    }
+                  });
+              
+                
+
+
+              
+                  
+            }
+            
+
+        } 
+    });
+
+                 
+              
 
     $('body').on('click', '#saveBtnUnavailability', function (e) {
 
@@ -2423,6 +2560,7 @@
                           <!-- Slotting Time -->
                               <div class="form-group">
                                 <label class="col-sm-12 control-label slotting_time">*Slotting Time</label>
+                                <input type="hidden" class="form-control" id="check_slotting_time" required="">
                                 <input type="hidden" class="form-control" id="slotting_time" name="slotting_time" required="">
                                 <div class="col-sm-12">
                                     <div class="parent_slotting">
@@ -2616,6 +2754,26 @@
                     <input type="hidden" id="isRecurrent">
                     <br>
                     <button id="delete_schedule" class="btn btn-primary btn-block">Cancel Schedule</button>
+                    <button class="btn btn-secondary btn-block btn-block-sched" data-dismiss="modal">Cancel</button>
+                  </div>
+                </div>
+            </div>
+             <div id="reason_reschedule" class="modal-body">
+                <p id="enter_reason">Enter reason for rescheduling schedules</p>
+                <div class="row">
+                  <div class="col-xl-12">
+                    <div id="responseCancel"></div>
+                    <!-- <textarea class="form-control" id="reason"></textarea> -->
+                    <select  class="form-control" id="reason_edit" name="reason">
+                       <option value="">Please select Reason</option>
+                       @foreach($json_data['reasonReschedule']['data'] as $reason)
+                         <option value='{{ $reason->reason_name }}'>{{ $reason->reason_name }}</option>
+                       @endforeach
+                    </select>
+                    <input type="hidden" id="isRecurrent">
+                    <input type="hidden" id="isEditingSchedule">
+                    <br>
+                    <button id="edit_schedule" class="btn btn-primary btn-block">Save Schedule</button>
                     <button class="btn btn-secondary btn-block btn-block-sched" data-dismiss="modal">Cancel</button>
                   </div>
                 </div>

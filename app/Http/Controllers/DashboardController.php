@@ -505,7 +505,7 @@ class DashboardController extends Controller
             }elseif($currentTimeCount < 0){
                 $nestedData['status'] = "Overtime";
             }else{
-                $nestedData['status'] = "";
+                $nestedData['status'] = "Dock";
             }
 
             $nestedData['endtime'] = $end;
@@ -576,7 +576,7 @@ class DashboardController extends Controller
             }
 
             //Dock-OUT
-            if($sched->status == 9 && $sched->process_status == "incoming_dock_in" && $process_name == "dock-out"){
+            if(($sched->status == 9 || $sched->status == 5) && $sched->process_status == "incoming_dock_in" && $process_name == "dock-out"){
                 $dock_in_datetime = $sched->dock_in_timestamp;
                 $unloading_time = time() - strtotime($dock_in_datetime);
                 $sched->update(['process_status'=>"outgoing","status"=> 11,"dock_out_timestamp"=>Carbon::now(),"unloading_timestamp"=>$unloading_time]);

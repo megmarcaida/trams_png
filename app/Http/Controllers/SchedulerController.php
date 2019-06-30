@@ -88,7 +88,7 @@ class SchedulerController extends Controller
             array_push($dock_ids, $d->id);
         }
 
-        $schedules = Schedule::whereIn('dock_id',$dock_ids)->where("status","<>","0")->get();
+        $schedules = Schedule::whereIn('dock_id',$dock_ids)->whereNotIn("status",[0,7])->get();
 
         $unavailabilities = Dock_Unavailability::whereIn('dock_id',$dock_ids)->where('status','<>','0')->get();
         $get_docks = Dock::where("dock_name",$search)->first();
@@ -780,6 +780,18 @@ class SchedulerController extends Controller
         }
         
         return response()->json(['success'=>'Schedule deactivated successfully.']);
+    }
+
+    public function updateSchedule(Request $request)
+    {
+        $schedule = Schedule::find($request->id);
+        if($request->isRecurrent == "0"){
+            $schedule->update(['reason'=> $request->reason,'status' => 3]);
+        }else{
+            Schedule::where("recurrent_id",$schedule->recurrent_id)->update(['reason'=> $request->reason,'status' => 3]);
+        }
+        
+        return response()->json(['success'=>'Schedule successfully rescheduled.']);
     }
 
     public function fetchIncompleteMaterials()    {

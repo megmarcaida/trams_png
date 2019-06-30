@@ -90,6 +90,7 @@ Route::post('getSupplierData', 'SchedulerController@getSupplierData' )->name('ge
 Route::resource('ajaxschedules','SchedulerController');
 Route::post('deactivateOrActivateSchedule', 'SchedulerController@deactivateOrActivateSchedule')->name('deactivateOrActivateSchedule');
 Route::post('fetchIncompleteMaterials', 'SchedulerController@fetchIncompleteMaterials' )->name('fetchIncompleteMaterials');
+Route::post('updateSchedule', 'SchedulerController@updateSchedule' )->name('updateSchedule');
 
 Route::post('getEditDockUnavailability', 'SchedulerController@getEditDockUnavailability' )->name('getEditDockUnavailability');
 Route::get('scheduler/printVoucher/{id}','SchedulerController@getVoucher');
