@@ -516,6 +516,36 @@ class DashboardController extends Controller
             $description = explode("|", $mat_list[1]);
             $quantity = explode("|", $mat_list[2]);
 
+            $stage = "<table class='table table-responsive table-striped'>";
+            $stage .= "<tr>";
+            $stage .= "<th>Gate In</th><th>Dock In</th><th>Dock Out</th><th>Gate Out</th>";
+            $stage .= "</tr>";
+            $stage .= "<tr>";
+            if($schedules->status == 8 && $schedules->parking_timestamp == null){
+                $stage .= "<td>☑</td>";
+            }else{
+               $stage .= "<td>☒</td>";
+            }
+            if($schedules->status == 9 && $schedules->parking_timestamp != null){
+                $stage .= "<td>☑</td>";
+            }else{
+               $stage .= "<td>☒</td>";
+            }
+            if($schedules->status == 11 && $schedules->unloading_timestamp != null){
+                $stage .= "<td>☑</td>";
+            }else{
+               $stage .= "<td>☒</td>";
+            }
+            if($schedules->status == 7 && $schedules->egress_timestamp != null){
+                $stage .= "<td>☑</td>";
+            }else{
+               $stage .= "<td>☒</td>";
+            }
+            $stage .= "</tr>";
+            $stage .= "</table>";
+
+            $nestedData['stage'] = $stage;
+
             $nestedData['material_list']['gcas'] = $gcas;
             $nestedData['material_list']['description'] = $description;
             $nestedData['material_list']['quantity'] = $quantity;
@@ -1201,6 +1231,35 @@ class DashboardController extends Controller
             }
             $material_list .= "</table>";
 
+            $stage = "<table class='table table-responsive table-striped'>";
+            $stage .= "<tr>";
+            $stage .= "<th>Gate In</th><th>Dock In</th><th>Dock Out</th><th>Gate Out</th>";
+            $stage .= "</tr>";
+            $stage .= "<tr>";
+            if($Schedule['status'] == 8 && $Schedule['parking_timestamp'] == null){
+                $stage .= "<td>☑</td>";
+            }else{
+               $stage .= "<td>☒</td>";
+            }
+            if($Schedule['status'] == 9 && $Schedule['parking_timestamp'] != null){
+                $stage .= "<td>☑</td>";
+            }else{
+               $stage .= "<td>☒</td>";
+            }
+            if($Schedule['status'] == 11 && $Schedule['unloading_timestamp'] != null){
+                $stage .= "<td>☑</td>";
+            }else{
+               $stage .= "<td>☒</td>";
+            }
+            if($Schedule['status'] == 7 && $Schedule['egress_timestamp'] != null){
+                $stage .= "<td>☑</td>";
+            }else{
+               $stage .= "<td>☒</td>";
+            }
+            $stage .= "</tr>";
+            $stage .= "</table>";
+
+            $nestedData['stage'] = $stage;
             $nestedData['material_list'] = $material_list;
             
             $data[] = $nestedData;

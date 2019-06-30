@@ -339,22 +339,34 @@
                     </div>
                   </div>
                   </div>
+                
                   
                 </div>
                 <br>
                 <div class="form-group">
                   <div class="row">
-                     <label for="name" class="col-xl-4 col-sm-12 control-label"><h5>Change Dock:</h5> </label>
+                      <div class="col-xl-6 col-sm-12">
+                        <div class="row">
+                         <label for="name" class="col-xl-4 col-sm-12 control-label"><h5>Change Dock:</h5> </label>
 
-                     <div class="col-xl-8 col-sm-12">
-                        <select class="form-control btn-modules-dropdown" id="dropdown-dock">
-                             <option value="">Please select Dock</option>
-                             @foreach($dockData['data'] as $dock)
-                               <option value='{{ $dock->id }}'>{{ $dock->dock_name }}</option>
-                             @endforeach
-                        </select>
+                         <div class="col-xl-8 col-sm-12">
+                            <select class="form-control btn-modules-dropdown" id="dropdown-dock">
+                                 <option value="">Please select Dock</option>
+                                 @foreach($dockData['data'] as $dock)
+                                   <option value='{{ $dock->id }}'>{{ $dock->dock_name }}</option>
+                                 @endforeach
+                            </select>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                      <div class="col-xl-6 col-sm-12">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <table class="table table-responsive view_stage"></table>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col-xl-4 col-sm-12 btn-dock-in">
@@ -620,6 +632,7 @@
                   $('.view_truck').html(data.truck) 
                   $('.view_container_no').html(data.container_number)
                   $('.view_material_list').html(data.material_list)
+                  $('.view_stage').html(data.stage)
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -678,6 +691,7 @@
                   $('.view_truck').html(data.truck) 
                   $('.view_container_no').html(data.container_number)
                   $('.view_material_list').html(data.material_list)
+                  $('.view_stage').html(data.stage)
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -732,6 +746,8 @@
                   $('.view_truck').html(data.truck) 
                   $('.view_container_no').html(data.container_number)
                   $('.view_material_list').html(data.material_list)
+
+                  $('.view_stage').html(data.stage)
                 },
                 error: function (data) {
                     console.log('Error:', data);
