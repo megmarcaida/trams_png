@@ -1,7 +1,7 @@
  <!-- Sidebar -->
     <ul class="sidebar navbar-nav toggled">
       <li class="nav-item active">
-        <a class="nav-link" href="/">
+        <a class="nav-link" href="/TRAMS/public/">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span>
         </a>
@@ -15,11 +15,11 @@
         <div class="dropdown-container">
           <!-- <h6 class="dropdown-header">Record Maintenance:</h6> -->  
           @if(Auth::user()->role_id != 3)  
-          <a class="dropdown-item" href="/recordmaintenance/supplier">Supplier</a>
-          <a class="dropdown-item" href="/recordmaintenance/truck">Trucks</a>
+          <a class="dropdown-item" href="/TRAMS/public/recordmaintenance/supplier">Supplier</a>
+          <a class="dropdown-item" href="/TRAMS/public/recordmaintenance/truck">Trucks</a>
           @endif
-          <a class="dropdown-item" href="/recordmaintenance/driver">Driver</a>
-          <a class="dropdown-item" href="/recordmaintenance/assistant">Assistant</a>
+          <a class="dropdown-item" href="/TRAMS/public/recordmaintenance/driver">Driver</a>
+          <a class="dropdown-item" href="/TRAMS/public/recordmaintenance/assistant">Assistant</a>
           <!-- <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Other Pages:</h6>
           <a class="dropdown-item" href="404.html">404 Page</a>
@@ -36,9 +36,9 @@
         </a>
         <div class="dropdown-container">
           <!-- <h6 class="dropdown-header">Record Maintenance:</h6> -->
-          <a class="dropdown-item" href="/masterfile/roles">Roles</a>
-          <a class="dropdown-item" href="/masterfile/users">Users</a>
-          <a class="dropdown-item" href="/masterfile/reasons">Reasons</a>
+          <a class="dropdown-item" href="/TRAMS/public/masterfile/roles">Roles</a>
+          <a class="dropdown-item" href="/TRAMS/public/masterfile/users">Users</a>
+          <a class="dropdown-item" href="/TRAMS/public/masterfile/reasons">Reasons</a>
           <!-- <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Other Pages:</h6>
           <a class="dropdown-item" href="404.html">404 Page</a>
@@ -55,9 +55,9 @@
         </a>
         <div class="dropdown-container">
           
-          <a class="dropdown-item" href="/scheduler/index">Scheduling</a>
-          <a class="dropdown-item" href="/scheduler/slottingschedule">Slotting Scheduling</a>
-          <a class="dropdown-item" href="/scheduler/dock">Dock</a>
+          <a class="dropdown-item" href="/TRAMS/public/scheduler/index">Scheduling</a>
+          <a class="dropdown-item" href="/TRAMS/public/scheduler/slottingschedule">Slotting Scheduling</a>
+          <a class="dropdown-item" href="/TRAMS/public/scheduler/dock">Dock</a>
         </div>
       </li>
       @endif
@@ -70,14 +70,14 @@
         </a>
         <div class="dropdown-container">
           
-          <a class="dropdown-item" href="/dashboard/parking">Parking Dashboard</a>
-          <a class="dropdown-item" href="/dashboard/executive">Executive Module</a>
-          <a class="dropdown-item" href="/dashboard/dock">Dock</a>
-          <a class="dropdown-item" href="/dashboard/gate">Gate</a>
-          <a class="dropdown-item" href="/dashboard/manual">Manual Process</a>
-          <a class="dropdown-item" href="/dashboard/reader">QR Code</a>
-          <a class="dropdown-item" href="/others/parking">Parking Module</a>
-          <a class="dropdown-item" href="/others/bannedIssueReporting">Banned and Issue Reporting</a>
+          <a class="dropdown-item" href="/TRAMS/public/dashboard/parking">Parking Dashboard</a>
+          <a class="dropdown-item" href="/TRAMS/public/dashboard/executive">Executive Module</a>
+          <a class="dropdown-item" href="/TRAMS/public/dashboard/dock">Dock</a>
+          <a class="dropdown-item" href="/TRAMS/public/dashboard/gate">Gate</a>
+          <a class="dropdown-item" href="/TRAMS/public/dashboard/manual">Manual Process</a>
+          <a class="dropdown-item" href="/TRAMS/public/dashboard/reader">QR Code</a>
+          <a class="dropdown-item" href="/TRAMS/public/others/parking">Parking Module</a>
+          <a class="dropdown-item" href="/TRAMS/public/others/bannedIssueReporting">Banned and Issue Reporting</a>
         </div>
       </li>
       @endif
