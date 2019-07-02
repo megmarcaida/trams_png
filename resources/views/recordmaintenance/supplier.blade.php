@@ -312,8 +312,8 @@
 
                     <br>
 
-                    <div class="col-sm-offset-2 col-sm-10">
-                       <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
+                    <div class="offset-8 col-md-4 col-sm-12">
+                       <button type="submit" class="btn btn-primary btn-block" id="saveBtn" value="create">Save changes
                        </button>
                     </div>
 

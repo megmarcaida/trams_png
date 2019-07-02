@@ -198,7 +198,7 @@
 
                     <br>
 
-                    <div class="col-sm-offset-2 col-sm-10">
+                    <div class="offset-8 col-md-4 col-sm-12">
                        <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
                        </button>
                     </div>
