@@ -868,6 +868,7 @@
               $('#dateOfDelivery').css("outline","solid 1px transparent")
               $('#recurrence').css("outline","solid 1px transparent")
               $('.slotting_time').css("color","black")
+              $('#newInserData').val('1');
 
               $('.ordering_days_dd').remove()
               $('#ordering_days_add').append('<div class="col-sm-12 ordering_days_dd"><select multiple="true" class="form-control ordering_days" style="display: none;" id="ordering_days" name="ordering_days[]"><option value="Mon">Mon</option><option value="Tue">Tue</option><option value="Wed">Wed</option><option value="Thu">Thu</option><option value="Fri">Fri</option><option value="Sat">Sat</option><option value="Sun">Sun</option></select></div>')
@@ -981,7 +982,7 @@
           );
         },
          eventClick: function(info) {
-
+            $('#newInserData').val('');
             $('#scheduleForm').trigger("reset");      
 
             // view hide element
@@ -1216,8 +1217,8 @@
 
                   $('#cont').html('');
                   createTable();
-                  //console.log(data.material_list  + "Test")
-                  if(data.material_list == 0){
+                  console.log(data.material_list.gcas.length)
+                  if(data.material_list.gcas.length == 1){
                       addRow('','','')
                   }
                   $.each(data.material_list.gcas, function(index, item) {
@@ -1524,7 +1525,9 @@
         var slotting_time_resched = $('#slotting_time').val();
         console.log(slotting_time_resched)
         console.log(check_slotting_time_resched)
-        if(check_slotting_time_resched != slotting_time_resched){
+        var newInserData = $("#newInserData").val();
+        console.log(newInserData)
+        if(check_slotting_time_resched != slotting_time_resched && newInserData != "1"){
           $('#isEditingSchedule').val('1')
           $('#reason_reschedule').show();
           $('#reason_modal').hide();
@@ -2387,7 +2390,7 @@
                      <input type="hidden" value="0" name="isEditingSingle" id="isEditingSingle">
 
                      <input type="hidden" value="0" name="dataEditID" id="dataEditID">
-
+                     <input type="hidden" value="0" name="newInserData" id="newInserData">
                      <!-- First Row -->
                      <div class="row">
 
