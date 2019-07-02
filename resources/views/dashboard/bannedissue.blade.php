@@ -12,15 +12,15 @@
       <a href="#">Dashboard</a>
     </li>
     <li class="breadcrumb-item">Others</li>
-    <li class="breadcrumb-item active">Banned and Issue Reporting</li>
+    <li class="breadcrumb-item active">Issue Reporting</li>
   </ol>
 
   <div class="row">
     <div class="col-xl-12 col-sm-12 mb-3">
-      <h1>Banned and Issue Reporting</h1>
+      <h1>Issue Reporting</h1>
       <div class="row">
         <div class="col-xl-6">
-          <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Banned and Issue</a>
+          <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Issue</a>
           <!-- <a class="btn btn-warning" href="{{ route('exportSupplier') }}">Export Banned and Issue Data</a> -->
         </div>
         <div class="col-xl-3">  
@@ -127,7 +127,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-offset-2 col-sm-10">
+                    <div class="offset-8 col-md-2 col-sm-12">
                        <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
                        </button>
                     </div>

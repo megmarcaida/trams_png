@@ -6,7 +6,7 @@
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>{{ config('app.name', 'Laravel') }}</title>
+  <title>{{ config('app.name', 'TRAMS') }}</title>
   <script src="{{ asset('js/jsQR.js') }}"></script>
   <link href="https://fonts.googleapis.com/css?family=Ropa+Sans" rel="stylesheet">    <!-- Styles -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
@@ -60,41 +60,48 @@
 </head>
 <body>
   <br>
-  <a href="/" class="btn btn-secondary">Back to Dashboard</a>
-  <br><Br>
-  <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
-  <canvas id="canvas" hidden></canvas>
-    <div id="output" hidden>
-    <div class="row">
+  <a href="/TRAMS/public" class="btn btn-secondary">Back to Dashboard</a>
+  <br><br>
+  <div class="row">
         <div class="col-xl-12">
               <h3 class="text-center">QR Scanner</h3>
               <div id="outputMessage" class="text-center">No QR code detected.</div>
               <form id="scheduleForm" name="scheduleForm" class="form-horizontal">
                     <div id="response"></div>
-                    <div class="form-group">
-                      <label for="name" class="col-xl-12 control-label">*Process Name</label>
-                      <div class="col-md-12">
-                        
-                        <select class="form-control process_name" required name="process_name">
-                          <option value="">Please select proccess</option>
-                          <option value="gate-in">Gate-In</option>
-                          <option value="dock-in">Dock-In</option>
-                          <option value="dock-out">Dock-Out</option>
-                          <option value="gate-out">Gate-Out</option>
-                        </select>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="name" class="col-xl-12 control-label">*Process Name</label>
+                          <div class="col-md-12">
+                            
+                            <select class="form-control process_name" required name="process_name">
+                              <option value="">Please select proccess</option>
+                              <option value="gate-in">Gate-In</option>
+                              <option value="dock-in">Dock-In</option>
+                              <option value="dock-out">Dock-Out</option>
+                              <option value="gate-out">Gate-Out</option>
+                            </select>
+                          </div>
+                        </div></div>
+                      <div class="col-md-6">
+                          <div class="form-group">
+                              <label for="name" class="col-xl-12 control-label">*Delivery Ticket No.</label>
+                              <div class="col-xl-12">
+                                  <input type="text" readonly="" class="form-control" id="delivery_ticket_id" name="delivery_ticket_id" placeholder="Enter Delivery Ticket No" value="" maxlength="100" required="">
+                              </div>
+                          </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="name" class="col-xl-12 control-label">*Delivery Ticket No.</label>
-                        <div class="col-xl-12">
-                            <input type="text" readonly="" class="form-control" id="delivery_ticket_id" name="delivery_ticket_id" placeholder="Enter Delivery Ticket No" value="" maxlength="100" required="">
-                        </div>
+
                     </div>
 
                 </form>
             
         </div>
     </div>
+  <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
+  <canvas id="canvas" hidden></canvas>
+    <div id="output" hidden>
+    
    <!--  <div hidden><b>Data:</b> <span id="outputData"></span></div> -->
   </div>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
