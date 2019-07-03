@@ -45,8 +45,8 @@
               
             <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Delivery Type</label>
-               <div class="col-sm-12">
-                  <select multiple="true" class="form-control delivery_type_filter" id="delivery_type_filter" name="delivery_type_filter[]">
+               <div class="col-sm-12 dt_dd">
+                  <select multiple="true" style="display: none;" class="form-control delivery_type_filter" id="delivery_type_filter" name="delivery_type_filter[]">
                        <option value="">All</option>
                        <option value="Local">Local</option>
                        <option value="Imported">Imported</option>
@@ -58,8 +58,8 @@
           <div class="col-md-3">
               <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Ordering Days</label>
-               <div class="col-sm-12">
-                  <select multiple="true" class="form-control ordering_days_filter" id="ordering_days_filter">
+               <div class="col-sm-12 or_dd">
+                  <select multiple="true" style="display: none;" class="form-control ordering_days_filter" id="ordering_days_filter">
                        <option value="">All</option>
                        <option value="Mon">Mon</option>
                        <option value="Tue">Tue</option>
@@ -73,10 +73,10 @@
             </div>
           </div>
           <div class="col-md-3">
-              <div class="form-group">
+              <div class="form-group md_dd">
                <label for="name" class="col-sm-12 control-label">*Filter Module Days</label>
                <div class="col-sm-12">
-                  <select multiple="true" class="form-control module_filter" id="module_filter" name="module_filter[]">
+                  <select multiple="true" style="display: none;" class="form-control module_filter" id="module_filter" name="module_filter[]">
                        <option value="PCC">PCC</option>
                        <option value="Baby Care">Baby Care</option>
                        <option value="Laundry">Laundry</option>
@@ -90,8 +90,8 @@
               
             <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Status</label>
-               <div class="col-sm-12">
-                  <select multiple="true" class="form-control status_filter" id="status_filter" name="status_filter[]">
+               <div class="col-sm-12 fs_dd">
+                  <select multiple="true" style="display: none;" class="form-control status_filter" id="status_filter" name="status_filter[]">
                        <option value="">All</option>
                        <option value="Active">Active</option>
                        <option value="Inactive">Inactive</option>
@@ -430,6 +430,46 @@
         ],
 
 
+    });
+
+    $('.or_dd').dropdown({
+      limitCount: 40,
+      multipleMode: 'label',
+      // callback
+      choice: function (event, selectedProp,x) {
+        console.log(selectedProp.name)
+        table.search(selectedProp.name).draw();   
+      },
+    });
+
+    $('.dt_dd').dropdown({
+      limitCount: 40,
+      multipleMode: 'label',
+      // callback
+      choice: function (event, selectedProp,x) {
+        console.log(selectedProp.name)
+        table.search(selectedProp.name).draw();   
+      },
+    });
+
+    $('.md_dd').dropdown({
+      limitCount: 40,
+      multipleMode: 'label',
+      // callback
+      choice: function (event, selectedProp,x) {
+        console.log(selectedProp.name)
+        table.search(selectedProp.name).draw();   
+      },
+    });
+
+    $('.fs_dd').dropdown({
+      limitCount: 40,
+      multipleMode: 'label',
+      // callback
+      choice: function (event, selectedProp,x) {
+        console.log(selectedProp.name)
+        table.search($("#status_filter").val()).draw();   
+      },
     });
 
     $('#delivery_type_filter').on('change', function(){
@@ -799,6 +839,6 @@
   });
 
 
-
+  
 </script>
 @endsection

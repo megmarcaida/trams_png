@@ -42,7 +42,7 @@
               
             <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Supplier</label>
-               <div class="col-sm-12">
+               <div class="col-sm-12 fs_dd">
                   <select multiple="true" class="form-control supplier_filter" id="supplier_filter" name="supplier_filter[]">
                        <option value="">All</option>
                        @foreach($supplierData['data'] as $supplier)
@@ -57,7 +57,7 @@
               
             <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Status</label>
-               <div class="col-sm-12">
+               <div class="col-sm-12 sf_dd">
                   <select multiple="true" class="form-control status_filter" id="status_filter" name="status_filter[]">
                        <option value="">All</option>
                        <option value="Active">Active</option>
@@ -502,6 +502,26 @@
           backdrop:'static',
           keyboard: false
         })
+    });
+
+    $('.fs_dd').dropdown({
+      limitCount: 40,
+      multipleMode: 'label',
+      // callback
+      choice: function (event, selectedProp,x) {
+        console.log(selectedProp.id)
+        table.search(selectedProp.id).draw();   
+      },
+    });
+
+    $('.sf_dd').dropdown({
+      limitCount: 40,
+      multipleMode: 'label',
+      // callback
+      choice: function (event, selectedProp,x) {
+        console.log(selectedProp.id)
+        table.search(selectedProp.id).draw();   
+      },
     });
 
     $('#supplier_filter').on('change', function(){

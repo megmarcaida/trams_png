@@ -1,13 +1,14 @@
 @extends('layouts.datatableapp')
 
 @section('content')
+
 <div class="container-fluid">
 
     <div class="alert alert-secondary">
         <div class="row">
             <div class="col-md-12">
                 <div class="float-left">
-                    Dashboard / General Dashboard
+                    Dashboard / Admin Dashboard
                 </div>
             </div>
         </div>
@@ -23,22 +24,60 @@
       </div>
     </center>
 
+    <div style="display:none;" id="response"></div>
+    <div class="row">
+        <div class="col-xl-6 col-sm-12 mb-3">
+          <h3>Incoming</h3>
+            <div class="table table-responsive">
+              <table class="table table-bordered table-striped data-table-incoming">
+                  <thead>
+                      <tr>
+                          <th>Delivery No.</th>
+                          <th>Schedule</th>
+                          <th>Supplier Name</th>
+                          <th>Truck</th>
+                          <th>Plate No.</th>
+                          <th>Dock</th>
+                          <th>Status</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
+            </div>
+        </div>
+        <div class="col-xl-6 col-sm-12 mb-3">
+          <h3>Outgoing</h3>
+             
+            <div class="table table-responsive">
+              <table class="table table-bordered table-striped data-table-outgoing">
+                  <thead>
+                      <tr>
+                          <th>Delivery No.</th>
+                          <th>Schedule</th>
+                          <th>Supplier Name</th>
+                          <th>Truck</th>
+                          <th>Plate No.</th>
+                          <th>Dock</th>
+                          <th>Status</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xl-12 col-sm-12 mb-3">
           <h3>General Dashboard</h3>
-             <div id="response">
-              @if(session()->has('import_message'))
-                <div class="alert alert-success">
-                    {{ session()->get('import_message') }}
-                </div>
-            @endif
-            </div>
+             
             <div class="table table-responsive">
               <table class="table table-bordered table-striped data-table">
                   <thead>
                       <tr>
                           <th>Delivery Ticket No.</th>
-                          <th>Slotting Number</th>
+                          <th>Slotting Schedule</th>
                           <th>Supplier Name</th>
                           <th>Truck</th>
                           <th>Plate Number</th>
@@ -53,173 +92,81 @@
         </div>
     </div>
 
+</div>
 
-    <h3>Dock View</h3>
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-femcare-tab" data-toggle="tab" href="#nav-femcare" role="tab" aria-controls="nav-home" aria-selected="true">Fem Care</a>
-            <a class="nav-item nav-link" id="nav-liquids-tab" data-toggle="tab" href="#nav-liquids" role="tab" aria-controls="nav-profile" aria-selected="false">Liquids</a>
-            <a class="nav-item nav-link" id="nav-pcc-tab" data-toggle="tab" href="#nav-pcc" role="tab" aria-controls="nav-contact" aria-selected="false">PCC</a>
-            <a class="nav-item nav-link" id="nav-babycare-tab" data-toggle="tab" href="#nav-babycare" role="tab" aria-controls="nav-contact" aria-selected="false">Baby Care</a>
-            <a class="nav-item nav-link" id="nav-laundry-tab" data-toggle="tab" href="#nav-laundry" role="tab" aria-controls="nav-laundry" aria-selected="false">Laundry</a>
-        </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-femcare" role="tabpanel" aria-labelledby="nav-femcare-tab">
-            <br>
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                      <a class="nav-link table-click" data-table_name="fem-care-table" data-category="Fem Care" data-module="Fem Care" data-toggle="pill" href="#v-pills-fem-care" role="tab" aria-controls="v-pills-fem-care" aria-selected="true">Fem Care</a>
-                    </div>
-                </div>
-                <div class="col-md-10">
-                     <div class="table table-responsive">
-                      <table class="table table-bordered table-striped docks-table fem-care-table">
-                            <thead>
-                                <tr>
-                                    <th>Delivery Ticket No.</th>
-                                    <th>Slotting Number</th>
-                                    <th>Supplier Name</th>
-                                    <th>Truck</th>
-                                    <th>Plate Number</th>
-                                    <th>Container Number</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                      </table>
-                    </div>
-                </div>
+<div class="modal fade" id="ajaxModelView" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeadingView">Delivery ID: <b class="view_delivery_id"></b></h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
-        </div>
-        <div class="tab-pane fade" id="nav-liquids" role="tabpanel" aria-labelledby="nav-liquids-tab">
-            <br>
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                      <a class="nav-link table-click" data-table_name="liquids-table" data-category="Liquids" data-module="Liquids" data-toggle="pill" href="#v-pills-liquids" role="tab" aria-controls="v-pills-liquids" aria-selected="true">Liquids</a>
-                      <a class="nav-link table-click" data-table_name="liquids-table" data-category="Liquids" data-module="Liquids Out Canopy" data-toggle="pill" href="#v-pills-liquids-out-canopy" role="tab" aria-controls="v-pills-liquids-out-canopy" aria-selected="false">Liquids Out Canopy</a>
-                    </div>
+            <div class="modal-body">
+                
+               <div class="row">
+                  <div class="col-md-6">
+                    Delivery ID:
+                  </div>
+                  <div class="col-md-6">
+                    <p class="view_delivery_id"></p>
+                  </div>
                 </div>
-                <div class="col-md-10">
-                     <div class="table table-responsive">
-                      <table class="table table-bordered table-striped docks-table liquids-table">
-                            <thead>
-                                <tr>
-                                    <th>Delivery Ticket No.</th>
-                                    <th>Slotting Number</th>
-                                    <th>Supplier Name</th>
-                                    <th>Truck</th>
-                                    <th>Plate Number</th>
-                                    <th>Container Number</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                      </table>
-                    </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Slotting Time:
+                  </div>
+                  <div class="col-md-6">
+                    <p class="view_slotting_time"></p>
+                  </div>
                 </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="nav-pcc" role="tabpanel" aria-labelledby="nav-pcc-tab">
-            <br>
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                      <a class="nav-link table-click" data-table_name="pcc-table" data-category="PCC" data-module="PCC 1" data-toggle="pill" href="#v-pills-pcc1" role="tab" aria-controls="v-pills-pcc1" aria-selected="true">PCC 1</a>
-                      <a class="nav-link table-click" data-table_name="pcc-table" data-category="PCC" data-module="PCC 2" data-toggle="pill" href="#v-pills-pcc2" role="tab" aria-controls="v-pills-pcc2" aria-selected="false">PCC 2</a>
-                    </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Supplier:
+                  </div>
+                  <div class="col-md-6">
+                    <p class="view_supplier_name"></p>
+                  </div>
                 </div>
-                <div class="col-md-10">
-                     <div class="table table-responsive">
-                      <table class="table table-bordered table-striped docks-table pcc-table">
-                            <thead>
-                                <tr>
-                                    <th>Delivery Ticket No.</th>
-                                    <th>Slotting Number</th>
-                                    <th>Supplier Name</th>
-                                    <th>Truck</th>
-                                    <th>Plate Number</th>
-                                    <th>Container Number</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                      </table>
-                    </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Truck:
+                  </div>
+                  <div class="col-md-6">
+                    <p class="view_truck"></p>
+                  </div>
                 </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="nav-babycare" role="tabpanel" aria-labelledby="nav-babycare-tab">
-            <br>
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                      <a class="nav-link table-click" data-table_name="baby-care-table" data-category="Baby Care" data-module="Baby Care 1" data-toggle="pill" href="#v-pills-baby-care-1" role="tab" aria-controls="v-pills-baby-care-1" aria-selected="true">Baby Care 1</a>
-                      <a class="nav-link table-click" data-table_name="baby-care-table" data-category="Baby Care" data-module="Baby Care 2" data-toggle="pill" href="#v-pills-baby-care-2" role="tab" aria-controls="v-pills-baby-care-2" aria-selected="false">Baby Care 2</a>
-                      <a class="nav-link table-click" data-table_name="baby-care-table" data-category="Baby Care" data-module="Baby Care 3" data-toggle="pill" href="#v-pills-baby-care-3" role="tab" aria-controls="v-pills-baby-care-3" aria-selected="false">Baby Care 3</a>
-                       <a class="nav-link table-click" data-table_name="baby-care-table" data-category="Baby Care" data-module="Baby Care Scrap" data-toggle="pill" href="#v-pills-baby-care-scrap" role="tab" aria-controls="v-pills-baby-care-scrap" aria-selected="false">Baby Care Scrap</a>
-                    </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    Container Number:
+                  </div>
+                  <div class="col-md-6">
+                    <p class="view_container_no"></p>
+                  </div>
                 </div>
-                <div class="col-md-10">
-                     <div class="table table-responsive">
-                      <table class="table table-bordered table-striped docks-table baby-care-table">
-                            <thead>
-                                <tr>
-                                    <th>Delivery Ticket No.</th>
-                                    <th>Slotting Number</th>
-                                    <th>Supplier Name</th>
-                                    <th>Truck</th>
-                                    <th>Plate Number</th>
-                                    <th>Container Number</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                      </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="nav-laundry" role="tabpanel" aria-labelledby="nav-laundry-tab">
-            <br>
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                      <a class="nav-link table-click" data-table_name="laundry-table" data-category="Laundry" data-module="Laundry" data-toggle="pill" href="#v-pills-laundry" role="tab" aria-controls="v-pills-laundry" aria-selected="true">Laundry</a>
-                      <a class="nav-link table-click" data-table_name="laundry-table" data-category="Laundry" data-module="Laundry SB" data-toggle="pill" href="#v-pills-laundry-sb" role="tab" aria-controls="v-pills-laundry-sb" aria-selected="false">Laundry SB</a>
-                      <a class="nav-link table-click" data-table_name="laundry-table" data-category="Laundry" data-module="Laundry Scrap" data-toggle="pill" href="#v-pills-laundry-scrap" role="tab" aria-controls="v-pills-laundry-scrap" aria-selected="false">Laundry Scrap</a>
-                    </div>
-                </div>
-                <div class="col-md-10">
-                     <div class="table table-responsive">
-                      <table class="table table-bordered table-striped docks-table laundry-table">
-                            <thead>
-                                <tr>
-                                    <th>Delivery Ticket No.</th>
-                                    <th>Slotting Number</th>
-                                    <th>Supplier Name</th>
-                                    <th>Truck</th>
-                                    <th>Plate Number</th>
-                                    <th>Container Number</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                      </table>
-                    </div>
+                <!-- <div class="row">
+                  <div class="col-md-12 material_list">
+                    Material List:
+                    <table class="view_material_list"></table>
+                  </div>
+                </div> -->
+                <br>
+                <div class="row">
+                  <div class="col-xl-4 col-sm-12">
+                    <!-- <button id="btn-gate-in" class="btn btn-secondary btn-xs btn-block" type="button">Gate-In</button>
+                    <button id="btn-gate-out" class="btn btn-secondary btn-xs btn-block" type="button">Gate-Out</button> -->
+                  </div>
+                  <div class="col-xl-4 col-sm-12">
+                    <!-- <button id="btn-register" class="btn btn-secondary btn-xs btn-block" type="button">Register</button> -->
+                  </div>
+                  <div class="col-xl-4 col-sm-12">  
+                    <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
+                  </div> 
                 </div>
             </div>
         </div>
     </div>
-
-
-
-
-</div>
-
-    
+</div>    
     
 <script type="text/javascript">
   $(function () {
@@ -230,6 +177,130 @@
           }
     });
     
+    var table_incoming = $('.data-table-incoming').DataTable({
+        "bPaginate": true,
+        "bLengthChange": false,
+        "bFilter": false,
+        "bInfo": false,
+        "bAutoWidth": false,
+        "processing": true,
+        "serverSide": true,
+        "ajax":{
+                 "url": "{{ url('securityDashboard') }}",
+                 "dataType": "json",
+                 "type": "POST",
+                 "data":{ _token: "{{csrf_token()}}",process_status:"incoming"}
+               },
+        "columns": [
+            { "data": "id" },
+            {"data": 'slotting_time'},
+            {"data": 'supplier_name'},
+            {"data": 'truck'},
+            {"data": 'plate_number'},
+            {"data": 'dock'},
+            {"data": 'status'},
+        ],
+        'columnDefs': [ {
+        'targets': [0,1,2,3,4,5], // column index (start from 0)
+        'orderable': false, // set orderable false for selected columns
+        }],
+        "createdRow": function( row, data, dataIndex){
+            if( data.status ==  'For-Entry'){
+                $(row).addClass('greenClass');
+            }
+
+            if( data.status ==  'For-Gate-Out'){
+                $(row).addClass('blueClass');
+            }
+
+            if(data.status == 'In Process'){
+              $(row).addClass('greenClass');
+            }
+
+            if(data.status == 'Completed'){
+              $(row).addClass('blueClass');
+            }
+            if(data.status == 'Parking'){
+              $(row).addClass('greenClass');
+            }
+            if(data.status == 'Delayed'){
+              $(row).addClass('yellowClass');
+            }
+            if(data.status == 'Dock'){
+              $(row).addClass('greenClass');
+            }
+            if(data.status == 'Overtime'){
+              $(row).addClass('redClass');
+            }
+            if(data.status == 'Over Staying'){
+              $(row).addClass('redClass');
+            }
+        }       
+
+    });
+
+    var table_outgoing = $('.data-table-outgoing').DataTable({
+        "bPaginate": true,
+        "bLengthChange": false,
+        "bFilter": false,
+        "bInfo": false,
+        "bAutoWidth": false,
+        "processing": true,
+        "serverSide": true,
+        "ajax":{
+                 "url": "{{ url('securityDashboard') }}",
+                 "dataType": "json",
+                 "type": "POST",
+                 "data":{ _token: "{{csrf_token()}}",process_status:"outgoing"}
+               },
+        "columns": [
+            { "data": "id" },
+            {"data": 'slotting_time'},
+            {"data": 'supplier_name'},
+            {"data": 'truck'},
+            {"data": 'plate_number'},
+            {"data": 'dock'},
+            {"data": 'status'},
+        ],
+        'columnDefs': [ {
+        'targets': [0,1,2,3,4,5], // column index (start from 0)
+        'orderable': false, // set orderable false for selected columns
+        }],
+        "createdRow": function( row, data, dataIndex){
+            if( data.status ==  'For-Entry'){
+                $(row).addClass('greenClass');
+            }
+
+            if( data.status ==  'For-Gate-Out'){
+                $(row).addClass('blueClass');
+            }
+
+            if(data.status == 'In Process'){
+              $(row).addClass('greenClass');
+            }
+
+            if(data.status == 'Completed'){
+              $(row).addClass('blueClass');
+            }
+            if(data.status == 'Parking'){
+              $(row).addClass('greenClass');
+            }
+            if(data.status == 'Delayed'){
+              $(row).addClass('yellowClass');
+            }
+            if(data.status == 'Dock'){
+              $(row).addClass('greenClass');
+            }
+            if(data.status == 'Overtime'){
+              $(row).addClass('redClass');
+            }
+            if(data.status == 'Over Staying'){
+              $(row).addClass('redClass');
+            }
+        }    
+
+    });
+
     var table = $('.data-table').DataTable({
         "processing": true,
         "serverSide": true,
@@ -279,14 +350,157 @@
             if(data.status == 'Over Staying'){
               $(row).addClass('redClass');
             }
-        }     
+        }  
 
     });
 
+    function incomingTrucks(){
+        $.ajax({
+            async: false,
+            url: "{{ url('checkIfIncoming') }}",
+            type: "POST",
+            global: false,
+            data: {process_status:"incoming"},
+            success: function (data) {
+              console.log(data.length)
+              if(data.length > 2){
+                table.draw();
+              }
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+    }
 
     setInterval(function(){
+        incomingTrucks();
         table.draw()
+        table_incoming.draw()
+        table_outgoing.draw()
     },10000)
+
+
+    $('.data-table-incoming tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+          console.log($(this).find("td:nth-child(1)"))
+            $('.view_delivery_id').html($(this).find("td:nth-child(1)").first().text())  
+            $('.view_slotting_time').html($(this).find("td:nth-child(2)").first().text())  
+            $('.view_supplier_name').html($(this).find("td:nth-child(3)").first().text()) 
+            $('.view_truck').html($(this).find("td:nth-child(4)").text()) 
+            $('.view_container_no').html($(this).find("td:nth-child(5)").text())
+            $('.view_material_list').html($(this).find("td:nth-child(8)").html())    
+
+
+            $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
+            $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+
+
+            $("#btn-gate-in").show();
+            $("#btn-register").show();
+            $("#btn-gate-out").hide();
+
+            $('#ajaxModelView').modal({
+                backdrop:'static',
+                keyboard: false
+            })
+        }
+    });
+
+
+     $('.data-table-outgoing tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            $('.view_delivery_id').html($(this).find("td:nth-child(1)").first().text())  
+            $('.view_slotting_time').html($(this).find("td:nth-child(2)").first().text())  
+            $('.view_supplier_name').html($(this).find("td:nth-child(3)").first().text()) 
+            $('.view_truck').html($(this).find("td:nth-child(4)").text()) 
+            $('.view_container_no').html($(this).find("td:nth-child(5)").text())
+            $('.view_material_list').html($(this).find("td:nth-child(8)").html())    
+
+
+            $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
+            $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+
+            $("#btn-gate-in").hide();
+            $("#btn-gate-out").show();
+            $("#btn-register").hide();
+
+            $('#ajaxModelView').modal({
+                backdrop:'static',
+                keyboard: false
+            })
+        }
+    });
+
+   $('body').on( 'click', '#btn-gate-in', function () {
+            
+        $.ajax({
+            async: false,
+            url: "{{ url('changeProcessStatus') }}",
+            type: "POST",
+            global: false,
+            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:10,process_status:'incoming',process_name:"gate-in"},
+            success: function (data) {
+              if(JSON.parse(data).success){
+                $("#response").show();
+                $("#response").html("<div class='alert alert-success'>" + JSON.parse(data).success + "</div>")
+              }
+
+              if(JSON.parse(data).error){
+                $("#response").show();
+                $("#response").html("<div class='alert alert-danger'>" + JSON.parse(data).error + "</div>")
+              }
+              $('#ajaxModelView').modal('hide');
+              setTimeout(function(){
+                $("#response").hide('slow');
+              },5000)
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+    });
+
+    $('body').on( 'click', '#btn-gate-out', function () {
+        $("#response").empty();
+        $.ajax({
+            async: false,
+            url: "{{ url('changeProcessStatus') }}",
+            type: "POST",
+            global: false,
+            data: {delivery_ticket_id:$(".view_delivery_id").html(),status:11,process_status:'incoming',process_name:"gate-out"},
+            success: function (data) {
+              if(JSON.parse(data).success){
+                $("#response").show();
+                $("#response").html("<div class='alert alert-success'>" + JSON.parse(data).success + "</div>")
+              }
+
+              if(JSON.parse(data).error){
+                $("#response").show();
+                $("#response").html("<div class='alert alert-danger'>" + JSON.parse(data).error + "</div>")
+              }
+              $('#ajaxModelView').modal('hide');
+              setTimeout(function(){
+                $("#response").hide('slow');
+              },5000)
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+    });
+
+    $('body').on('click','#btn-register',function(){
+      window.location='scheduler/slottingschedule'
+    });
      
   });
 
@@ -304,7 +518,7 @@
         "processing": true,
         "serverSide": true,
         "ajax":{
-                 "url": "{{ url('allgeneraldashboardsched') }}",
+                 "url": "{{ url('parkingDashboard') }}",
                  "dataType": "json",
                  "type": "POST",
                  "data":{ _token: "{{csrf_token()}}",module: module_}
@@ -316,10 +530,13 @@
             {"data": 'truck'},
             {"data": 'plate_number'},
             {"data": 'container_number'},
-        ]  
+        ],
+        'columnDefs': [ {
+        'targets': [0,1,2,3,4,5], // column index (start from 0)
+        'orderable': false, // set orderable false for selected columns
+        }]   
 
         });
     });
-      
 </script>
 @endsection

@@ -44,7 +44,7 @@
               
             <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Suppler</label>
-               <div class="col-sm-12">
+               <div class="col-sm-12 fs_dd">
                   <select multiple="true" class="form-control delivery_type_filter" id="delivery_type_filter" name="delivery_type_filter[]">
                        <option value="">All</option>
                        @foreach($supplierData['data'] as $supplier)
@@ -58,7 +58,7 @@
               
             <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Is Approved</label>
-               <div class="col-sm-12">
+               <div class="col-sm-12 sf_dd">
                   <select multiple="true" class="form-control status_filter" id="status_filter" name="status_filter[]">
                        <option value="">All</option>
                        <option value="Approved">Approved</option>
@@ -491,17 +491,28 @@
         })
     });
 
+    $('.fs_dd').dropdown({
+      limitCount: 40,
+      multipleMode: 'label',
+      // callback
+      choice: function (event, selectedProp,x) {
+        console.log(selectedProp.id)
+        table.search(selectedProp.id).draw();   
+      },
+    });
+
+    $('.sf_dd').dropdown({
+      limitCount: 40,
+      multipleMode: 'label',
+      // callback
+      choice: function (event, selectedProp,x) {
+        console.log(selectedProp.id)
+        table.search(selectedProp.id).draw();   
+      },
+    });
+
     $('#delivery_type_filter').on('change', function(){
        table.search(this.value).draw();   
-    });
-    $('#ordering_days_filter').on('change', function(){
-        var ordering_days = "ordering_days|";
-        $.each($(".ordering_days_filter option:selected"), function(){            
-            ordering_days += this.value + " | "
-        }); 
-
-       console.log(ordering_days)
-       table.search(ordering_days).draw();   
     });
     $('#status_filter').on('change', function(){
        table.search(this.value).draw();   

@@ -46,8 +46,8 @@
               
             <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Supplier</label>
-               <div class="col-sm-12">
-                  <select multiple="true" class="form-control supplier_filter" id="supplier_filter" name="supplier_filter[]">
+               <div class="col-sm-12 sf_dd">
+                  <select multiple="true" style="display: none;" class="form-control supplier_filter" id="supplier_filter" name="supplier_filter[]">
                        <option value="">All</option>
                        @foreach($supplierData['data'] as $supplier)
                          <option value='{{ $supplier->supplier_name }}'>{{ $supplier->supplier_name }}</option>
@@ -60,8 +60,8 @@
           <div class="col-md-6">
               <div class="form-group">
                <label for="name" class="col-sm-12 control-label">*Filter Truck Type</label>
-               <div class="col-sm-12">
-                  <select multiple="true" class="form-control container_type_filter" id="container_type_filter">
+               <div class="col-sm-12 ctf_dd">
+                  <select multiple="true" style="display: none;" class="form-control container_type_filter" id="container_type_filter">
                        <option value="">All</option>
                        <option value="Containerized">Containerized</option>
                        <option value="Non-containerized">Non-containerized</option>
@@ -270,13 +270,33 @@
 
     });
 
-    $('#container_type_filter').on('change', function(){
-       table.search(this.value).draw();   
+    $('.ctf_dd').dropdown({
+      limitCount: 40,
+      multipleMode: 'label',
+      // callback
+      choice: function (event, selectedProp,x) {
+        console.log(selectedProp.id)
+        table.search(selectedProp.id).draw();   
+      },
     });
 
-    $('#supplier_filter').on('change', function(){
-       table.search(this.value).draw();   
+    $('.sf_dd').dropdown({
+      limitCount: 40,
+      multipleMode: 'label',
+      // callback
+      choice: function (event, selectedProp,x) {
+        console.log(selectedProp.id)
+        table.search(selectedProp.id).draw();   
+      },
     });
+
+    // $('#container_type_filter').on('change', function(){
+    //    table.search(this.value).draw();   
+    // });
+
+    // $('#supplier_filter').on('change', function(){
+    //    table.search(this.value).draw();   
+    // });
 
     // var table = $('.data-table').DataTable({
     //     processing: true,

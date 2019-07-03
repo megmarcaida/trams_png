@@ -1484,7 +1484,7 @@
       },100);
       count = count + 1;
       value = $('#btn-modules-dropdown').children("option:selected").val();
-      window.location = "/TRAMS/public/scheduler/index?get_module=" + value
+      window.location = "/trams/public/scheduler/index?get_module=" + value
       //calendarEl.innerHTML = "";
       //calendar.destroy();
       //testCalendar(value)
@@ -2303,7 +2303,7 @@
     });
 
     //end new window
-    setTimeout(function(){
+    setInterval(function(){
       $(".fc-center").appendTo(".button-area");
       $(".fc-CreateSchedule-button").addClass('btn-block');
       $(".fc-ScheduleDockUnavailability-button").addClass('btn-block');
