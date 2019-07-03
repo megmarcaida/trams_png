@@ -60,7 +60,7 @@
 </head>
 <body>
   <br>
-  <a href="/TRAMS/public" class="btn btn-secondary">Back to Dashboard</a>
+  <a href="/" class="btn btn-secondary">Back to Dashboard</a>
   <br><br>
   <div class="row">
         <div class="col-xl-12">
