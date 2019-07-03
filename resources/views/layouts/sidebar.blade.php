@@ -161,17 +161,17 @@
         <div class="dropdown-container">
 
           <a class="nav-link" href="/dashboard/manual">
-            <i class="fas fa-fw fa-folder"></i>
+            <i class="fas fa-fw fa-id-card"></i>
             <span>Manual Process</span>
           </a>
 
           <a class="nav-link" href="/dashboard/reader">
-            <i class="fas fa-fw fa-folder"></i>
+            <i class="fas fa-fw fa-qrcode"></i>
             <span>QR Code</span>
           </a>
 
           <a class="nav-link" href="/others/parking">
-            <i class="fas fa-fw fa-folder"></i>
+            <i class="fas fa-fw fa-parking"></i>
             <span>Parking Module</span>
           </a>
         </div>
