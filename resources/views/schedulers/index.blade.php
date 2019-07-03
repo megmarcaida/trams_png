@@ -2308,7 +2308,7 @@
       $(".fc-CreateSchedule-button").addClass('btn-block');
       $(".fc-ScheduleDockUnavailability-button").addClass('btn-block');
       $("#calendar > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2").text($("#calendar > div.fc-toolbar.fc-header-toolbar > div.fc-left > h2").text().replace("â€“"," \u2013 "))
-    },100);
+    },1000);
     
 </script>
 <div class="container-fluid">
