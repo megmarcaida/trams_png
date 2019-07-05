@@ -67,7 +67,7 @@
    
 <div class="modal fade" id="ajaxModel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="width:970px;margin-left:-230px;">
             <div class="modal-header">
                 <h4 class="modal-title" id="modelHeading"></h4>
 
@@ -79,58 +79,118 @@
                     
                     <input type="hidden" name="bannedissue_id" id="bannedissue_id">
 
-
-                    <div class="form-group">
-                       <label for="name" class="col-sm-12 control-label">*Delivery No.</label>
-                       <div id="delivery_dd_add"></div>
-                       <div class="col-sm-12 delivery_dd">
-                          <select class="form-control" id="delivery_id"></select>
+                    <div class="row">
+                      
+                      <div class="col-md-6">
+                          
+                        <div class="form-group">
+                           <label for="name" class="col-sm-12 control-label">*Delivery No.</label>
+                           <div id="delivery_dd_add"></div>
+                           <div class="col-sm-12 delivery_dd">
+                              <select class="form-control" id="delivery_id"></select>
+                            </div>
                         </div>
+
+                        <div></div class="form-group">
+                           <div class="col-sm-12">
+                              <div>PO Number: <b id="po_number"></b></div>
+                           </div>
+                           <div class="col-sm-12">
+                               <div>Supplier: <b id="supplier"></b></div>
+                           </div>
+                           <div class="col-sm-12">
+                               <div>Driver: <b id="driver"></b></div>
+                           </div>
+                           <div class="col-sm-12">
+                              <div>Assistant:  <b id="assistant"></b></div>
+                           </div>
+                           <div class="col-sm-12">
+                              <div>Truck:  <b id="truck"></b></div>
+                           </div>
+                           <div class="col-sm-12">
+                              <div>Container No.:  <b id="container_no"></b></div>
+                           </div>
+                           <div class="col-sm-12">
+                              <div>Dock:  <b id="dock"></b></div>
+                           </div>
+                           <div class="col-sm-12">
+                              <div>Date of Delivery:  <b id="date_of_delivery"></b></div>
+                           </div>
+                           <div class="col-sm-12">
+                              <div>Recurrence:  <b id="recurrence"></b></div>
+                           </div>
+                           <div class="col-sm-12">
+                              <div>Slotting Time:  <b id="slotting_time"></b></div>
+                           </div>
+                           <div class="col-sm-12">
+                              <div>Material List<br>  
+                                <table class="table table-responsive" id="material_list">
+                                    <thead>
+                                      <th>GCAS</th>
+                                      <th>Description</th>
+                                      <th>Quantity (UOM)</th>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                           </div>
+                        </div>
+
+
+                      <div class="col-md-6">
+                        
+                        <div class="form-group">
+                            <label for="name" class="col-sm-12 control-label">*Location</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" id="location" name="location" placeholder="Enter Location" value="" maxlength="100" required="">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                          <label class="col-sm-12 control-label violation">*Nature of Violation</label>
+                          <div class="col-sm-12">
+                            <select class="form-control violation" id="violation" name="violation">
+                              <option value=''>Please select Nature of Violation</option>
+                              <option value='Warning'>Warning</option>
+                              <option value='Ban'>Ban</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-sm-12 control-label">*Date and Time</label>
+                          <div class="col-sm-12">
+                            <input type="date" class="form-control datepicker" name="date_time" id="date_time" required="">
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name" class="col-sm-12 control-label">*Reason</label>
+                            <div class="col-sm-12">
+                                <textarea class="form-control" name="reason" id="reason"  required=""></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name" class="col-sm-12 control-label">*Additional Information</label>
+                            <div class="col-sm-12">
+                                <textarea class="form-control" name="additional_information" id="additional_information"  required=""></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12">
+                           <button type="submit" class="btn btn-primary btn-block" id="saveBtn" value="create">Save changes
+                           </button>
+                        </div>
+
+
+                      </div>
+
                     </div>
 
-                    <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Location</label>
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="location" name="location" placeholder="Enter Location" value="" maxlength="100" required="">
-                        </div>
-                    </div>
                     
-                    <div class="form-group">
-                      <label class="col-sm-12 control-label violation">*Nature of Violation</label>
-                      <div class="col-sm-12">
-                        <select class="form-control violation" id="violation" name="violation">
-                          <option value=''>Please select Nature of Violation</option>
-                          <option value='Warning'>Warning</option>
-                          <option value='Ban'>Ban</option>
-                        </select>
-                      </div>
-                    </div>
 
-                    <div class="form-group">
-                      <label class="col-sm-12 control-label">*Date and Time</label>
-                      <div class="col-sm-12">
-                        <input type="date" class="form-control datepicker" name="date_time" id="date_time" required="">
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Reason</label>
-                        <div class="col-sm-12">
-                            <textarea class="form-control" name="reason" id="reason"  required=""></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="name" class="col-sm-12 control-label">*Additional Information</label>
-                        <div class="col-sm-12">
-                            <textarea class="form-control" name="additional_information" id="additional_information"  required=""></textarea>
-                        </div>
-                    </div>
-
-                    <div class="offset-8 col-md-2 col-sm-12">
-                       <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
-                       </button>
-                    </div>
+                    
 
                 </form>
 
@@ -245,6 +305,17 @@
         $('#bannedIssueForm').trigger("reset");
 
         $('.delivery_dd').remove()
+        $('#po_number').html('')
+        $('#supplier').html("")
+        $('#driver').html("")
+        $('#assistant').html("")
+        $('#truck').html("")
+        $('#container_no').html("")
+        $('#dock').html("")
+        $('#date_of_delivery').html("")
+        $('#recurrence').html("")
+        $('#slotting_time').html("")
+        $('#material_list > tbody').html("")
         $.ajax({
           type: 'POST', 
           url: "{{ url('getAllSchedules') }}",
@@ -261,7 +332,43 @@
                 multipleMode: 'label',
                 // callback
                 choice: function (event, selectedProp,x) {
-                  
+                      if(selectedProp == undefined){
+                        $('#po_number').html('')
+                        $('#supplier').html("")
+                        $('#driver').html("")
+                        $('#assistant').html("")
+                        $('#truck').html("")
+                        $('#container_no').html("")
+                        $('#dock').html("")
+                        $('#date_of_delivery').html("")
+                        $('#recurrence').html("")
+                        $('#slotting_time').html("")
+                        $('#material_list > tbody').html("")
+                      }else{
+                        $.get("{{ route('ajaxschedules.index') }}" +'/' + selectedProp.id +'/edit', function (data) {
+                          console.log(data)
+                              $('#po_number').html(data.po_number)
+                              $('#supplier').html(data.po_number)
+                              $('#driver').html(data.driver)
+                              $('#assistant').html(data.assistant)
+                              $('#truck').html(data.truck)
+                              $('#container_no').html(data.container_no)
+                              $('#dock').html(data.dock_name)
+                              $('#date_of_delivery').html(data.date_of_delivery)
+                              $('#recurrence').html(data.recurrence)
+                              $('#slotting_time').html(data.slotting_time_text)
+                              console.log(data.material_list.gcas)
+
+                              $('#material_list > tbody').html("")
+                              $.each(data.material_list.gcas, function(index, item) {
+                                if(item != ""){
+                                  console.log(data.material_list.description[index])
+                                  $('#material_list > tbody').append('<tr><td>'+ item +'</td><td>'+ data.material_list.description[index]+'</td><td>'+ data.material_list.quantity[index]+'</td></tr>')
+                                }
+                              });
+
+                        });
+                      }
                 },
               });
           },error:function(){ 
@@ -297,15 +404,50 @@
          
           $("#violation").val(data.violation)
 
-
           $('.delivery_dd').dropdown({
-            limitCount: 1,
-            multipleMode: 'label',
-            // callback
-            choice: function (event, selectedProp,x) {
-              
-            },
-          });
+                limitCount: 1,
+                multipleMode: 'label',
+                // callback
+                choice: function (event, selectedProp,x) {
+                      if(selectedProp == undefined){
+                        $('#po_number').html('')
+                        $('#supplier').html("")
+                        $('#driver').html("")
+                        $('#assistant').html("")
+                        $('#truck').html("")
+                        $('#container_no').html("")
+                        $('#dock').html("")
+                        $('#date_of_delivery').html("")
+                        $('#recurrence').html("")
+                        $('#slotting_time').html("")
+                        $('#material_list > tbody').html("")
+                      }else{
+                        $.get("{{ route('ajaxschedules.index') }}" +'/' + selectedProp.id +'/edit', function (data) {
+                          console.log(data)
+                              $('#po_number').html(data.po_number)
+                              $('#supplier').html(data.po_number)
+                              $('#driver').html(data.driver)
+                              $('#assistant').html(data.assistant)
+                              $('#truck').html(data.truck)
+                              $('#container_no').html(data.container_no)
+                              $('#dock').html(data.dock_name)
+                              $('#date_of_delivery').html(data.date_of_delivery)
+                              $('#recurrence').html(data.recurrence)
+                              $('#slotting_time').html(data.slotting_time_text)
+                              console.log(data.material_list.gcas)
+
+                              $('#material_list > tbody').html("")
+                              $.each(data.material_list.gcas, function(index, item) {
+                                if(item != ""){
+                                  console.log(data.material_list.description[index])
+                                  $('#material_list > tbody').append('<tr><td>'+ item +'</td><td>'+ data.material_list.description[index]+'</td><td>'+ data.material_list.quantity[index]+'</td></tr>')
+                                }
+                              });
+
+                        });
+                      }
+                },
+              });
 
           $('#date_time').val(data.date_time);
       })
@@ -439,6 +581,31 @@
                   }else{
                     $("#btn-deactivate").html("Activate")
                   }
+
+
+                  $.get("{{ route('ajaxschedules.index') }}" +'/' + data.name +'/edit', function (data) {
+                    console.log(data)
+                        $('#po_number').html(data.po_number)
+                        $('#supplier').html(data.po_number)
+                        $('#driver').html(data.driver)
+                        $('#assistant').html(data.assistant)
+                        $('#truck').html(data.truck)
+                        $('#container_no').html(data.container_no)
+                        $('#dock').html(data.dock_name)
+                        $('#date_of_delivery').html(data.date_of_delivery)
+                        $('#recurrence').html(data.recurrence)
+                        $('#slotting_time').html(data.slotting_time_text)
+                        console.log(data.material_list.gcas)
+
+                        $('#material_list > tbody').html("")
+                        $.each(data.material_list.gcas, function(index, item) {
+                          if(item != ""){
+                            console.log(data.material_list.description[index])
+                            $('#material_list > tbody').append('<tr><td>'+ item +'</td><td>'+ data.material_list.description[index]+'</td><td>'+ data.material_list.quantity[index]+'</td></tr>')
+                          }
+                        });
+
+                  });
 
                   $("#btn-deactivate").attr("data-status",data.status)
 

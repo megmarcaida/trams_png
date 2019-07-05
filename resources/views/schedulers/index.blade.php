@@ -2509,7 +2509,7 @@
 
                               <!-- Ordering days -->
                               <div class="form-group r_ordering_days">
-                                 <label for="name" class="col-sm-12 control-label">*Ordering Days</label>
+                                 <label for="name" class="col-sm-12 control-label">*Recurrence Days</label>
                                  <div id="ordering_days_add"></div>
                                  <div class="col-sm-12 ordering_days_dd">
                                     <select multiple="true" class="form-control ordering_days" id="ordering_days" style="display: none;" name="ordering_days[]">

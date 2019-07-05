@@ -217,8 +217,28 @@ class BannedIssueController extends Controller
         return redirect()->back()->with("import_message","Importing of Suppliers process successfully."); 
     }
     public function getBannedIssue(Request $request){
-        $bannedissue = BannedIssue::where("id",$request->id)->first();
+        $banned = BannedIssue::where("id",$request->id)->first();
 
-        return json_encode($bannedissue);
+        $bannedissue = array();
+        if(!empty($banned))
+        {   
+            $number = str_pad($banned->name, 8, "0", STR_PAD_LEFT);  
+            $nestedData['id'] = $banned->id;
+            $nestedData['name'] = $banned->name;
+            $nestedData['delivery_id'] = $number;
+            $nestedData['location'] = $banned->location;
+            $nestedData['date_time'] = $banned->date_time;
+            $nestedData['violation'] = $banned->violation;
+            $nestedData['reason'] = $banned->reason;
+            $nestedData['container_number'] = $banned->container_number;
+            $nestedData['additional_information'] = $banned->additional_information;
+            $nestedData['supplier'] = $banned->supplier;
+            $nestedData['status'] = $banned->status;
+ 
+            $bannedissue = $nestedData;
+
+        }
+
+        return response()->json($bannedissue);
     }
 }

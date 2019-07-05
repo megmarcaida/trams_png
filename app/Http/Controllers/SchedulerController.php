@@ -715,7 +715,10 @@ class SchedulerController extends Controller
         $material_list = array();
         $scheduleData = array();
         if(!empty($schedule))
-        {
+        {      
+            $truck = Truck::where('id',$schedule->truck_id)->first();
+            $driver = Driver::where('id',$schedule->driver_id)->first();
+            $assistant = Assistant::where('id',$schedule->assistant_id)->first();
             $nestedData['id'] = $schedule->id;
             $nestedData['po_number'] = $schedule->po_number;
                 $nestedData['supplier_id'] = $schedule->supplier_id;
@@ -726,6 +729,9 @@ class SchedulerController extends Controller
                 $nestedData['recurrence'] = $schedule->recurrence;
                 $nestedData['ordering_days'] = $schedule->ordering_days;
                 $nestedData['truck_id'] = $schedule->truck_id;
+                $nestedData['truck'] = $truck->brand . " " . $truck->model;
+                $nestedData['driver'] = $driver->first_name . " " . $driver->last_name;
+                $nestedData['assistant'] = $assistant->first_name . " " . $assistant->last_name;
                 $nestedData['container_number'] = $schedule->container_number;
                 $nestedData['driver_id'] = $schedule->driver_id;
                 $nestedData['assistant_id'] = $schedule->assistant_id;
