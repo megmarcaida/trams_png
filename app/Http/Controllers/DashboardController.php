@@ -2415,7 +2415,7 @@ class DashboardController extends Controller
             $date = Carbon::now();
             $datenow = $date->format("Y-m-d"); 
 
-            $totalData = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->count();
+            $totalData = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereNull('truck_turnaround_timestamp')->count();
                 
             $totalFiltered = $totalData; 
 
@@ -2431,7 +2431,7 @@ class DashboardController extends Controller
             if(empty($request->input('search.value')))
             {   
                 
-                $Schedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->offset($start)
+                $Schedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereNull('truck_turnaround_timestamp')->offset($start)
                              ->limit($limit)
                              ->orderBy($order,$dir)
                              ->get();
@@ -2440,7 +2440,7 @@ class DashboardController extends Controller
             else {
                 $search = $request->input('search.value'); 
                 
-                $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())
+                $Schedules =  Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereNull('truck_turnaround_timestamp')
                      ->offset($start)
                      ->limit($limit)
                      ->orderBy($order,$dir)
@@ -2448,7 +2448,7 @@ class DashboardController extends Controller
 
 
 
-                $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())->count();
+                $totalFiltered = Schedule::where('id','LIKE',"%{$search}%")->where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereNull('truck_turnaround_timestamp')->count();
             }
 
             $data = array();
@@ -2499,7 +2499,7 @@ class DashboardController extends Controller
             $date = Carbon::now();
             $datenow = $date->format("Y-m-d"); 
             $data = array();
-            $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->get();
+            $getSchedules = Schedule::where('gate_in_timestamp', '>=', Carbon::now()->subDay())->whereNull('truck_turnaround_timestamp')->get();
             $count = 0;
             foreach($getSchedules as $schedule){
 

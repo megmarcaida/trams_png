@@ -152,14 +152,19 @@
                 </div> -->
                 <br>
                 <div class="row">
-                  <div class="col-xl-4 col-sm-12">
+                  <div class="col-xl-4 col-md-4 col-sm-12 btn-gate-out">
+                  </div>
+                  <div class="col-xl-4 col-md-4 col-sm-12 btn-gate-in">
                     <button id="btn-gate-in" class="btn btn-secondary btn-xs btn-block" type="button">Gate-In</button>
+                  </div>
+
+                  <div class="col-xl-4 col-md-4 col-sm-12 btn-gate-out">
                     <button id="btn-gate-out" class="btn btn-secondary btn-xs btn-block" type="button">Gate-Out</button>
                   </div>
-                  <div class="col-xl-4 col-sm-12">
+                  <div class="col-xl-4 col-md-4 col-sm-12 btn-register">
                     <button id="btn-register" class="btn btn-secondary btn-xs btn-block" type="button">Register</button>
                   </div>
-                  <div class="col-xl-4 col-sm-12">  
+                  <div class="col-xl-4 col-md-4 col-sm-12 btn-close">  
                     <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
                   </div> 
                 </div>
@@ -400,9 +405,9 @@
             $(this).addClass('selected');
 
 
-            $("#btn-gate-in").show();
-            $("#btn-register").show();
-            $("#btn-gate-out").hide();
+            $(".btn-gate-in").show();
+            $(".btn-register").show();
+            $(".btn-gate-out").hide();
 
             $('#ajaxModelView').modal({
                 backdrop:'static',
@@ -429,9 +434,9 @@
             $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
 
-            $("#btn-gate-in").hide();
-            $("#btn-gate-out").show();
-            $("#btn-register").hide();
+            $(".btn-gate-in").hide();
+            $(".btn-gate-out").show();
+            $(".btn-register").hide();
 
             $('#ajaxModelView').modal({
                 backdrop:'static',

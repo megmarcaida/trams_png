@@ -18,17 +18,9 @@
       <h1>Parking</h1>
       <div class="row">
         <div class="col-xl-6">
-          <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Supplier</a>
-          <a class="btn btn-warning" href="{{ route('exportParking') }}">Export Parking Data</a>
+          <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Parking</a>
         </div>
-        <div class="col-xl-3">  
-          <form action="{{ route('importParking') }}" method="POST" enctype="multipart/form-data">
-              @csrf
-              <input type="file" name="file" class="form-control">
-              <br>
-              <button class="btn btn-success text-right">Import Parking Data</button>
-          </form>    
-        </div>
+        <br><br>
       </div>
          <div id="response">
           @if(session()->has('import_message'))
@@ -43,14 +35,11 @@
                   <tr>
                       <th>Parking Name</th>
                       <th>Parking Description</th>
-                      <th>Parking Slots Taken</th>
                       <th>Parking Total</th>
+                      <th>Parking Slots Taken</th>
                       <th>Parking Available</th>
-                      <th>Parking Block</th>
-                      <th>Parking Status</th>
                       <th>Active</th>
                       <th>Created At</th>
-                      <th>Status</th>
                       <th>Options</th>
                   </tr>
               </thead>
@@ -109,7 +98,7 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-12 control-label">*Parking Block</label>
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="parking_block" name="parking_block" placeholder="Enter Block" value="" maxlength="50" required="">
+                            <input type="hidden" class="form-control" id="parking_block" name="parking_block" value="Block" placeholder="Enter Block" value="" maxlength="50" required="">
                         </div>
                     </div>
 
@@ -148,11 +137,9 @@
             // { "data": "id" },
             {"data": 'parking_name'},
             {"data": 'parking_description'},
-            {"data": 'parking_slot'},
             {"data": 'parking_area'},
+            {"data": 'parking_slot'},
             {"data": 'parking_available'},
-            {"data": 'parking_block'},
-            {"data": 'parking_status'},
             { "data": "created_at" },
             { "data": "status"},
             { "data": "options" },
@@ -178,7 +165,7 @@
       $('#parkingForm').trigger("reset");      
       var parking_id = $(this).data('id');
       $.get("{{ route('ajaxparking.index') }}" +'/' + parking_id +'/edit', function (data) {
-          $('#modelHeading').html("Edit Product");
+          $('#modelHeading').html("Edit Parking");
           $('#saveBtn').val("edit-user");
           $('#ajaxModel').modal({
             backdrop:'static',
@@ -274,8 +261,6 @@
      
         var parking_id = $(this).data("id");
         var status = $(this).data("status");
-        console.log(status)
-        console.log(supplier_id)
         if (confirm("Are you want to proceed?")){
             $.ajax({
                 url: "{{ url('deactivateOrActivateParking') }}",

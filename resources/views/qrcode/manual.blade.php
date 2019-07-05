@@ -43,13 +43,13 @@
                       </div>
                     </div>
                     <div class="form-group">
-                        <label for="name" class="col-xl-6 control-label">*Delivery Ticket No.</label>
-                        <div class="col-xl-6">
+                        <label for="name" class="col-md-6 control-label">*Delivery Ticket No.</label>
+                        <div class="col-md-6">
                             <input type="text" class="form-control" id="delivery_ticket_id" name="delivery_ticket_id" placeholder="Enter Delivery Ticket No" value="" maxlength="100" required="">
                         </div>
                     </div>
-                    <div class="col-xl-6 col-sm-10">
-                       <button type="submit" class="btn btn-primary btn-block" id="saveBtn" value="create">Process
+                    <div class="col-xl-6 col-md-6 col-sm-10">
+                       <button type="submit" class="btn btn-primary btn-block" id="processBtn" value="create">Process
                        </button>
                     </div>
 
@@ -70,7 +70,7 @@
             }
       });
 
-      $('body').on('click', '#saveBtn', function (e) {
+      $('body').on('click', '#processBtn', function (e) {
 
 
         var delivery_ticket_id = $('#delivery_ticket_id').val();
@@ -109,11 +109,11 @@
                     $('#response').hide("slow");
                   },2000)
                   
-                   $('#saveBtn').html('Save Changes');
+                   $('#processBtn').html('Process');
               },
               error: function (data) {
                   console.log('Error:', data);
-                  $('#saveBtn').html('Save Changes');
+                  $('#processBtn').html('Process');
               }
             });
           }

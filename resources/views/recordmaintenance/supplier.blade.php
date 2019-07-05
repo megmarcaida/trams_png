@@ -381,13 +381,13 @@
                 </div>
                 <br>
                 <div class="row">
-                  <div class="col-xl-4 col-sm-12">
+                  <div class="col-xl-4 col-md-4 col-sm-12">
                     <button id="btn-edit" class="btn btn-primary btn-xs btn-block editProduct" type="button">Edit</button>
                   </div>
-                  <div class="col-xl-4 col-sm-12">
+                  <div class="col-xl-4 col-md-4 col-sm-12">
                     <button id="btn-deactivate" class="btn btn-secondary btn-xs btn-danger btn-block deactivateOrActivateSupplier" type="button">Deactivate</button>
                   </div>
-                  <div class="col-xl-4 col-sm-12">  
+                  <div class="col-xl-4 col-md-4 col-sm-12">  
                     <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
                   </div> 
                 </div>

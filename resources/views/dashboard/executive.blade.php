@@ -117,35 +117,35 @@
                     </div>
                     <div>
                         <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 offset-1 progress1"style="cursor: pointer;">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2 offset-1 progress1"style="cursor: pointer;">
                               <div style="width: 190px; height: 190px; margin-left: 30px;" id="progress1">
                               </div>
                               <div class="text-center" style="margin-top:10px;" >
                                 <b>ON SITE</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress2"  style="cursor: pointer;">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2 progress2"  style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress2">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
                                 <b>UNLOADING</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress3" style="cursor: pointer;">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2 progress3" style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress3">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
                                 <b>DELAYED</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress4"  style="cursor: pointer;">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2 progress4"  style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress4">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
                                 <b>OVERTIME</b>
                               </div>
                             </div>
-                             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress5"  style="cursor: pointer;">
+                             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2 progress5"  style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress5">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
@@ -172,28 +172,28 @@
                                 <b>AVERAGE TRUCK TURNAROUND TIME</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress7">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
                                 <b>SLOTTING COMPLIANCE</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress8" style="cursor: pointer;">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2 progress8" style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress8">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
                                 <b>ON-TIME ARRIVALS</b>
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 progress9" style="cursor: pointer;">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2 progress9" style="cursor: pointer;">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress9">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
                                 <b>ON-TIME DEPARTURES</b>
                               </div>
                             </div>
-                             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2">
                               <div style="width: 190px; height: 190px;margin-left: 30px;" id="progress10">
                               </div>
                               <div class="text-center" style="margin-top:10px;">
@@ -293,6 +293,7 @@
             global: false,
             data: {},
             success: function (data) {
+              console.log("Data:" + data)
               $("#progress1").shieldProgressBar({
                   min: 0,
                   max: data,
