@@ -1236,23 +1236,43 @@ class DashboardController extends Controller
             $stage .= "<th>Gate In</th><th>Dock In</th><th>Dock Out</th><th>Gate Out</th>";
             $stage .= "</tr>";
             $stage .= "<tr>";
-            if($Schedule['status'] == 8 && $Schedule['parking_timestamp'] == null){
-                $stage .= "<td>☑</td>";
+            // if($Schedule['status'] == 8 && $Schedule['parking_timestamp'] == null){
+            //     $stage .= "<td>" . $Schedule['gate_in_timestamp'] . "</td>";
+            // }else{
+            //    $stage .= "<td>☒</td>";
+            // }
+            // if($Schedule['status'] == 9 && $Schedule['parking_timestamp'] != null){
+            //     $stage .= "<td>☑</td>";
+            // }else{
+            //    $stage .= "<td>☒</td>";
+            // }
+            // if($Schedule['status'] == 11 && $Schedule['unloading_timestamp'] != null){
+            //     $stage .= "<td>☑</td>";
+            // }else{
+            //    $stage .= "<td>☒</td>";
+            // }
+            // if($Schedule['status'] == 7 && $Schedule['egress_timestamp'] != null){
+            //     $stage .= "<td>☑</td>";
+            // }else{
+            //    $stage .= "<td>☒</td>";
+            // }
+            if($Schedule['gate_in_timestamp'] != null){
+                $stage .= "<td>" . $Schedule['gate_in_timestamp'] . "</td>";
             }else{
                $stage .= "<td>☒</td>";
             }
-            if($Schedule['status'] == 9 && $Schedule['parking_timestamp'] != null){
-                $stage .= "<td>☑</td>";
+            if($Schedule['dock_in_timestamp'] != null){
+                $stage .= "<td>" . $Schedule['dock_in_timestamp'] . "</td>";
             }else{
                $stage .= "<td>☒</td>";
             }
-            if($Schedule['status'] == 11 && $Schedule['unloading_timestamp'] != null){
-                $stage .= "<td>☑</td>";
+            if($Schedule['dock_out_timestamp'] != null){
+                $stage .= "<td>" . $Schedule['dock_out_timestamp'] . "</td>";
             }else{
                $stage .= "<td>☒</td>";
             }
-            if($Schedule['status'] == 7 && $Schedule['egress_timestamp'] != null){
-                $stage .= "<td>☑</td>";
+            if($Schedule['gate_out_timestamp'] != null){
+                $stage .= "<td>" . $Schedule['gate_out_timestamp'] . "</td>";
             }else{
                $stage .= "<td>☒</td>";
             }

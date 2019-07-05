@@ -162,7 +162,7 @@
     </center>
 
     <div class="row">
-        <div class="col-xl-6 col-sm-4 mb-3">
+        <div class="col-xl-6 col-sm-6 mb-3">
           <div class="response"></div>
           <h3>Incoming</h3>
           <hr>
@@ -206,7 +206,7 @@
               </table>
             </div>
         </div>
-        <div class="col-xl-6 col-sm-2 mb-3">
+        <div class="col-xl-6 col-sm-6 mb-3">
             <h3>Dock</h3>
             <hr>
             <input type="hidden" id="module_account" value="{{ $role_account }}">
@@ -282,7 +282,7 @@
 
     <div class="modal fade" id="ajaxModelView" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content" style="width:780px;">
+        <div class="modal-content" style="width:1000px;margin-left: -250px;">
             <div class="modal-header">
                 <h4 class="modal-title" id="modelHeadingView">Delivery ID: <b class="view_delivery_id"></b></h4>
 
@@ -345,11 +345,11 @@
                 <br>
                 <div class="form-group">
                   <div class="row">
-                      <div class="col-xl-6 col-sm-12">
+                      <div class="col-xl-4 col-md-4 col-sm-12">
                         <div class="row">
-                         <label for="name" class="col-xl-4 col-sm-12 control-label"><h5>Change Dock:</h5> </label>
+                         <label for="name" class="col-xl-12 col-md-12 col-sm-12 control-label"><h5>Change Dock:</h5> </label>
 
-                         <div class="col-xl-8 col-sm-12">
+                         <div class="col-xl-12 col-md-12 col-sm-12">
                             <select class="form-control btn-modules-dropdown" id="dropdown-dock">
                                  <option value="">Please select Dock</option>
                                  @foreach($dockData['data'] as $dock)
@@ -359,29 +359,27 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-xl-6 col-sm-12">
-                        <div class="row">
-                          <div class="col-md-12">
-                            <table class="table table-responsive view_stage"></table>
-                          </div>
-                        </div>
+                      <div class="col-xl-8 col-md-8 col-sm-12">
+                        
+                          <table class="table table-responsive view_stage" style="width: 100%;"></table>
+                        
                       </div>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-xl-4 col-sm-12 btn-dock-in">
+                  <div class="col-xl-4 col-md-4 col-sm-12 btn-dock-in">
                     <button id="btn-dock-in" class="btn btn-secondary btn-xs btn-block" type="button">Dock-In</button>
                   </div>
-                  <div class="col-xl-4 col-sm-12 btn-dock-out">
+                  <div class="col-xl-4 col-md-4 col-sm-12 btn-dock-out">
                     <button id="btn-dock-out" class="btn btn-secondary btn-xs btn-block" type="button">Dock-Out</button>
                   </div>
-                  <div class="col-xl-4 col-sm-12 btn-change-dock">
+                  <div class="col-xl-4 col-md-4 col-sm-12 btn-change-dock">
                     <button id="btn-change-dock" class="btn btn-secondary btn-xs btn-block" type="button">Change Dock</button>
                   </div>
                   <!-- <div class="col-xl-4 col-sm-12 btn-overtime">
                     <button id="btn-overtime" class="btn btn-secondary btn-xs btn-block" type="button">Overtime</button>
                   </div> -->
-                  <div class="col-xl-4 col-sm-12 btn-close">  
+                  <div class="col-xl-4 col-md-4 col-sm-12 btn-close">  
                     <button id="btn-close" class="btn btn-secondary btn-xs btn-block" type="button" data-dismiss="modal">Close</button>
                   </div> 
                 </div>
