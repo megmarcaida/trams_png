@@ -347,15 +347,20 @@
                   <div class="row">
                       <div class="col-xl-4 col-md-4 col-sm-12">
                         <div class="row">
-                         <label for="name" class="col-xl-12 col-md-12 col-sm-12 control-label"><h5>Change Dock:</h5> </label>
+                         <label for="name" class="col-xl-12 col-md-12 col-sm-12 control-label"><h5>Current Dock:</h5> </label>
 
                          <div class="col-xl-12 col-md-12 col-sm-12">
-                            <select class="form-control btn-modules-dropdown" id="dropdown-dock">
-                                 <option value="">Please select Dock</option>
-                                 @foreach($dockData['data'] as $dock)
-                                   <option value='{{ $dock->id }}'>{{ $dock->dock_name }}</option>
-                                 @endforeach
-                            </select>
+                            <div class="input-group mb-3">
+                              <select class="form-control btn-modules-dropdown" id="dropdown-dock">
+                                   <option value="">Please select Dock</option>
+                                   @foreach($dockData['data'] as $dock)
+                                     <option value='{{ $dock->id }}'>{{ $dock->dock_name }}</option>
+                                   @endforeach
+                              </select>
+                            <div class="input-group-append">
+                              <button id="btn-change-dock" class="btn btn-success btn-xs btn-block" type="button">Change Dock</button>
+                            </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -367,14 +372,13 @@
                   </div>
                 </div>
                 <div class="row">
+                  <div class="col-xl-4 col-md-4 col-sm-12 btn-change-dock">
+                  </div>
                   <div class="col-xl-4 col-md-4 col-sm-12 btn-dock-in">
                     <button id="btn-dock-in" class="btn btn-secondary btn-xs btn-block" type="button">Dock-In</button>
                   </div>
                   <div class="col-xl-4 col-md-4 col-sm-12 btn-dock-out">
                     <button id="btn-dock-out" class="btn btn-secondary btn-xs btn-block" type="button">Dock-Out</button>
-                  </div>
-                  <div class="col-xl-4 col-md-4 col-sm-12 btn-change-dock">
-                    <button id="btn-change-dock" class="btn btn-secondary btn-xs btn-block" type="button">Change Dock</button>
                   </div>
                   <!-- <div class="col-xl-4 col-sm-12 btn-overtime">
                     <button id="btn-overtime" class="btn btn-secondary btn-xs btn-block" type="button">Overtime</button>
@@ -818,7 +822,12 @@
             success: function (data) {
               $("#ajaxModelView").modal('hide');
               $(".response").show();
-              $(".response").html("<div class='alert alert-success'>" + JSON.parse(data).message + "</div>")
+              if(JSON.parse(data).message == "Failed"){
+                $(".response").html("<div class='alert alert-danger'>" + JSON.parse(data).message + "</div>")
+
+              }else{
+                $(".response").html("<div class='alert alert-success'>" + JSON.parse(data).message + "</div>")
+              }
               setTimeout(function(){
                 $('.response').fadeOut(1000);
               },2000)

@@ -20,20 +20,28 @@
 
         <div class="row">
           <div class="col-xl-6 col-md-6">
-              
-               <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Assistant</a>
-          
-           
-            <a class="btn btn-warning" href="{{ route('exportAssistant') }}">Export Assistants</a>
+               <div class="btn-group" role="group">
+                 <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Assistant</a>
+            
+             
+                  <a class="btn btn-warning" href="{{ route('exportAssistant') }}">Export Assistants</a>
+                  <!-- <a class="btn btn-secondary" href="https://srv-file2.gofile.io/download/5kYPxn/assistants_template.xlsx">Download Template</a> -->
+                  
+                </div>
           </div>
           <div class="col-xl-6 col-md-6">
               <form action="{{ route('importAssistant') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <input type="file" name="file" class="form-control">
+                <div class="input-group mb-3">
+                  <input type="file" name="file" class="form-control">
+                  <div class="input-group-append">
+                    <button class="btn btn-success text-right"><span class="fa fa-upload"></span></button>
+                    <a class="btn btn-secondary" href="{{ Storage::url('template/assistants_template.xlsx') }}">Download Template</a>
+                  </div>
+                </div>
                 <br>
-                <button class="btn btn-success text-right">Import Assistants Data</button>
                <!--  <a class="btn btn-secondary" href="{{ Storage::url('template/assistants_template.xlsx') }}">Download Template Data</a> -->
-                <a class="btn btn-secondary" href="https://srv-file2.gofile.io/download/5kYPxn/assistants_template.xlsx">Download Template Data</a>
+               
             </form> 
           </div>
         </div>

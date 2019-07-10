@@ -33,21 +33,41 @@
             <span>Assistant</span>
           </a>
           
-          <!-- <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Other Pages:</h6>
-          <a class="dropdown-item" href="404.html">404 Page</a>
-          <a class="dropdown-item" href="blank.html">Blank Page</a> -->
+          @if(Auth::user()->role_id != 3) 
+          <a class="nav-link" href="/TRAMS/public/scheduler/dock">
+            <i class="fas fa-fw fa-door-open"></i>
+            <span>Dock</span>
+          </a>
+          @endif
         </div>
       </li>
       @endif
 
-      @if(Auth::user()->role_id != 3 && Auth::user()->role_id != 2 && Auth::user()->role_id != 4 && Auth::user()->role_id != 5)  
+
+     
+     @if(Auth::user()->role_id != 3 && Auth::user()->role_id != 5)   
+     <li class="nav-item dropdown">
+        <a class="nav-link" href="/TRAMS/public/scheduler/index">
+          <i class="fas fa-fw fa-calendar-alt"></i>
+          <span>Scheduler</span>
+        </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" href="/TRAMS/public/dashboard/reader">
+            <i class="fas fa-fw fa-qrcode"></i>
+            <span>QR Code</span>
+          </a>
+      </li>
+      @endif
+
+      @if(Auth::user()->role_id != 3 && Auth::user()->role_id != 5)  
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-btn" href="#">
           <i class="fas fa-fw fa-cogs"></i>
           <span>Utilities</span>
         </a>
         <div class="dropdown-container">
+          @if(Auth::user()->role_id != 2 && Auth::user()->role_id != 4)
           <!-- <h6 class="dropdown-header">Record Maintenance:</h6> -->
           <a class="nav-link" href="/TRAMS/public/masterfile/roles">
             <i class="fas fa-fw fa-user-tag"></i>
@@ -61,44 +81,27 @@
             <i class="fas fa-fw fa-tasks"></i>
             <span>Reasons</span>
           </a>
-          <!-- <a class="dropdown-item" href="/TRAMS/public/masterfile/roles">Roles</a>
-          <a class="dropdown-item" href="/TRAMS/public/masterfile/users">Users</a>
-          <a class="dropdown-item" href="/TRAMS/public/masterfile/reasons">Reasons</a> -->
-          <!-- <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Other Pages:</h6>
-          <a class="dropdown-item" href="404.html">404 Page</a>
-          <a class="dropdown-item" href="blank.html">Blank Page</a> -->
+          @endif
+          <a class="nav-link" href="/TRAMS/public/others/bannedIssueReporting">
+            <i class="fas fa-fw fa-exclamation"></i>
+            <span>Issue Reporting</span>
+          </a>
+
+          <a class="nav-link" href="/TRAMS/public/others/parking">
+            <i class="fas fa-fw fa-parking"></i>
+            <span>Parking Module</span>
+          </a>
         </div>
       </li>
       @endif
-     
-     @if(Auth::user()->role_id != 3 && Auth::user()->role_id != 5)   
-     <li class="nav-item dropdown">
-        <a class="nav-link dropdown-btn" href="#">
-          <i class="fas fa-fw fa-calendar-alt"></i>
-          <span>Scheduling</span>
-        </a>
-        <div class="dropdown-container">
-          <a class="nav-link" href="/TRAMS/public/scheduler/index">
-            <i class="fas fa-fw fa-calendar-alt"></i>
-            <span>Scheduler</span>
-          </a>
-          <a class="nav-link" href="/TRAMS/public/scheduler/dock">
-            <i class="fas fa-fw fa-ship"></i>
-            <span>Dock</span>
-          </a>
+
           
-          <!-- <a class="dropdown-item" href="/TRAMS/public/scheduler/index">Scheduling</a>
-          <a class="dropdown-item" href="/TRAMS/public/scheduler/dock">Dock</a> -->
-        </div>
-      </li>
-      @endif
 
       @if(Auth::user()->role_id != 3 && Auth::user()->role_id != 2 && Auth::user()->role_id != 4)  
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-btn" href="#">
           <i class="fas fa-fw fa-suitcase"></i>
-          <span>Others / Dashboards</span>
+          <span>Other Dashboards</span>
         </a>
         <div class="dropdown-container">
           
@@ -113,33 +116,13 @@
           </a>
 
           <a class="nav-link" href="/TRAMS/public/dashboard/dock">
-            <i class="fas fa-fw fa-ship"></i>
-            <span>Dock</span>
+            <i class="fas fa-fw fa-door-open"></i>
+            <span>Dock Dashboard</span>
           </a>
 
           <a class="nav-link" href="/TRAMS/public/dashboard/gate">
             <i class="fas fa-fw fa-torii-gate"></i>
-            <span>Gate</span>
-          </a>
-
-          <a class="nav-link" href="/TRAMS/public/dashboard/manual">
-            <i class="fas fa-fw fa-id-card"></i>
-            <span>Manual Process</span>
-          </a>
-
-          <a class="nav-link" href="/TRAMS/public/dashboard/reader">
-            <i class="fas fa-fw fa-qrcode"></i>
-            <span>QR Code</span>
-          </a>
-
-          <a class="nav-link" href="/TRAMS/public/others/parking">
-            <i class="fas fa-fw fa-parking"></i>
-            <span>Parking Module</span>
-          </a>
-
-          <a class="nav-link" href="/TRAMS/public/others/bannedIssueReporting">
-            <i class="fas fa-fw fa-exclamation"></i>
-            <span>Issue Reporting</span>
+            <span>Gate Dashboard</span>
           </a>
 
           <!-- <a class="dropdown-item" href="/TRAMS/public/dashboard/parking">Parking Dashboard</a>
@@ -152,30 +135,7 @@
           <a class="dropdown-item" href="/TRAMS/public/others/bannedIssueReporting">Banned and Issue Reporting</a> -->
         </div>
       </li>
-      @elseif(Auth::user()->role_id == 3 || Auth::user()->role_id == 2 || Auth::user()->role_id == 4)
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-btn" href="#">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>Others / Dashboards</span>
-        </a>
-        <div class="dropdown-container">
-
-          <a class="nav-link" href="/TRAMS/public/dashboard/manual">
-            <i class="fas fa-fw fa-id-card"></i>
-            <span>Manual Process</span>
-          </a>
-
-          <a class="nav-link" href="/TRAMS/public/dashboard/reader">
-            <i class="fas fa-fw fa-qrcode"></i>
-            <span>QR Code</span>
-          </a>
-
-          <a class="nav-link" href="/TRAMS/public/others/parking">
-            <i class="fas fa-fw fa-parking"></i>
-            <span>Parking Module</span>
-          </a>
-        </div>
-      </li>
+      
       @endif
       <!-- <li class="nav-item">
         <a class="nav-link" href="tables.html">

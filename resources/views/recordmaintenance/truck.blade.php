@@ -19,17 +19,25 @@
       <h1>Trucks</h1>
         <div class="row">
           <div class="col-xl-6 col-md-6">  
-            <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Trucks</a>
-            <a class="btn btn-warning" href="{{ route('exportTruck') }}">Export Trucks Data</a>
+            <div class="btn-group" role="group">
+              <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Trucks</a>
+              <a class="btn btn-warning" href="{{ route('exportTruck') }}">Export Trucks Data</a>
+              <!-- <a class="btn btn-secondary" href="https://srv-file2.gofile.io/download/sQJupf/trucks_template.xlsx">Download Template</a> -->
+            </div>
           </div>
            <div class="col-xl-6 col-md-6">   
             <form action="{{ route('importTruck') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <input type="file" name="file" class="form-control">
-                <br>
-                <button class="btn btn-success text-right">Import Trucks Data</button>
+                <div class="input-group mb-3">
+                  <input type="file" name="file" class="form-control">
+                  <div class="input-group-append">
+
+                    <button class="btn btn-success text-right"><span class="fa fa-upload"></span></button>
+                    <a class="btn btn-secondary" href="{{ Storage::url('template/trucks_template.xlsx') }}">Download Template</a>
+                  </div>
+                </div>
                 <!-- <a class="btn btn-secondary" href="{{ Storage::url('template/trucks_template.xlsx') }}">Download Template Data</a> -->
-                <a class="btn btn-secondary" href="https://srv-file2.gofile.io/download/sQJupf/trucks_template.xlsx">Download Template Data</a>
+                
             </form>    
           </div>
         </div>

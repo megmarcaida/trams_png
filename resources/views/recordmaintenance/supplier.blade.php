@@ -18,18 +18,27 @@
     <div class="col-xl-12 col-sm-12 mb-3">
       <h1>Suppliers</h1>
       <div class="row">
-        <div class="col-xl-6 col-md-6">
-          <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Supplier</a>
-          <a class="btn btn-warning" href="{{ route('exportSupplier') }}">Export Suppliers</a>
+        <div class="col-xl-6 col-md-6 col-sm-12">
+          <div class="btn-group" role="group">
+            <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Supplier</a>
+            <a class="btn btn-warning" href="{{ route('exportSupplier') }}">Export Suppliers</a>
+            <!-- <a class="btn btn-secondary" href="https://srv-file2.gofile.io/download/71DQPA/suppliers_template.xlsx">Download Template</a> -->
+          </div>
         </div>
-        <div class="col-xl-6 col-md-6">  
+        <div class="col-xl-6 col-md-6 col-sm-12">  
           <form action="{{ route('importSupplier') }}" method="POST" enctype="multipart/form-data">
               @csrf
-              <input type="file" name="file" class="form-control">
+              <div class="input-group mb-3">
+                <input type="file" name="file" class="form-control">
+                <div class="input-group-append">
+                  <button class="btn btn-success"><span class="fa fa-upload"></span> </button>
+                  <a class="btn btn-secondary" href="{{ Storage::url('template/suppliers_template.xlsx') }}">Download Template</a>
+                </div>
+              </div>
               <br>
-              <button class="btn btn-success">Import Supplier Data</button>
+              
               <!-- <a class="btn btn-secondary" href="{{ Storage::url('template/suppliers_template.xlsx') }}">Download Template Data</a> -->
-              <a class="btn btn-secondary" href="https://srv-file2.gofile.io/download/71DQPA/suppliers_template.xlsx">Download Template Data</a>
+              
           </form>    
         </div>
       </div>

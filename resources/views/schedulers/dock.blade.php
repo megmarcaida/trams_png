@@ -19,15 +19,16 @@
       <div class="row">
         <div class="col-xl-6 col-md-6">
           <a class="btn btn-success" href="javascript:void(0)" id="createNewProduct"> Register Dock</a>
-          <a class="btn btn-warning" href="{{ route('exportDocker') }}">Export Docks Data</a>
+          <br><br>
+          <!-- <a class="btn btn-warning" href="{{ route('exportDocker') }}">Export Docks Data</a> -->
         </div>
         <div class="col-xl-6 col-md-6">  
-          <form action="{{ route('importDocker') }}" method="POST" enctype="multipart/form-data">
+          <!-- <form action="{{ route('importDocker') }}" method="POST" enctype="multipart/form-data">
               @csrf
               <input type="file" name="file" class="form-control">
               <br>
               <button class="btn btn-success text-right">Import Dock Data</button>
-          </form>    
+          </form> -->    
         </div>
       </div>
          <div id="response">
