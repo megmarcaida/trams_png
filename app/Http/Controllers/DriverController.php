@@ -348,4 +348,10 @@ class DriverController extends Controller
 
         return json_encode($driver);
     }
+
+    public function checkDriver(Request $request){
+        $driver = Driver::where("first_name",$request->first_name)->where("last_name",$request->last_name)->count();
+         
+        return json_encode($driver);
+    }
 }

@@ -1,10 +1,66 @@
-@extends('layouts.qreaderapp')
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('content')
+  <!-- CSRF Token -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<div class="container-fluid">
+  <title>{{ config('app.name', 'TRAMS') }}</title>
+  <script src="{{ asset('js/jsQR.js') }}"></script>
+  <link href="https://fonts.googleapis.com/css?family=Ropa+Sans" rel="stylesheet">    <!-- Styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+  <style>
+    body {
+      font-family: 'Ropa Sans', sans-serif;
+      color: #333;
+      max-width: 640px;
+      margin: 0 auto;
+      position: relative;
+    }
 
-   <a href="/" class="btn btn-secondary">Back to Dashboard</a>
+    #githubLink {
+      position: absolute;
+      right: 0;
+      top: 12px;
+      color: #2D99FF;
+    }
+
+    h1 {
+      margin: 10px 0;
+      font-size: 40px;
+    }
+
+    #loadingMessage {
+      text-align: center;
+      padding: 40px;
+      background-color: #eee;
+    }
+
+    #canvas {
+      width: 100%;
+    }
+
+    #output {
+      margin-top: 20px;
+      background: #eee;
+      padding: 10px;
+      padding-bottom: 0;
+    }
+
+    #output div {
+      padding-bottom: 10px;
+      word-wrap: break-word;
+    }
+
+    #noQRFound {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <br>
+  <a href="/" class="btn btn-secondary">Back to Dashboard</a>
   <br><br>
   <div class="row">
         <div class="col-xl-12">
@@ -31,7 +87,7 @@
                           <div class="form-group">
                               <label for="name" class="col-xl-12 control-label">*Delivery Ticket No.</label>
                               <div class="col-xl-12">
-                                  <input type="text" class="form-control" id="delivery_ticket_id" name="delivery_ticket_id" placeholder="Enter Delivery Ticket No" value="" maxlength="100" required="">
+                                  <input type="text" readonly="" class="form-control" id="delivery_ticket_id" name="delivery_ticket_id" placeholder="Enter Delivery Ticket No" value="" maxlength="100" required="">
                               </div>
                           </div>
                       </div>
@@ -173,9 +229,6 @@
       requestAnimationFrame(tick);
     }
   </script>
-
-</div>
-
-    
-   
-@endsection
+ 
+</body>
+</html>

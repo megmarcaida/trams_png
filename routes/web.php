@@ -61,6 +61,7 @@ Route::post('completeDriverRegistration', 'DriverController@completeDriverRegist
 Route::get('exportDriver', 'DriverController@export')->name('exportDriver');
 Route::post('importDriver', 'DriverController@import')->name('importDriver');
 Route::post('getDriver', 'DriverController@getDriver')->name('getDriver');
+Route::post('checkDriver', 'DriverController@checkDriver')->name('checkDriver');
 #End Driver Route
 
 

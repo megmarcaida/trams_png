@@ -698,8 +698,45 @@
    });
     
     $('#saveBtn').click(function (e) {
+      e.preventDefault();
+      console.log("Test")
+        $.ajax({
+              data: $('#driverForm').serialize(),
+              url: "{{ route('checkDriver') }}",
+              type: "POST",
+              dataType: 'json',
+              success: function (data) {
+                console.log(data)
+                
+                if(data > 0){
+                  if(confirm("Driver's name already exist. Are you sure you want to continue?")){
+                    saveData();
+                  }else{
+                    $('#response').html("<div class='alert alert-danger'>Registration cancelled.</div>")
+                    $('#driverForm').trigger("reset");
+                    $('#ajaxModel').modal('hide');
+                    setTimeout(function(){
+                      $('#response').hide("slow");
+                    },2000)
+                  }  
+                }else{
+                  console.log("here test")
+                  saveData();
+                }
+                
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+                  $('#saveBtn').html('Save Changes');
+              }
+          });
         
-        if(role_id == 3 && $("#dateOfSafetyOrientation").val() == ""){
+       
+    });
+
+    function saveData(){
+       if(role_id == 3 && $("#dateOfSafetyOrientation").val() == ""){
           $("#isApproved").val('0')
         }
      
@@ -750,7 +787,6 @@
             return false;
         }else{
 
-            e.preventDefault();
             $(this).html('Sending..');
         
             //console.log($('#driverForm').serialize())
@@ -762,6 +798,7 @@
               success: function (data) {
                 console.log(data.error)
                 if(data.success != null){
+                  $('#response').show();
                  $('#response').html("<div class='alert alert-success'>"+data.success+"</div>")
                   $('#driverForm').trigger("reset");
                   $('#ajaxModel').modal('hide');
@@ -781,7 +818,7 @@
               }
           });
       }
-    });
+    }
     
     $('body').on('click', '.deactivateOrActivateDriver', function () {
      
