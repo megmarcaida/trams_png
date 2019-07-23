@@ -292,7 +292,7 @@
                 
                <div class="row">
 
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <div class="row">
                       <div class="col-md-6">
                         Delivery ID:
@@ -331,13 +331,51 @@
                     </div>
                   </div>
 
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <div class="row">
                       <div class="col-md-12 material_list">
-                      Material List:
-                      <table class="table table-responsive view_material_list"></table>
+                        <h6>Material List</h6>
+                        <table class="table table-responsive view_material_list"></table>
+                        
+                      </div>
                     </div>
                   </div>
+                   <div class="col-md-4">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <h6>Timestamp</h6>
+                          </div>
+                          
+                          <div class="col-md-4">
+                            Gate In:
+                          </div>
+                          <div class="col-md-8">
+                            <p class="view_gate_in"></p>
+                          </div>
+
+                          <div class="col-md-4">
+                            Dock In:
+                          </div>
+                          <div class="col-md-8">
+                            <p class="view_dock_in"></p>
+                          </div>
+                          <div class="col-md-4">
+                            Dock Out:
+                          </div>
+                          <div class="col-md-8">
+                            <p class="view_dock_out"></p>
+                          </div>
+                          <div class="col-md-4">
+                            Gate Out:
+                          </div>
+                          <div class="col-md-8">
+                            <p class="view_gate_out"></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 
                   
@@ -619,6 +657,10 @@
             $('.view_truck').empty()
             $('.view_container_no').empty()
             $('.view_material_list').empty()
+            $('.view_dock_in').empty()
+            $('.view_dock_out').empty()
+            $('.view_gate_in').empty()
+            $('.view_gate_out').empty()
             $.ajax({
                 async: false,
                 url: "{{ url('getClickDockData') }}",
@@ -634,7 +676,10 @@
                   $('.view_truck').html(data.truck) 
                   $('.view_container_no').html(data.container_number)
                   $('.view_material_list').html(data.material_list)
-                  $('.view_stage').html(data.stage)
+                   $('.view_gate_in').html(data.view_gate_in)
+                  $('.view_dock_in').html(data.view_dock_in)
+                  $('.view_dock_out').html(data.view_dock_out)
+                  $('.view_gate_out').html(data.view_gate_out)
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -677,7 +722,10 @@
             $('.view_truck').empty()
             $('.view_container_no').empty()
             $('.view_material_list').empty()
-
+            $('.view_dock_in').empty()
+            $('.view_dock_out').empty()
+            $('.view_gate_in').empty()
+            $('.view_gate_out').empty()
             $.ajax({
                 async: false,
                 url: "{{ url('getClickDockData') }}",
@@ -693,7 +741,10 @@
                   $('.view_truck').html(data.truck) 
                   $('.view_container_no').html(data.container_number)
                   $('.view_material_list').html(data.material_list)
-                  $('.view_stage').html(data.stage)
+                         $('.view_gate_in').html(data.view_gate_in)
+                  $('.view_dock_in').html(data.view_dock_in)
+                  $('.view_dock_out').html(data.view_dock_out)
+                  $('.view_gate_out').html(data.view_gate_out)
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -725,6 +776,11 @@
             $('.view_truck').empty()
             $('.view_container_no').empty()
             $('.view_material_list').empty()
+
+            $('.view_dock_in').empty()
+            $('.view_dock_out').empty()
+            $('.view_gate_in').empty()
+            $('.view_gate_out').empty()
             // $('.view_delivery_id').html($(this).find("tr:nth-child(1) > td:nth-child(2)").first().text())  
             // $('.view_slotting_time').html($(this).find("tr:nth-child(2) > td:nth-child(2)").first().text())  
             // $('.view_supplier_name').html($(this).find("tr:nth-child(3) > td:nth-child(2)").first().text()) 
@@ -749,7 +805,10 @@
                   $('.view_container_no').html(data.container_number)
                   $('.view_material_list').html(data.material_list)
 
-                  $('.view_stage').html(data.stage)
+                  $('.view_gate_in').html(data.view_gate_in)
+                  $('.view_dock_in').html(data.view_dock_in)
+                  $('.view_dock_out').html(data.view_dock_out)
+                  $('.view_gate_out').html(data.view_gate_out)
                 },
                 error: function (data) {
                     console.log('Error:', data);

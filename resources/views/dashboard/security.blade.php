@@ -96,64 +96,105 @@
 
 <div class="modal fade" id="ajaxModelView" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="width:1000px;margin-left: -250px;">
             <div class="modal-header">
                 <h4 class="modal-title" id="modelHeadingView">Delivery ID: <b class="view_delivery_id"></b></h4>
 
                 <button type="button" class="close" data-dismiss="modal">&times;</button> 
             </div>
             <div class="modal-body">
+                <div class="row">
+
+                  <div class="col-md-4">
+                    <div class="row">
+                      <div class="col-md-6">
+                        Delivery ID:
+                      </div>
+                      <div class="col-md-6">
+                        <p class="view_delivery_id"></p>
+                      </div>
+
+                      <div class="col-md-6">
+                        Slotting Time:
+                      </div>
+                      <div class="col-md-6">
+                        <p class="view_slotting_time"></p>
+                      </div>
+
+                      <div class="col-md-6">
+                        Supplier:
+                      </div>
+                      <div class="col-md-6">
+                        <p class="view_supplier_name"></p>
+                      </div>
+
+                      <div class="col-md-6">
+                        Truck:
+                      </div>
+                      <div class="col-md-6">
+                        <p class="view_truck"></p>
+                      </div>
+
+                      <div class="col-md-6">
+                        Container Number:
+                      </div>
+                      <div class="col-md-6">
+                        <p class="view_container_no"></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="row">
+                      <div class="col-md-12 material_list">
+                        <h6>Material List</h6>
+                        <table class="table table-responsive view_material_list"></table>
+                        
+                      </div>
+                    </div>
+                  </div>
+                   <div class="col-md-4">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <h6>Timestamp</h6>
+                          </div>
+                          
+                          <div class="col-md-4">
+                            Gate In:
+                          </div>
+                          <div class="col-md-8">
+                            <p class="view_gate_in"></p>
+                          </div>
+
+                          <div class="col-md-4">
+                            Dock In:
+                          </div>
+                          <div class="col-md-8">
+                            <p class="view_dock_in"></p>
+                          </div>
+                          <div class="col-md-4">
+                            Dock Out:
+                          </div>
+                          <div class="col-md-8">
+                            <p class="view_dock_out"></p>
+                          </div>
+                          <div class="col-md-4">
+                            Gate Out:
+                          </div>
+                          <div class="col-md-8">
+                            <p class="view_gate_out"></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 
-               <div class="row">
-                  <div class="col-md-6">
-                    Delivery ID:
-                  </div>
-                  <div class="col-md-6">
-                    <p class="view_delivery_id"></p>
-                  </div>
+                  
                 </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Slotting Time:
-                  </div>
-                  <div class="col-md-6">
-                    <p class="view_slotting_time"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Supplier:
-                  </div>
-                  <div class="col-md-6">
-                    <p class="view_supplier_name"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Truck:
-                  </div>
-                  <div class="col-md-6">
-                    <p class="view_truck"></p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    Container Number:
-                  </div>
-                  <div class="col-md-6">
-                    <p class="view_container_no"></p>
-                  </div>
-                </div>
-                <!-- <div class="row">
-                  <div class="col-md-12 material_list">
-                    Material List:
-                    <table class="view_material_list"></table>
-                  </div>
-                </div> -->
                 <br>
                 <div class="row">
-                  <div class="col-xl-4 col-md-4 col-sm-12 btn-gate-out">
-                  </div>
                   <div class="col-xl-4 col-md-4 col-sm-12 btn-gate-in">
                     <button id="btn-gate-in" class="btn btn-secondary btn-xs btn-block" type="button">Gate-In</button>
                   </div>
@@ -387,27 +428,85 @@
 
 
     $('.data-table-incoming tbody').on( 'click', 'tr', function () {
-        if ( $(this).hasClass('selected') ) {
+        // if ( $(this).hasClass('selected') ) {
+        //     $(this).removeClass('selected');
+        // }
+        // else {
+        //   console.log($(this).find("td:nth-child(1)"))
+        //     $('.view_delivery_id').html($(this).find("td:nth-child(1)").first().text())  
+        //     $('.view_slotting_time').html($(this).find("td:nth-child(2)").first().text())  
+        //     $('.view_supplier_name').html($(this).find("td:nth-child(3)").first().text()) 
+        //     $('.view_truck').html($(this).find("td:nth-child(4)").text()) 
+        //     $('.view_container_no').html($(this).find("td:nth-child(5)").text())
+        //     $('.view_material_list').html($(this).find("td:nth-child(8)").html())    
+
+
+        //     $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
+        //     $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
+        //     $(this).addClass('selected');
+
+
+        //     $(".btn-gate-in").show();
+        //     $(".btn-register").show();
+        //     $(".btn-gate-out").hide();
+
+        //     $('#ajaxModelView').modal({
+        //         backdrop:'static',
+        //         keyboard: false
+        //     })
+        // }
+         if ( $(this).hasClass('selected') ) {
             $(this).removeClass('selected');
         }
         else {
-          console.log($(this).find("td:nth-child(1)"))
-            $('.view_delivery_id').html($(this).find("td:nth-child(1)").first().text())  
-            $('.view_slotting_time').html($(this).find("td:nth-child(2)").first().text())  
-            $('.view_supplier_name').html($(this).find("td:nth-child(3)").first().text()) 
-            $('.view_truck').html($(this).find("td:nth-child(4)").text()) 
-            $('.view_container_no').html($(this).find("td:nth-child(5)").text())
-            $('.view_material_list').html($(this).find("td:nth-child(8)").html())    
-
+            console.log($(this).find("td:nth-child(1)").first().text())
+             $('.view_delivery_id').empty()
+            $('.view_slotting_time').empty()  
+            $('.view_supplier_name').empty()
+            $('.view_truck').empty()
+            $('.view_container_no').empty()
+            $('.view_material_list').empty()
+            $('.view_dock_in').empty()
+            $('.view_dock_out').empty()
+            $('.view_gate_in').empty()
+            $('.view_gate_out').empty()
+            $.ajax({
+                async: false,
+                url: "{{ url('getClickDockData') }}",
+                type: "POST",
+                global: false,
+                data: {delivery_ticket_id:$(this).find("td:nth-child(1)").first().text()},
+                success: function (data) {
+                  console.log(JSON.parse(data))
+                  var data = JSON.parse(data)
+                  $('.view_delivery_id').html(data.id)  
+                  $('.view_slotting_time').html(data.slotting_time)  
+                  $('.view_supplier_name').html(data.supplier_name) 
+                  $('.view_truck').html(data.truck) 
+                  $('.view_container_no').html(data.container_number)
+                  $('.view_material_list').html(data.material_list)
+                  $('.view_gate_in').html(data.view_gate_in)
+                  $('.view_dock_in').html(data.view_dock_in)
+                  $('.view_dock_out').html(data.view_dock_out)
+                  $('.view_gate_out').html(data.view_gate_out)
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
 
             $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
             $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
 
 
-            $(".btn-gate-in").show();
+                $(".btn-gate-in").show();
             $(".btn-register").show();
             $(".btn-gate-out").hide();
+            $(".btn-dock-out").hide();
+            if($(".btn-close").hasClass('offset-8')){
+              $(".btn-close").removeClass('offset-8')
+            }
 
             $('#ajaxModelView').modal({
                 backdrop:'static',
@@ -418,26 +517,80 @@
 
 
      $('.data-table-outgoing tbody').on( 'click', 'tr', function () {
+        // if ( $(this).hasClass('selected') ) {
+        //     $(this).removeClass('selected');
+        // }
+        // else {
+        //     $('.view_delivery_id').html($(this).find("td:nth-child(1)").first().text())  
+        //     $('.view_slotting_time').html($(this).find("td:nth-child(2)").first().text())  
+        //     $('.view_supplier_name').html($(this).find("td:nth-child(3)").first().text()) 
+        //     $('.view_truck').html($(this).find("td:nth-child(4)").text()) 
+        //     $('.view_container_no').html($(this).find("td:nth-child(5)").text())
+        //     $('.view_material_list').html($(this).find("td:nth-child(8)").html())    
+
+
+        //     $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
+        //     $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
+        //     $(this).addClass('selected');
+
+        //     $(".btn-gate-in").hide();
+        //     $(".btn-gate-out").show();
+        //     $(".btn-register").hide();
+
+        //     $('#ajaxModelView').modal({
+        //         backdrop:'static',
+        //         keyboard: false
+        //     })
+        // }
         if ( $(this).hasClass('selected') ) {
             $(this).removeClass('selected');
         }
         else {
-            $('.view_delivery_id').html($(this).find("td:nth-child(1)").first().text())  
-            $('.view_slotting_time').html($(this).find("td:nth-child(2)").first().text())  
-            $('.view_supplier_name').html($(this).find("td:nth-child(3)").first().text()) 
-            $('.view_truck').html($(this).find("td:nth-child(4)").text()) 
-            $('.view_container_no').html($(this).find("td:nth-child(5)").text())
-            $('.view_material_list').html($(this).find("td:nth-child(8)").html())    
+
+            $('.view_delivery_id').empty()
+            $('.view_slotting_time').empty()  
+            $('.view_supplier_name').empty()
+            $('.view_truck').empty()
+            $('.view_container_no').empty()
+            $('.view_material_list').empty()
+            $('.view_dock_in').empty()
+            $('.view_dock_out').empty()
+            $('.view_gate_in').empty()
+            $('.view_gate_out').empty()
+            $.ajax({
+                async: false,
+                url: "{{ url('getClickDockData') }}",
+                type: "POST",
+                global: false,
+                data: {delivery_ticket_id:$(this).find("td:nth-child(1)").first().text()},
+                success: function (data) {
+                  console.log(JSON.parse(data))
+                  var data = JSON.parse(data)
+                  $('.view_delivery_id').html(data.id)  
+                  $('.view_slotting_time').html(data.slotting_time)  
+                  $('.view_supplier_name').html(data.supplier_name) 
+                  $('.view_truck').html(data.truck) 
+                  $('.view_container_no').html(data.container_number)
+                  $('.view_material_list').html(data.material_list)
+                   $('.view_gate_in').html(data.view_gate_in)
+                  $('.view_dock_in').html(data.view_dock_in)
+                  $('.view_dock_out').html(data.view_dock_out)
+                  $('.view_gate_out').html(data.view_gate_out)
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });   
 
 
             $('.data-table-incoming').DataTable().$('tr.selected').removeClass('selected');
             $('.data-table-outgoing').DataTable().$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
 
-            $(".btn-gate-in").hide();
+                $(".btn-gate-in").hide();
             $(".btn-gate-out").show();
             $(".btn-register").hide();
-
+            //$(".btn-overtime").hide();
             $('#ajaxModelView').modal({
                 backdrop:'static',
                 keyboard: false

@@ -516,35 +516,40 @@ class DashboardController extends Controller
             $description = explode("|", $mat_list[1]);
             $quantity = explode("|", $mat_list[2]);
 
-            $stage = "<table class='table table-responsive table-striped'>";
-            $stage .= "<tr>";
-            $stage .= "<th>Gate In</th><th>Dock In</th><th>Dock Out</th><th>Gate Out</th>";
-            $stage .= "</tr>";
-            $stage .= "<tr>";
-            if($schedules->status == 8 && $schedules->parking_timestamp == null){
-                $stage .= "<td>☑</td>";
-            }else{
-               $stage .= "<td>☒</td>";
-            }
-            if($schedules->status == 9 && $schedules->parking_timestamp != null){
-                $stage .= "<td>☑</td>";
-            }else{
-               $stage .= "<td>☒</td>";
-            }
-            if($schedules->status == 11 && $schedules->unloading_timestamp != null){
-                $stage .= "<td>☑</td>";
-            }else{
-               $stage .= "<td>☒</td>";
-            }
-            if($schedules->status == 7 && $schedules->egress_timestamp != null){
-                $stage .= "<td>☑</td>";
-            }else{
-               $stage .= "<td>☒</td>";
-            }
-            $stage .= "</tr>";
-            $stage .= "</table>";
+            // $stage = "<table class='table table-responsive table-striped'>";
+            // $stage .= "<tr>";
+            // $stage .= "<th>Gate In</th><th>Dock In</th><th>Dock Out</th><th>Gate Out</th>";
+            // $stage .= "</tr>";
+            // $stage .= "<tr>";
+            // if($schedules->status == 8 && $schedules->parking_timestamp == null){
+            //     $stage .= "<td>☑</td>";
+            // }else{
+            //    $stage .= "<td>☒</td>";
+            // }
+            // if($schedules->status == 9 && $schedules->parking_timestamp != null){
+            //     $stage .= "<td>☑</td>";
+            // }else{
+            //    $stage .= "<td>☒</td>";
+            // }
+            // if($schedules->status == 11 && $schedules->unloading_timestamp != null){
+            //     $stage .= "<td>☑</td>";
+            // }else{
+            //    $stage .= "<td>☒</td>";
+            // }
+            // if($schedules->status == 7 && $schedules->egress_timestamp != null){
+            //     $stage .= "<td>☑</td>";
+            // }else{
+            //    $stage .= "<td>☒</td>";
+            // }
+            // $stage .= "</tr>";
+            // $stage .= "</table>";
 
-            $nestedData['stage'] = $stage;
+            // $nestedData['stage'] = $stage;
+
+            $nestedData['view_gate_in'] = $schedules->gate_in_timestamp;
+            $nestedData['view_dock_in'] = $schedules->dock_in_timestamp;
+            $nestedData['view_dock_out'] = $schedules->dock_out_timestamp;
+            $nestedData['view_gate_out'] = $schedules->gate_out_timestamp;
 
             $nestedData['material_list']['gcas'] = $gcas;
             $nestedData['material_list']['description'] = $description;
@@ -1231,55 +1236,59 @@ class DashboardController extends Controller
             }
             $material_list .= "</table>";
 
-            $stage = "<table class='table table-responsive table-striped'>";
-            $stage .= "<tr>";
-            $stage .= "<th>Gate In</th><th>Dock In</th><th>Dock Out</th><th>Gate Out</th>";
-            $stage .= "</tr>";
-            $stage .= "<tr>";
-            // if($Schedule['status'] == 8 && $Schedule['parking_timestamp'] == null){
+            // $stage = "<table class='table table-responsive table-striped'>";
+            // $stage .= "<tr>";
+            // $stage .= "<th>Gate In</th><th>Dock In</th><th>Dock Out</th><th>Gate Out</th>";
+            // $stage .= "</tr>";
+            // $stage .= "<tr>";
+            // // if($Schedule['status'] == 8 && $Schedule['parking_timestamp'] == null){
+            // //     $stage .= "<td>" . $Schedule['gate_in_timestamp'] . "</td>";
+            // // }else{
+            // //    $stage .= "<td>☒</td>";
+            // // }
+            // // if($Schedule['status'] == 9 && $Schedule['parking_timestamp'] != null){
+            // //     $stage .= "<td>☑</td>";
+            // // }else{
+            // //    $stage .= "<td>☒</td>";
+            // // }
+            // // if($Schedule['status'] == 11 && $Schedule['unloading_timestamp'] != null){
+            // //     $stage .= "<td>☑</td>";
+            // // }else{
+            // //    $stage .= "<td>☒</td>";
+            // // }
+            // // if($Schedule['status'] == 7 && $Schedule['egress_timestamp'] != null){
+            // //     $stage .= "<td>☑</td>";
+            // // }else{
+            // //    $stage .= "<td>☒</td>";
+            // // }
+            // if($Schedule['gate_in_timestamp'] != null){
             //     $stage .= "<td>" . $Schedule['gate_in_timestamp'] . "</td>";
             // }else{
             //    $stage .= "<td>☒</td>";
             // }
-            // if($Schedule['status'] == 9 && $Schedule['parking_timestamp'] != null){
-            //     $stage .= "<td>☑</td>";
+            // if($Schedule['dock_in_timestamp'] != null){
+            //     $stage .= "<td>" . $Schedule['dock_in_timestamp'] . "</td>";
             // }else{
             //    $stage .= "<td>☒</td>";
             // }
-            // if($Schedule['status'] == 11 && $Schedule['unloading_timestamp'] != null){
-            //     $stage .= "<td>☑</td>";
+            // if($Schedule['dock_out_timestamp'] != null){
+            //     $stage .= "<td>" . $Schedule['dock_out_timestamp'] . "</td>";
             // }else{
             //    $stage .= "<td>☒</td>";
             // }
-            // if($Schedule['status'] == 7 && $Schedule['egress_timestamp'] != null){
-            //     $stage .= "<td>☑</td>";
+            // if($Schedule['gate_out_timestamp'] != null){
+            //     $stage .= "<td>" . $Schedule['gate_out_timestamp'] . "</td>";
             // }else{
             //    $stage .= "<td>☒</td>";
             // }
-            if($Schedule['gate_in_timestamp'] != null){
-                $stage .= "<td>" . $Schedule['gate_in_timestamp'] . "</td>";
-            }else{
-               $stage .= "<td>☒</td>";
-            }
-            if($Schedule['dock_in_timestamp'] != null){
-                $stage .= "<td>" . $Schedule['dock_in_timestamp'] . "</td>";
-            }else{
-               $stage .= "<td>☒</td>";
-            }
-            if($Schedule['dock_out_timestamp'] != null){
-                $stage .= "<td>" . $Schedule['dock_out_timestamp'] . "</td>";
-            }else{
-               $stage .= "<td>☒</td>";
-            }
-            if($Schedule['gate_out_timestamp'] != null){
-                $stage .= "<td>" . $Schedule['gate_out_timestamp'] . "</td>";
-            }else{
-               $stage .= "<td>☒</td>";
-            }
-            $stage .= "</tr>";
-            $stage .= "</table>";
+            // $stage .= "</tr>";
+            // $stage .= "</table>";
 
-            $nestedData['stage'] = $stage;
+            // $nestedData['stage'] = $stage;
+            $nestedData['view_gate_in'] = $Schedule['gate_in_timestamp'];
+            $nestedData['view_dock_in'] = $Schedule['dock_in_timestamp'];
+            $nestedData['view_dock_out'] = $Schedule['dock_out_timestamp'];
+            $nestedData['view_gate_out'] = $Schedule['gate_out_timestamp'];
             $nestedData['material_list'] = $material_list;
             
             $data[] = $nestedData;

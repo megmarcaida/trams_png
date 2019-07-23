@@ -101,12 +101,19 @@ class AssistantController extends Controller
                              ->count();
 
             }else{
-
+                if($search == "Approved"){
+                    $isApproved = 1;
+                }elseif($search == "Rejected"){
+                    $isApproved = 0;
+                }else{
+                    $isApproved = null;
+                }
                 $assistants =  Assistant::where('id','LIKE',"%{$search}%")
                                 ->orWhere('logistics_company','LIKE',"%{$search}%")
                                 ->orWhere('first_name','LIKE',"%{$search}%")
                                 ->orWhere('mobile_number','LIKE',"%{$search}%")
-                                ->orWhere('status',$search == "Active" ? 1 : 0)
+                                ->orWhere('full_name','LIKE',"%{$search}%")
+                                ->orWhere('isApproved',$isApproved)
                                 ->offset($start)
                                 ->limit($limit)
                                 ->orderBy($order,$dir)

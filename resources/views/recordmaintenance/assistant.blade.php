@@ -64,12 +64,12 @@
           <div class="col-md-3">
               
             <div class="form-group">
-               <label for="name" class="col-sm-12 control-label">*Filter Status</label>
+               <label for="name" class="col-sm-12 control-label">*Filter Is Approved</label>
                <div class="col-sm-12 sf_dd">
                   <select multiple="true" class="form-control status_filter" id="status_filter" name="status_filter[]">
                        <option value="">All</option>
-                       <option value="Active">Active</option>
-                       <option value="Inactive">Inactive</option>
+                       <option value="Approved">Approved</option>
+                       <option value="Rejected">Rejected</option>
                   </select>
                 </div>
             </div>

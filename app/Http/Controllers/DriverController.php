@@ -127,12 +127,20 @@ class DriverController extends Controller
 
             if($drivers_s == "" ){
 
+                if($search == "Approved"){
+                    $isApproved = 1;
+                }elseif($search == "Rejected"){
+                    $isApproved = 0;
+                }else{
+                    $isApproved = null;
+                }
                 $drivers =  Driver::where('id','LIKE',"%{$search}%")
                                 ->orWhere('logistics_company','LIKE',"%{$search}%")
                                 ->orWhere('first_name','LIKE',"%{$search}%")
                                 ->orWhere('last_name','LIKE',"%{$search}%")
+                                ->orWhere('full_name','LIKE',"%{$search}%")
                                 ->orWhere('mobile_number','LIKE',"%{$search}%")
-                                ->orWhere('isApproved',$search == "Approved" ? 1 : 0)
+                                ->orWhere('isApproved',$isApproved)
                                 ->offset($start)
                                 ->limit($limit)
                                 ->orderBy($order,$dir)
@@ -142,6 +150,7 @@ class DriverController extends Controller
                                 ->orWhere('logistics_company','LIKE',"%{$search}%")
                                 ->orWhere('first_name','LIKE',"%{$search}%")
                                 ->orWhere('last_name','LIKE',"%{$search}%")
+                                ->orWhere('full_name','LIKE',"%{$search}%")
                                 ->count();
             }else{
                 
